@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tab页面例子</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+        <link rel="stylesheet" href="./static/bootstrap.css"/>
+        <script src="./static/jquery-1.9.1.js" > </script>
+        <script src="./static/bootstrap-transition.js"></script>
+        <script src="./static/bootstrap-tab.js"></script>
+
+        <script>
+            $(function () {
+                var log = function(s){
+                    window.console && console.log(s)
+                }
+                $('.nav-tabs a:last').tab('show')
+                $('a[data-toggle="tab"]').on('show', function (e) {
+                    log(e)
+                })
+                $('a[data-toggle="tab"]').on('shown', function (e) {
+                    log(e.target) // activated tab
+                    log(e.relatedTarget) // previous tab
+                })
+            })
+        </script>
+    </head>
+    <body>
+        <ul  class="nav nav-tabs">
+            <li class="active"><a href="#home" data-toggle="tab">我也</a></li>
+            <li><a href="#profile" data-toggle="tab">不知道</a></li>
+            <li><a href="#messages" data-toggle="tab">我是</a></li>
+            <li><a href="#settings" data-toggle="tab">谁</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="home">我也</div>
+            <div class="tab-pane" id="profile">不知道</div>
+            <div class="tab-pane" id="messages">我是</div>
+            <div class="tab-pane" id="settings">谁</div>
+        </div>
+
+    </body>
+</html>
