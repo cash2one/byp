@@ -1,0 +1,4 @@
+<?xml version="1.0" ?><conf dir="avcommon_proj">
+	<item build="0" type="KVDebug|Win32"/>
+	<item build="0" type="KVRelease|Win32"/>
+</conf>
