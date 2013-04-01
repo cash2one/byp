@@ -16,6 +16,8 @@
 
 
 body {
+  overflow-x: hidden;
+  overflow-y: hidden;
   background: white;
   margin: 10px;
   padding:15px 5px;
@@ -24,27 +26,52 @@ body {
 }
 
 #main {
+  /*
   position: absolute;
+  */
   bottom: 10px;
   left: 10px;
 }
 
-#main-log {
-  overflow: auto;
-  width: 500px;
-  height: 200px;
-  background: yellow;
+#build-log, #build-config, #build-depend, #build-info, #progress-info, #status-info{
+  width: 480px;
 }
 
-table {
-  width: 500px;
+#main-log {
+  overflow: auto;
+  height: 180px;
+  text-align: left;
+  /*
+  background: yellow;
+  */
+}
+
+form, tr, td {
+  
   border: 2px solid red;
-  padding: 10px solid blue;
+  padding: 5px solid yellow;
+  
   text-align: center;
+  vertical-align: middle;
+}
+
+#proj-select {
+}
+
+#sln-select, #build-options{
+  /*
+  background-color: yellow;
+  */
+  text-align: left;
+}
+
+/*
+#progress-name {
+  background-color:yellow;
 }
 
 #progress-identifier{
-  background-color:blue;
+  background-color:yellow;
 }
 
 #progress-context {
@@ -52,10 +79,28 @@ table {
 }
 
 #status-identifier{
-  background-color:blue;
+  background-color:yellow;
 }
 
 #status-context {
   background-color:yellow;
 }
+*/
 
+#build-reason, #user-email {
+  text-align: left;
+  vertical-align: baseline;
+}
+
+#build-btn {
+  text-align: right;
+  vertical-align: bottom;
+}
+
+#form-title {
+  font-size: 3.75em;
+}
+
+a {
+  font-weight: bold;
+}

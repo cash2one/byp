@@ -14,59 +14,43 @@
 
 
 $(document).ready(function() {
-    //combobox
+    //初始化combobox
     $('.combobox').combobox();
 
-    if (!window.console) window.console = {};
-    if (!window.console.log) window.console.log = function() {};
-
-    $(document).on("submit", "#messageform", function() {
-        newMessage($(this));
-        return false;
-    });
-    $(document).on("keypress", "#messageform", function(e) {
-        if (e.keyCode == 13) {
-            newMessage($(this));
-            return false;
-        }
+	//初始化tooltip功能
+    $(function () {
+        $("[rel='tooltip']").tooltip();
     });
 
-    $("#message").select();
-    updater.start();
+    //start backend communication worker
+    var worker = new Worker("static/js/worker.js");
+    worker.onmessage = function(evt) {
+        $("#main-log").append(evt.data);
+    };
+    
 });
 
-function newMessage(form) {
-    var message = form.formToDict();
-    updater.socket.send(JSON.stringify(message));
-    form.find("input[type=text]").val("").select();
-}
+//checkbox color change action
+$('.btn-group > .btn, .btn[data-toggle="button"]').click(function() {
 
-jQuery.fn.formToDict = function() {
-    var fields = this.serializeArray();
-    var json = {}
-    for (var i = 0; i < fields.length; i++) {
-        json[fields[i].name] = fields[i].value;
-    }
-    if (json.next) delete json.next;
-    return json;
-};
+    if($(this).attr('class-toggle') != undefined && !$(this).hasClass('disabled')){
+        var btnGroup = $(this).parent('.btn-group');
 
-var updater = {
-    socket: null,
-
-    start: function() {
-        var url = "ws://localhost:8888/chatsocket";
-        if ("WebSocket" in window) {
-        updater.socket = new WebSocket(url);
-        } else {
-            updater.socket = new MozWebSocket(url);
+        if(btnGroup.attr('data-toggle') == 'buttons-radio') {
+            btnGroup.find('.btn').each(function() {
+                $(this).removeClass($(this).attr('class-toggle'));
+            });
+            $(this).addClass($(this).attr('class-toggle'));
         }
-    updater.socket.onmessage = function(event) {
-        updater.showMessage(JSON.parse(event.data));
-    }
-    },
 
-    showMessage: function(message) {
-        $("#main-log").append(message.html);
-    }
-};
+        if(btnGroup.attr('data-toggle') == 'buttons-checkbox' || $(this).attr('data-toggle') == 'button') {
+            if($(this).hasClass('active')) {
+                $(this).removeClass($(this).attr('class-toggle'));
+            } else {
+                $(this).addClass($(this).attr('class-toggle'));
+            }
+         }
+
+      }
+      
+});
