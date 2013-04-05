@@ -1,17 +1,17 @@
 /*
- * Copyright 2009 FriendFeed
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 
@@ -26,28 +26,11 @@ body {
 }
 
 #main {
-  /*
-  position: absolute;
-  */
   bottom: 10px;
   left: 10px;
 }
 
-#build-log, #build-config, #build-depend, #build-info, #progress-info, #status-info{
-  width: 480px;
-}
-
-#main-log {
-  overflow: auto;
-  height: 180px;
-  text-align: left;
-  /*
-  background: yellow;
-  */
-}
-
 form, tr, td {
-  
   border: 2px solid red;
   padding: 5px solid yellow;
   
@@ -55,52 +38,45 @@ form, tr, td {
   vertical-align: middle;
 }
 
-#proj-select {
+a {
+  font-weight: bold;
 }
 
-#sln-select, #build-options{
-  /*
-  background-color: yellow;
-  */
-  text-align: left;
+#table-build-log, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
+  width: 480px;
 }
 
-/*
-#progress-name {
-  background-color:yellow;
-}
-
-#progress-identifier{
-  background-color:yellow;
-}
-
-#progress-context {
-  background-color:yellow;
-}
-
-#status-identifier{
-  background-color:yellow;
-}
-
-#status-context {
-  background-color:yellow;
-}
-*/
-
-#build-reason, #user-email {
+#td-build-reason, #td-user-email {
   text-align: left;
   vertical-align: baseline;
 }
 
-#build-btn {
+#ws-build-log {
+  overflow: auto;
+  height: 160px;
+  text-align: left;
+}
+
+#ws-sln-select, #ws-build-options{
+  text-align: left;
+}
+
+#ws-btn-build {
   text-align: right;
   vertical-align: bottom;
 }
 
-#form-title {
-  font-size: 3.75em;
+#ws-worker-running{
+  font-weight: bold;
+  color: green;
 }
 
-a {
+#ws-worker-idle{
   font-weight: bold;
+  color: gray;
+}
+
+#ws-worker-error{
+  font-weight: bold;
+  color: red;
 }

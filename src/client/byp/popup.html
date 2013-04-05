@@ -19,7 +19,7 @@
         <a href="#tabTest" data-toggle="tab">Test</a>
       </li>
       <li>
-        <a href="#tabAbout" data-toggle="tab">About</a>
+        <a href="#tabAbout" data-toggle="tab">WTF</a>
       </li>
     </ul>
 
@@ -34,19 +34,17 @@
       <div class="tab-pane active" id="tabMain">
 
         <!-- 功能选择表格 -->
-        <table id="build-config">
+        <table id="table-build-config">
           <tr><!-- build projects -->
-            <td id="proj-select" width="20%">
-              <div class="btn-group" data-toggle="buttons-radio">
-                <button type="button" class-toggle="btn-inverse" class="btn btn-mini">
-                  <a href="#" rel="tooltip" data-placement="bottom" title="打包极光项目">极光</a>
-                </button>
-                <button type="button" class-toggle="btn-inverse active" class="btn btn-mini">
-                  <a href="#" rel="tooltip" data-placement="right" title="打包X光项目">X光</a>
-                </button>
-              </div>
+            <td width="20%">
+              <a href="#" rel="tooltip" data-placement="right" title="选择想要打包的项目">
+                <select id="ws-project-select" class="combobox-container" style="width:auto">
+                  <option value="PA">极光</option>
+                  <option value="CT">X光</option>
+                </select>
+              </a>
             </td>
-            <td id="sln-select">
+            <td id="ws-sln-select">
               <button type="button" class="btn btn-mini" class-toggle="btn-inverse" data-toggle="button">
                 <a href="#" rel="tooltip" title="abcdefg">Toggle1</a>
               </button>
@@ -64,10 +62,10 @@
             </td>
           </tr>
           <tr><!-- build options -->
-            <td class="form-title">
+            <td class="td-form-title">
               <a href="#" rel="tooltip" title="可选的打包配置">打包选项</a>
             </td>
-            <td id="build-options">
+            <td id="ws-build-options">
               <button type="button" class="btn btn-mini" class-toggle="btn-inverse" data-toggle="button">Option1</button>
               <button type="button" class="btn btn-mini" class-toggle="btn-inverse" data-toggle="button">Option2</button>
               <button type="button" class="btn btn-mini" class-toggle="btn-inverse" data-toggle="button">Option3</button>
@@ -83,13 +81,13 @@
         <!-- --------------------------------------------------------------------------------- -->
         
         <!-- 基于那个版本打包表格 -->
-        <table id="build-depend">
+        <table id="table-build-depend">
           <tr><!-- start this build depends on specific revision -->
-            <td class="form-title" width="20%">
-              <a href="#" rel="tooltip" title="基于以下版本构建">构造版本</a>
+            <td class="td-form-title" width="20%">
+              <a href="#" rel="tooltip" title="基于特定版本构建">构造版本</a>
             </td>
-            <td id="depend-version">
-              <div class="btn-group" data-toggle="buttons-radio">
+            <td>
+              <div id="ws-code-base" class="btn-group" data-toggle="buttons-radio">
                 <button type="button" class-toggle="btn-inverse" class="btn btn-mini">
                   <a href="#" rel="tooltip" title="基于特定Branch">Branch</a>
                 </button>
@@ -101,26 +99,26 @@
                 </button>
               </div>
             </td>
-            <td id="depend-detail"><input type="text" data-provide="typeahead"></td>
+            <td id="ws-cb-detail"><input type="text" data-provide="typeahead"></td>
           </tr>
         </table>
 
         <!-- --------------------------------------------------------------------------------- -->
 
-        <!-- 打包原因表格 -->
-        <table id="build-info">
+        <!-- 打包原因及用户表格 -->
+        <table id="table-build-info">
           <tr><!-- why start the build -->
-            <td class="form-title" width="38.5%">
+            <td class="td-form-title" width="38.5%">
               <a href="#" rel="tooltip" title="请简述出包原因">打包原因</a>
             </td>
-            <td id="build-reason"><input type="text" data-provide="typeahead"></td>
-            <td rowspan="2"><br><button type="button" class="btn btn-large" data-toggle="button" id="build-btn"><a href="#" rel="tooltip" title="我已经完成配置，现在干活吧！">Building!!</a></button></td>
+            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead"></td>
+            <td rowspan="2"><br><button type="button" class="btn btn-large" data-toggle="button" id="ws-btn-build"><a href="#" rel="tooltip" title="配置完毕，现在干活吧！">Building!!</a></button></td>
           </tr>
           <tr><!-- user email -->
-            <td class="form-title">
+            <td class="td-form-title">
               <a href="#" rel="tooltip" title="您的百度邮箱地址">百度邮箱</a>
             </td>
-            <td id="user-email" width="80%"><input type="text" data-provide="typeahead"></td>
+            <td id="td-user-email" width="80%"><input type="text" id="ws-user-email" data-provide="typeahead"></td>
             
           </tr>
         </table>
@@ -128,19 +126,19 @@
         <!-- --------------------------------------------------------------------------------- -->
 
         <!-- 进度条表格 -->
-        <table id="progress-info">
+        <table id="table-progress-info">
           <tr>
-            <td id="progress-name" width="20%">
+            <td width="20%">
               <a href="#" rel="tooltip" title="当前打包任务的进度">打包进度</a>
             </td>
-            <td id="progress-identifier" width="70%">
+            <td width="70%">
               <br>
               <div class="progress progress-striped active">
-                <div class="bar" style="width: 0%;"></div>
+                <div id="ws-build-progress" class="bar" style="width: 0%;"></div>
               </div>
             </td>
-            <td id="progress-context">
-              <span class="badge badge-info">0%</span>
+            <td>
+              <span id="ws-build-progress-text" class="badge badge-info">0%</span>
             </td>
           </tr>
         </table>
@@ -148,22 +146,45 @@
         <!-- --------------------------------------------------------------------------------- -->
 
         <!-- 关键日志输出表格 -->
-        <table id="build-log">
+        <table id="table-build-log">
           <td>
-            <div id="main-log">
+            <div id="ws-build-log">
 
             </div>
           </td>
         </table><!-- inbox -->
 
         <!-- 打包系统状态表格 -->
-        <table id="status-info">
+        <table id="table-status-info">
           <tr>
-            <td id="status-now" width="20%">
-              <a href="#" rel="tooltip" title="打包系统现在的工作状态">系统状态</a>
+            <td id="worker-select" width="20%">
+              <a href="#" rel="tooltip" title="选择编译机以查询其工作状态">
+                <select id="ws-worker-select" class="combobox-container" style="width:auto">
+                  <option value="PA">Pennsylvania</option>
+                  <option value="CT">Connecticut</option>
+                  <option value="NY">New York</option>
+                  <option value="MD">Maryland</option>
+                  <option value="VA">Virginia</option>
+                </select>
+              </a>
             </td>
-            <td id="status-identifier" width="15%"><span class="label label-success">Running</span></td>
-            <td id="status-context"><span class="label label-warning">系统当前正在打包，请稍等...</span></td>
+            <td width="15%"><span id="ws-worker-status" class="label label-success">Running</span></td>
+            <td><span id="ws-worker-detail" class="label label-warning">系统当前正在打包，请稍等...</span></td>
+            <td>
+              <div class="btn-toolbar">
+                <div class="btn-group">
+                  <button class="btn btn-mini">
+                    <a id="ws-worker-running" href="#" rel="tooltip" title="正在干活的编译机数">2</a>
+                  </button>
+                  <button class="btn btn-mini">
+                    <a id="ws-worker-idle" href="#" rel="tooltip" title="空闲的编译机数">1</a>
+                  </button>
+                  <button class="btn btn-mini">
+                    <a id="ws-worker-error" href="#" rel="tooltip" title="打包出错的编译机数">3</a>
+                  </button>
+                </div>
+              </div>
+            </td>
           </tr>
         </table>
 
