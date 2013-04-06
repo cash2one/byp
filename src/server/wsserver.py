@@ -22,7 +22,7 @@ import time
 
 from tornado.options import define, options
 
-from ..conf import project
+import project
 
 define("port", default=8888, help="run on the given port", type=int)
 
@@ -44,61 +44,84 @@ class Application(tornado.web.Application):
         )
         tornado.web.Application.__init__(self, handlers, **settings)
 
-
+#处理默认连接相应
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("index.html", messages=ChatSocketHandler.cache)
 
+#处理build主页相应
 class BuildServerHandler(tornado.websocket.WebSocketHandler):
-    waiters = set()
-    cache = []
-    cache_size = 200
-
-    def allow_draft76(self):
-        # for iOS 5.0 Safari
-        return True
 
     def open(self):
-        ChatSocketHandler.waiters.add(self)
+        print self.request.headers
+        self.workerId = ''
 
     def on_close(self):
-        ChatSocketHandler.waiters.remove(self)
-
-    @classmethod
-    def update_cache(cls, chat):
-        cls.cache.append(chat)
-        if len(cls.cache) > cls.cache_size:
-            cls.cache = cls.cache[-cls.cache_size:]
-
-    @classmethod
-    def send_updates(cls, chat):
-        logging.info("sending message to %d waiters", len(cls.waiters))
-        try:
-            for waiter in cls.waiters:
-                waiter.write_message(chat)
-            time.sleep(3)
-        except:
-            logging.error("Error sending message", exc_info=True)
+        self.workerId = ''
 
     def on_message(self, message):
         logging.info("got message %r", message)
-        #json decode message
-        parsed = tornado.escape.json_decode(message)
-        #process message
-        processMessage(parsed)
+        content = ''
+        msg = eval(message)
+        if msg['msrc'] == 'ws-project-select':
+            content = '{"msrc":"ws-project-select","content":"'
+            for key,val in project.projects.items():
+                content += '%s,' % key
+            content =content[:-1]
+            content += '"}'
+        elif msg['msrc'] == 'ws-sln-select':
+            pass
+        self.write_message(content)
+
+#处理心跳连接相应
+class HeartbeatHandler(tornado.websocket.WebSocketHandler):
+
+    def open(self):
+        print self.request.headers
+        self.workerId = ''
+
+    def on_close(self):
+        self.workerId = ''
+
+    def on_message(self, message):
+        logging.info("got message %r", message)
+        self.write_message(message)
+
+#代表一个client
+class buildClient(object):
+    def __init__(self):
+        self.clientId = uuid.uuid4()
+        self.nickname = ''
+        object.__init__(self)
         
-        chat = {
-            "id": str(uuid.uuid4()),
-            "body": parsed["body"],
-            }
-        chat["html"] = self.render_string("message.html", message=chat)
-
-        ChatSocketHandler.update_cache(chat)
-        ChatSocketHandler.send_updates(chat)
-
-    def processMessage(self, message):
+    #update client ui
+    #classmethod
+    def update(cls):
         pass
 
+    def __str__(self):
+        return '[%s]' % nickname
+
+#表征一个worker
+class buildWorker(object):
+    def __init__(self):
+        self.workerId = uuid.uuid4()
+        self.watchers = set()
+        object.__init__(self)
+    
+    def addWatcher(self,client):
+        self.watchers.add(client)
+        
+    def removeWatcher(self,client):
+        self.watchers.remove(client)
+        
+    def notifyWatchers(self):
+        for client in self.watchers:
+            logging.info('notify client %s' % client)
+            client.update()
+        
+    
+    
 def main():
     tornado.options.parse_command_line()
     app = Application()

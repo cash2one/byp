@@ -14,6 +14,7 @@
 //
 //
 
+var worker = undefined;
 
 $(document).ready(function() {
     //初始化combobox
@@ -25,9 +26,10 @@ $(document).ready(function() {
     });
 
     //start backend communication worker
-    var worker = new Worker("static/js/worker.js");
+    worker = new Worker("static/js/worker.js");
     worker.onmessage = function(evt) {
         $("#ws-build-log").append(evt.data);
+        $("#ws-build-log").append('<br>');
     };
     
 });
@@ -56,3 +58,12 @@ $('.btn-group > .btn, .btn[data-toggle="button"]').click(function() {
       }
       
 });
+
+$('#ws-project-select').change(function() {
+    worker.postMessage("ws-project-select");
+});
+
+$('#ws-worker-select').change(function() {
+    alert('ws-worker-select changed.');
+});
+

@@ -15,36 +15,40 @@ import threading
 import socket
 import websocket
 import subprocess
+import uuid
 
 #heartbeat thread
 class HeartBeatThread(threading.Thread):
-	def __init__(self, eventQuit, wsConnection, t):
-		self.evtQuit = eventQuit
+	def __init__(self, id, wsConnection, t):
+		self.workerId = id
 		self.socket = wsConnection
 		self.interval = t
 		threading.Thread.__init__(self)
 
 	def setInterval(self, t):
 		self.interval = t
+		
+	def setSocket(self, wsConnection):
+		self.socket = wsConnection
 
 	def run(self):
-		while True:
-			self.sendHeartbeat()
-			self.receiveHeartbeat()
-			
-			if self.evtQuit.isSet():
-				self.socket.close()
-				break
-			else:
+		try:
+			logging.info('heartbeat thread started')
+			while True:
+				self.sendHeartbeat()
+				self.receiveHeartbeat()
 				time.sleep(self.interval)
+		except Exception,e:
+			logging.error(e)
+			logging.error('heartbeat thead exception, thread quit')
 	
 	def sendHeartbeat(self):
-		msg = '{"body":"heartbeat","_xsrf":"1dd6c86a4f9a461aaafd01c014ae387f"}'
+		msg = '{"msrc":"wk-heart-beat","sid":"%s",}' % self.workerId
 		self.socket.send(msg)
 		logging.info('heartbeat sended %s' % msg)
 
 	def receiveHeartbeat(self):
-		result =  self.socket.recv()
+		result = self.socket.recv()
 		logging.info('heartbeat received %s' % result)
 		
 #worker thread
@@ -56,70 +60,65 @@ class Worker(subprocess.Popen):
 	def run(self):
 		pass
 
+def mainLoop(socket):
+	logging.info('start mainlooping')
+	worker = None
+	try:
+		while True:
+			msg = socket.recv()
+			parsed = eval(msg)
+			logging.info('command received %s' % parsed)
+	except Exception, e:
+		logging.error(e)
+		logging.error('exception in mainLoop, server may lost')
+	
+	logging.info('end mainlooping')
+
+		
 def main(argc, argv):
 	#init logging system, it's told logging is threadsafe, so do NOT need to sync
 	logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
 	
-	#make connection to wsserver
-	ws_heartbeat = None
-	ws_service = None
-	try:
-		ws_heartbeat = websocket.create_connection("ws://localhost:8888/heartbeat",
-							timeout = 10,
-							sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),))
+	#constants
+	hbThread = None
+	interval_to_send_beartbeat = 1
+	timeout_heartbeat = 10
+	timeout_buildserver = 0
+	workerId = '%s' % uuid.uuid4()
 	
-		ws_service = websocket.create_connection("ws://localhost:8888/buildserver",
-							timeout = 0,
-							sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),))
-	except websocket.WebSocketException,e:
-		logging.error('failed to connect to server')
-		logging.error(e)
-		return
-	
-	#init syncObj
-	evtQuit = threading.Event()
-	
-	#init heartbeating system
-	interval = 1
-	hbThread = HeartBeatThread(evtQuit, ws_heartbeat, interval)
-	hbThread.start()
-	
-	#main logic
-	worker = None
 	while True:
-		msg = ws_service.recv()
-		parsed = eval(msg)
-		if parsed['type'] != '2':
-			continue
-		elif parsed['ws-btn-build'] == 'cancel':
-			if worker == None:
-				continue
-			else:
-				logging.info('worker terminated')
-				#worker.terminate()
-				worker = None
-				logging.info('worker notify server to turn on build')
-				ws_service.send('ws-btn-build=build')
-		elif parsed['ws-btn-build'] == 'build':
-			if worker == None:
-				command = 'python build.py '
-				for key,val in parsed:
-					cmdline += '%s=%s' % (key,val)
-					cmdline += ' '
-				logging.info(command)
-				worker = 'building in progress'
-				#worker = subprocess.call(command)
-				logging.info('worker notify server to turn off build')
-				ws_service.send('ws-btn-build=cancel')
-			else:
-				logging.info('building in progress, please wait')
-		else:
-			continue
+		ws_heartbeat = None
+		ws_service = None
+		try:
+			#make connection to wsserver
+			logging.info('try connectting to server')
+			opts = list()
+			opts.append('sid: %s' % workerId)
+			ws_heartbeat = websocket.create_connection("ws://localhost:8888/heartbeat",
+								timeout = timeout_heartbeat,
+								sockopt = ((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
+								header = opts)
+			ws_service = websocket.create_connection("ws://localhost:8888/buildserver",
+								timeout = timeout_buildserver,
+								sockopt = ((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
+								header = opts)
+			logging.info('server connected')
+			
+			#init heartbeating system
+			#logging.info('start heartbeating')
+			#hbThread = HeartBeatThread(workerId, ws_heartbeat, interval_to_send_beartbeat)
+			#hbThread.start()
+		
+			#main logic
+			#time.sleep(10)
+			mainLoop(ws_service)
+		
+		except Exception,e:
+			logging.error(e)
+			logging.error('failed to connect to server')
+			logging.info('sleep 5 seconds and try again ...')
+			time.sleep(5)
 	
-	#tell hbthread to quit
-	time.sleep(10)
-	evtQuit.set()
-	hbThread.join()
 	logging.info('main quit')
 
 if __name__ == "__main__":

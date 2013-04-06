@@ -27,6 +27,6 @@ bdm_slns = [
 ]
 
 projects = {
-	'bdkv':bdkv_slns,
-	'bdm':bdm_slns,
+	'X光':bdkv_slns,
+	'极光':bdm_slns,
 }

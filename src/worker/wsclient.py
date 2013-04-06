@@ -1,6 +1,12 @@
 from websocket import create_connection
+import uuid
 
-ws = create_connection("ws://localhost:8888")
+opts = list()
+opts.append('msrc: wk-heart-beat')
+opts.append('sid: %s' % uuid.uuid4())
+
+ws = create_connection("ws://localhost:8888/chatsocket",header=opts)
+
 while True:
 	print "Sending 'Hello, World'..."
 	ws.send("Hello, World")
