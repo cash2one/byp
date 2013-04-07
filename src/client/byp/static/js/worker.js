@@ -31,15 +31,12 @@ String.format = function ()
 }
 
 onmessage = function (evt){
-  	var d = evt.data;
-    if (d == "ws-project-select") {
-        updater.initui();
-    }
+    updater.send(evt.data);
 }
 
 function updateUI (message) {
     //console.log('notify ui to update view');
-    var msg = String.format("msrc = {0}, content = {1}", message['msrc'], message['content']);
+    var msg = String.format("{\"msrc\":\"{0}\",\"content\":\"{1}\"}", message['msrc'], message['content']);
     postMessage(msg);
 }
 
@@ -60,7 +57,7 @@ var updater = {
         updater.socket.onopen = function (event) {
             // handshaked, init ui
             //console.log('websocket server connected');
-            updater.initui();
+            updater.send("{\"msrc\":\"ws-project-select\"}");
         }
         updater.socket.onerror = function (event) {
             //console.log('websocket error occer');
@@ -68,11 +65,9 @@ var updater = {
 
     },
 
-    initui: function() {
-        //3 init ui
-        //console.log('initialize user interface');
-        var projSelMsg = "{\"msrc\":\"ws-project-select\"}";
-        updater.socket.send(projSelMsg);
+    // send message to server
+    send: function(msg) {
+        updater.socket.send(msg);
 
     }
 };

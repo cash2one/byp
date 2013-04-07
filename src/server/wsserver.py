@@ -67,12 +67,58 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             content = '{"msrc":"ws-project-select","content":"'
             for key,val in project.projects.items():
                 content += '%s,' % key
-            content =content[:-1]
+            content = content[:-1]
             content += '"}'
+            self.write_message(content)
+            
+            #also send the default slns
+            for key,val in project.projects.items():
+                for item in val:
+                    content = '{"msrc":"ws-sln-select","content":"%s,%s,%s"}' % (item[0],item[1],item[2])
+                    self.write_message(content)
+                break
+            
+            #also send the default build options
+            for keyp,valp in project.build_options.items():
+                for key,val in valp.items():
+                    if val[0] == 'check':
+                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s,%s"}' % (key,val[0],val[1],val[2])
+                    elif val[0] == 'radio':
+                        ctx = ''
+                        for item in val[1]:
+                            ctx += '%s,%s,%s;' % (item[0],item[1],item[2])
+                        ctx = ctx[:-1]
+                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s"}' % (key,val[0],ctx)
+                    self.write_message(content)
+                break
+            
         elif msg['msrc'] == 'ws-sln-select':
-            pass
-        self.write_message(content)
-
+            projName = msg['content']
+            try:
+                slns = project.projects[projName]
+                for item in slns:
+                    content = '{"msrc":"ws-sln-select","content":"%s,%s,%s"}' % (item[0],item[1],item[2])
+                    self.write_message(content)
+            except KeyError,e:
+                logging.info('message error %s' % message)
+        
+        elif msg['msrc'] == 'ws-build-options':
+            projName = msg['content']
+            try:
+                options = project.build_options[projName]
+                for key,val in options.items():
+                    if val[0] == 'check':
+                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s,%s"}' % (key,val[0],val[1],val[2])
+                    elif val[0] == 'radio':
+                        ctx = ''
+                        for item in val[1]:
+                            ctx += '%s,%s,%s;' % (item[0],item[1],item[2])
+                        ctx = ctx[:-1]
+                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s"}' % (key,val[0],ctx)
+                    self.write_message(content)
+            except KeyError,e:
+                logging.info('message error %s' % message)
+            
 #处理心跳连接相应
 class HeartbeatHandler(tornado.websocket.WebSocketHandler):
 
