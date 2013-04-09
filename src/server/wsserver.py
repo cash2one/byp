@@ -55,7 +55,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         self.write_message(content)
     
     def allow_draft76(self):
-        # for iOS 5.0 Safari
+        # for iOS 5.1.1 Safari and Chrome
         return True
     
     def open(self):
