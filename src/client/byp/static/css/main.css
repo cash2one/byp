@@ -19,15 +19,15 @@ body {
   overflow-x: hidden;
   overflow-y: hidden;
   background: white;
-  margin: 10px;
-  padding:15px 5px;
-  width: 480px;
+  margin: 5px;
+  padding:5px 5px;
+  width: 600px;
   height: 550px;
 }
 
 #main {
-  bottom: 10px;
-  left: 10px;
+  bottom: 5px;
+  left: 5px;
 }
 
 form, tr, td {
@@ -43,12 +43,12 @@ a {
 }
 
 #table-build-log, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
-  width: 480px;
+  width: 600px;
 }
 
-#td-build-reason, #td-user-email {
+#td-build-reason, #td-user-email, #td-cb-detail {
   text-align: left;
-  vertical-align: baseline;
+  vertical-align: middle;
 }
 
 #ws-build-log {
@@ -57,13 +57,13 @@ a {
   text-align: left;
 }
 
-#ws-sln-select, #ws-build-options{
+#ws-sln-select-base, #ws-sln-select-middle, #ws-sln-select-module, #ws-build-options-before, #ws-build-options-build, #ws-build-options-after {
   text-align: left;
 }
 
 #ws-btn-build {
   text-align: right;
-  vertical-align: bottom;
+  vertical-align: middle;
 }
 
 #ws-worker-running{

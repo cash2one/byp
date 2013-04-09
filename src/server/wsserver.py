@@ -51,19 +51,54 @@ class MainHandler(tornado.web.RequestHandler):
 
 #处理build主页相应
 class BuildServerHandler(tornado.websocket.WebSocketHandler):
-
+    clients = []
+    workers = []
     def open(self):
         print self.request.headers
-        self.workerId = ''
+        self.id = ''
+        self.nickname = ''
+        self.status = ''#'idle','running','error'
+        self.type = ''#'client','worker'
 
     def on_close(self):
-        self.workerId = ''
-
+        
+        #通知所有clients，worker少了一个
+        if self.type == 'worker':
+            BuildServerHandler.workers.remove(self)
+            for client in BuildServerHandler.clients:
+                content = '{"msrc":"ws-worker-select","content":"remove,%s"}' % (self.id)
+                client.write_message(content)
+                content = '{"msrc":"ws-worker-%s","content":"-"}' % self.status
+                client.write_message(content)
+        #通知所有worker，不再notify
+        elif self.type == 'client':
+            BuildServerHandler.clients.remove(self)
+            pass
+ 
     def on_message(self, message):
         logging.info("got message %r", message)
         content = ''
         msg = eval(message)
-        if msg['msrc'] == 'ws-project-select':
+        if msg['msrc'] == 'ws-client-connect':
+            self.type = 'client'
+            BuildServerHandler.clients.append(self)
+            
+        elif msg['msrc'] == 'wk-worker-connect':
+            ctx = msg['content'].split('|');
+            self.id = ctx[0]
+            self.nickname = ctx[1]
+            self.status = 'idle'
+            self.type = 'worker'
+            BuildServerHandler.workers.append(self)
+            
+            #通知所有clients，worker增加了一个
+            for client in BuildServerHandler.clients:
+                content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s"}' % (self.id,self.nickname,self.status)
+                client.write_message(content)
+                content = '{"msrc":"ws-worker-idle","content":"+"}'
+                client.write_message(content)
+        
+        elif msg['msrc'] == 'ws-project-select':
             content = '{"msrc":"ws-project-select","content":"'
             for key,val in project.projects.items():
                 content += '%s,' % key
@@ -71,33 +106,12 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             content += '"}'
             self.write_message(content)
             
-            #also send the default slns
-            for key,val in project.projects.items():
-                for item in val:
-                    content = '{"msrc":"ws-sln-select","content":"%s,%s,%s"}' % (item[0],item[1],item[2])
-                    self.write_message(content)
-                break
-            
-            #also send the default build options
-            for keyp,valp in project.build_options.items():
-                for key,val in valp.items():
-                    if val[0] == 'check':
-                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s,%s"}' % (key,val[0],val[1],val[2])
-                    elif val[0] == 'radio':
-                        ctx = ''
-                        for item in val[1]:
-                            ctx += '%s,%s,%s;' % (item[0],item[1],item[2])
-                        ctx = ctx[:-1]
-                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s"}' % (key,val[0],ctx)
-                    self.write_message(content)
-                break
-            
         elif msg['msrc'] == 'ws-sln-select':
             projName = msg['content']
             try:
                 slns = project.projects[projName]
                 for item in slns:
-                    content = '{"msrc":"ws-sln-select","content":"%s,%s,%s"}' % (item[0],item[1],item[2])
+                    content = '{"msrc":"ws-sln-select","content":"%s,%s,%s,%s"}' % (item[0],item[1],item[2],item[3])
                     self.write_message(content)
             except KeyError,e:
                 logging.info('message error %s' % message)
@@ -108,16 +122,32 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 options = project.build_options[projName]
                 for key,val in options.items():
                     if val[0] == 'check':
-                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s,%s"}' % (key,val[0],val[1],val[2])
+                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s|%s,%s"}' % (key,val[0],val[1],val[2],val[3])
                     elif val[0] == 'radio':
                         ctx = ''
-                        for item in val[1]:
-                            ctx += '%s,%s,%s;' % (item[0],item[1],item[2])
+                        for item in val[2]:
+                            ctx += '%s,%s,%s' % (item[0],item[1],item[2])
+                            if len(item) == 4:
+                                ctx += ',%s;' % item[3]
+                            else:
+                                ctx += ';'
                         ctx = ctx[:-1]
-                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s"}' % (key,val[0],ctx)
+                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s|%s"}' % (key,val[0],val[1],ctx)
                     self.write_message(content)
             except KeyError,e:
                 logging.info('message error %s' % message)
+                
+        elif msg['msrc'] == 'ws-worker-select':
+            if len(BuildServerHandler.workers) == 0:
+                return
+            if msg['content'] == '':
+                for worker in BuildServerHandler.workers:
+                    content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s"}' % (worker.id,worker.nickname,worker.status)
+                    self.write_message(content)
+                    content = '{"msrc":"ws-worker-%s","content":"+"}' % worker.status
+                    self.write_message(content)
+            else:
+                pass
             
 #处理心跳连接相应
 class HeartbeatHandler(tornado.websocket.WebSocketHandler):
@@ -150,8 +180,9 @@ class buildClient(object):
 
 #表征一个worker
 class buildWorker(object):
-    def __init__(self):
-        self.workerId = uuid.uuid4()
+    def __init__(self, id, nickname):
+        self.workerId = id
+        self.nickname = nickname
         self.watchers = set()
         object.__init__(self)
     
@@ -165,8 +196,6 @@ class buildWorker(object):
         for client in self.watchers:
             logging.info('notify client %s' % client)
             client.update()
-        
-    
     
 def main():
     tornado.options.parse_command_line()

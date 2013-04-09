@@ -32,70 +32,91 @@
 
       <!-- 第一页 -->
       <div class="tab-pane active" id="tabMain">
-
         <!-- 功能选择表格 -->
         <table id="table-build-config">
           <tr><!-- build projects -->
-            <td width="20%">
+            <td width="10%" rowspan="3">
               <a href="#" rel="tooltip" data-placement="right" title="选择想要打包的项目">
                 <select id="ws-project-select" class="combobox-container" style="width:auto">
                 </select>
               </a>
             </td>
-            <td id="ws-sln-select">
+            <td id="ws-sln-select-base">
+              <span class="label label-success">公共类库</span>
+            </td>
+          </tr>
+          <tr>
+            <td id="ws-sln-select-middle">
+              <span class="label label-success">中间层组件</span>
+            </td>
+          </tr>
+          <tr>
+            <td id="ws-sln-select-module">
+              <span class="label label-success">功能模块</span>
             </td>
           </tr>
           <tr><!-- build options -->
-            <td class="td-form-title">
+            <td class="td-form-title" rowspan="3">
               <a href="#" class="tooltip-build-options" rel="tooltip" title="可选的打包配置">打包选项</a>
             </td>
-            <td id="ws-build-options">
+            <td id="ws-build-options-before">
+              <span class="label label-success">打包前选项</span>
+            </td>
+          </tr>
+          <tr>
+            <td id="ws-build-options-build">
+              <span class="label label-success">构造选项</span>
+            </td>
+          </tr>
+          <tr>
+            <td id="ws-build-options-after">
+              <span class="label label-success">打包后选项</span>
             </td>
           </tr>
         </table>
 
         <!-- --------------------------------------------------------------------------------- -->
         
-        <!-- 基于那个版本打包表格 -->
-        <table id="table-build-depend">
-          <tr><!-- start this build depends on specific revision -->
-            <td class="td-form-title" width="20%">
-              <a href="#" rel="tooltip" title="基于特定版本构建">构造版本</a>
+        <!-- 打包原因及用户表格 -->
+        <table id="table-build-info">
+          <tr>
+            <!-- why start the build -->
+            <td class="td-form-title" width="12%">
+              <a href="#" rel="tooltip" title="请简述出包原因">打包原因</a>
             </td>
-            <td>
-              <div id="ws-code-base" class="btn-group" data-toggle="buttons-radio">
-                <button type="button" class-toggle="btn-inverse" class="btn btn-mini">
-                  <a href="#" rel="tooltip" title="基于特定Branch">Branch</a>
-                </button>
-                <button type="button" class-toggle="btn-inverse active" class="btn btn-mini">
-                  <a href="#" rel="tooltip" title="基于特定Tag">Tag</a>
-                </button>
-                <button type="button" class-toggle="btn-inverse active" class="btn btn-mini">
-                  <a href="#" rel="tooltip" title="基于主线Revision">Trunk</a>
-                </button>
-              </div>
+            <td id="td-user-email"><input type="text" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]"></td>
+            <!-- user email -->
+            <td class="td-form-title">
+              <a href="#" rel="tooltip" title="您的百度邮箱地址">百度邮箱</a>
             </td>
-            <td id="ws-cb-detail"><input type="text" data-provide="typeahead"></td>
+            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]"></td>
           </tr>
         </table>
 
         <!-- --------------------------------------------------------------------------------- -->
 
-        <!-- 打包原因及用户表格 -->
-        <table id="table-build-info">
-          <tr><!-- why start the build -->
-            <td class="td-form-title" width="38.5%">
-              <a href="#" rel="tooltip" title="请简述出包原因">打包原因</a>
+        <!-- 基于那个版本打包表格 -->
+        <table id="table-build-depend">
+          <tr><!-- start this build depends on specific revision -->
+            <td class="td-form-title" width="12%">
+              <a href="#" rel="tooltip" title="基于特定版本构建">构造版本</a>
             </td>
-            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead"></td>
-            <td rowspan="2"><br><button type="button" class="btn btn-large" data-toggle="button" id="ws-btn-build"><a href="#" rel="tooltip" title="配置完毕，现在干活吧！">Building!!</a></button></td>
-          </tr>
-          <tr><!-- user email -->
-            <td class="td-form-title">
-              <a href="#" rel="tooltip" title="您的百度邮箱地址">百度邮箱</a>
+            <td>
+              <div id="ws-code-base" class="btn-group" data-toggle="buttons-radio">
+                <button type="button" id="btn-branch-build-depend" class-toggle="btn-inverse" class="btn btn-mini">
+                  <a href="#" rel="tooltip" title="基于特定Branch">Branch</a>
+                </button>
+                <button type="button" id="btn-tag-build-depend" class-toggle="btn-inverse" class="btn btn-mini">
+                  <a href="#" rel="tooltip" title="基于特定Tag">Tag</a>
+                </button>
+                <button type="button" id="btn-revision-build-depend" class-toggle="btn-inverse" class="btn btn-mini">
+                  <a href="#" rel="tooltip" title="基于主线Revision">Trunk</a>
+                </button>
+              </div>
             </td>
-            <td id="td-user-email" width="80%"><input type="text" id="ws-user-email" data-provide="typeahead"></td>
-            
+            <td id="td-cb-detail"><input type="text" id="ws-cb-detail" data-provide="typeahead" data-items="4" data-source="[\"HEAD\";\"Tag Name\";\"Branch Name\"]"></td>
+            <!-- start build button -->
+            <td><button type="button" class="btn btn-small" data-toggle="button" id="ws-btn-build"><a href="#" rel="tooltip" title="配置完毕，现在干活吧！">Build!!</a></button></td>
           </tr>
         </table>
         
@@ -104,10 +125,10 @@
         <!-- 进度条表格 -->
         <table id="table-progress-info">
           <tr>
-            <td width="20%">
+            <td width="12%">
               <a href="#" rel="tooltip" title="当前打包任务的进度">打包进度</a>
             </td>
-            <td width="70%">
+            <td width="75.6%">
               <br>
               <div class="progress progress-striped active">
                 <div id="ws-build-progress" class="bar" style="width: 0%;"></div>
@@ -130,17 +151,14 @@
           </td>
         </table><!-- inbox -->
 
+        <!-- --------------------------------------------------------------------------------- -->
+
         <!-- 打包系统状态表格 -->
         <table id="table-status-info">
           <tr>
-            <td id="worker-select" width="20%">
+            <td id="worker-select" width="10%">
               <a href="#" rel="tooltip" title="选择编译机以查询其工作状态">
                 <select id="ws-worker-select" class="combobox-container" style="width:auto">
-                  <option value="PA">Pennsylvania</option>
-                  <option value="CT">Connecticut</option>
-                  <option value="NY">New York</option>
-                  <option value="MD">Maryland</option>
-                  <option value="VA">Virginia</option>
                 </select>
               </a>
             </td>
@@ -150,21 +168,19 @@
               <div class="btn-toolbar">
                 <div class="btn-group">
                   <button class="btn btn-mini">
-                    <a id="ws-worker-running" href="#" rel="tooltip" title="正在干活的编译机数">2</a>
+                    <a id="ws-worker-running" href="#" rel="tooltip" title="正在干活的编译机数">0</a>
                   </button>
                   <button class="btn btn-mini">
-                    <a id="ws-worker-idle" href="#" rel="tooltip" title="空闲的编译机数">1</a>
+                    <a id="ws-worker-idle" href="#" rel="tooltip" title="空闲的编译机数">0</a>
                   </button>
                   <button class="btn btn-mini">
-                    <a id="ws-worker-error" href="#" rel="tooltip" title="打包出错的编译机数">3</a>
+                    <a id="ws-worker-error" href="#" rel="tooltip" title="打包出错的编译机数">0</a>
                   </button>
                 </div>
               </div>
             </td>
           </tr>
         </table>
-
-        <br><!-- 补一个空行 -->
 
       </div><!-- tabMain -->
 

@@ -16,6 +16,7 @@
 #			msrc [message source 消息源]
 ######################################################################################
 #				 server和client通信用
+#				 = "ws-client-connect"
 #				 = "ws-project-select"						发送支持打包的产品名
 #				 = "ws-sln-select"							发送该产品对应的工程列表
 #				 = "ws-build-options"						发送支持的打包配置
@@ -37,7 +38,7 @@
 #				 server和worker通信用
 #				 = "wk-heart-beat"							判断worker是否在线
 #				 = "wk-start-build"							通知worker开始干活
-#
+#				 = "wk-worker-connect"						worker连线
 #
 #			 sid [sender id 消息发送者id uuid格式]
 ######################################################################################

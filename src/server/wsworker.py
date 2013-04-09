@@ -16,6 +16,7 @@ import socket
 import websocket
 import subprocess
 import uuid
+import worker
 
 #heartbeat thread
 class HeartBeatThread(threading.Thread):
@@ -60,9 +61,10 @@ class Worker(subprocess.Popen):
 	def run(self):
 		pass
 
-def mainLoop(socket):
+def mainLoop(socket, workerId, nickName):
 	logging.info('start mainlooping')
 	worker = None
+	socket.send('{"msrc":"wk-worker-connect","content":"%s|%s"}' % (workerId,nickName))
 	try:
 		while True:
 			msg = socket.recv()
@@ -85,6 +87,7 @@ def main(argc, argv):
 	timeout_heartbeat = 10
 	timeout_buildserver = 0
 	workerId = '%s' % uuid.uuid4()
+	nickName = 'Daenerys'
 	
 	while True:
 		ws_heartbeat = None
@@ -111,7 +114,7 @@ def main(argc, argv):
 		
 			#main logic
 			#time.sleep(10)
-			mainLoop(ws_service)
+			mainLoop(ws_service, workerId, nickName)
 		
 		except Exception,e:
 			logging.error(e)

@@ -57,7 +57,9 @@ var updater = {
         updater.socket.onopen = function (event) {
             // handshaked, init ui
             //console.log('websocket server connected');
-            updater.send("{\"msrc\":\"ws-project-select\"}");
+            updater.send("{\"msrc\":\"ws-client-connect\",\"content\":\"\"}");
+            updater.send("{\"msrc\":\"ws-project-select\",\"content\":\"\"}");
+            updater.send("{\"msrc\":\"ws-worker-select\",\"content\":\"\"}");
         }
         updater.socket.onerror = function (event) {
             //console.log('websocket error occer');
