@@ -38,7 +38,7 @@ def mainLoop(socket, workerId, nickname):
 			log = 'worker sid = %s, nickname = %s' % (workerId,nickname)
 			msg = '{"msrc":"wk-build-log","content":"%s"}' % log 
 			socket.send(msg)
-			time.sleep(3)
+			time.sleep(5)
 	except Exception, e:
 		logging.error(e)
 		logging.error('exception in mainLoop, server may lost')
@@ -53,7 +53,7 @@ def main(argc, argv):
 	#init constants
 	timeout_buildserver = 0
 	workerId = '%s' % uuid.uuid4()
-	nickname = 'Daenerys'
+	nickname = 'Jamie'
 	
 	while True:
 		ws_service = None
@@ -75,7 +75,7 @@ def main(argc, argv):
 			logging.error(e)
 			logging.error('failed to connect to server')
 			logging.info('sleep 5 seconds and try again ...')
-			time.sleep(5)
+			time.sleep(3)
 	
 	logging.info('main quit')
 

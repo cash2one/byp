@@ -11,7 +11,6 @@
 
 
 import logging
-import tornado.escape
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -19,27 +18,23 @@ import tornado.websocket
 import os.path
 import uuid
 import time
-
 from tornado.options import define, options
 
 import project
 
 define("port", default=8888, help="run on the given port", type=int)
 
-
+#main web app
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/", MainHandler),
-            (r"/buildserver", BuildServerHandler),
-            (r"/heartbeat", HeartbeatHandler),
+            (r"/", MainHandler),#for web client
+            (r"/buildserver", BuildServerHandler),#for google chrome extension portable client
         ]
         settings = dict(
-            cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            xsrf_cookies=True,
-            autoescape=None,
+            xsrf_cookies=False,
             debug=True,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
@@ -47,75 +42,89 @@ class Application(tornado.web.Application):
 #处理默认连接相应
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html", messages=ChatSocketHandler.cache)
+        self.render("index.html")
 
 #处理build主页相应
 class BuildServerHandler(tornado.websocket.WebSocketHandler):
     clients = []
     workers = []
+    
+    #发送消息
+    def notify(self, content):
+        logging.info('send message %s' % content)
+        self.write_message(content)
+    
+    def allow_draft76(self):
+        # for iOS 5.0 Safari
+        return True
+    
     def open(self):
-        print self.request.headers
-        self.id = ''
-        self.nickname = ''
-        self.status = ''#'idle','running','error'
-        self.type = ''#'client','worker'
+        pass
 
     def on_close(self):
-        
-        #通知所有clients，worker少了一个
+        #worker断开，通知所有clients，worker少了一个
         if self.type == 'worker':
             BuildServerHandler.workers.remove(self)
             for client in BuildServerHandler.clients:
                 content = '{"msrc":"ws-worker-select","content":"remove,%s"}' % (self.id)
-                client.write_message(content)
+                client.notify(content)
                 content = '{"msrc":"ws-worker-%s","content":"-"}' % self.status
-                client.write_message(content)
-        #通知所有worker，不再notify
+                client.notify(content)
+        #client断开，移除该client
         elif self.type == 'client':
             BuildServerHandler.clients.remove(self)
-            pass
+            for worker in BuildServerHandler.workers:
+                if self in worker.listeners:
+                    worker.listeners.remove(self)
  
     def on_message(self, message):
-        logging.info("got message %r", message)
+        logging.info("recv message %r", message)
         content = ''
         msg = eval(message)
+        
+        #client连接时发送；增加client
         if msg['msrc'] == 'ws-client-connect':
             self.type = 'client'
             BuildServerHandler.clients.append(self)
             
+        #worker连接时发送；增加idle worker
         elif msg['msrc'] == 'wk-worker-connect':
             ctx = msg['content'].split('|');
             self.id = ctx[0]
             self.nickname = ctx[1]
             self.status = 'idle'
             self.type = 'worker'
+            self.listeners = []
             BuildServerHandler.workers.append(self)
             
             #通知所有clients，worker增加了一个
             for client in BuildServerHandler.clients:
-                content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s"}' % (self.id,self.nickname,self.status)
-                client.write_message(content)
+                content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s,%s"}' % (self.id,self.nickname,self.status,self.request.remote_ip)
+                client.notify(content)
                 content = '{"msrc":"ws-worker-idle","content":"+"}'
-                client.write_message(content)
-        
+                client.notify(content)
+                
+        #client连接后发送；提供projects
         elif msg['msrc'] == 'ws-project-select':
             content = '{"msrc":"ws-project-select","content":"'
             for key,val in project.projects.items():
                 content += '%s,' % key
             content = content[:-1]
             content += '"}'
-            self.write_message(content)
+            self.notify(content)
             
+        #手动切换项目combobox时发送；提供当前project的slns
         elif msg['msrc'] == 'ws-sln-select':
             projName = msg['content']
             try:
                 slns = project.projects[projName]
                 for item in slns:
                     content = '{"msrc":"ws-sln-select","content":"%s,%s,%s,%s"}' % (item[0],item[1],item[2],item[3])
-                    self.write_message(content)
+                    self.notify(content)
             except KeyError,e:
                 logging.info('message error %s' % message)
-        
+                
+        #手动切换项目combobox时发送；提供当前project的buildoptions
         elif msg['msrc'] == 'ws-build-options':
             projName = msg['content']
             try:
@@ -133,70 +142,61 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                                 ctx += ';'
                         ctx = ctx[:-1]
                         content = '{"msrc":"ws-build-options","content":"%s|%s|%s|%s"}' % (key,val[0],val[1],ctx)
-                    self.write_message(content)
+                    self.notify(content)
             except KeyError,e:
                 logging.info('message error %s' % message)
                 
+        #手动切换项目combobox时发送；提供当前project支持的codebase
+        elif msg['msrc'] == 'ws-code-base':
+            projName = msg['content']
+            try:
+                codebase = project.build_depends[projName]
+                for item in codebase:
+                    if len(item) == 3:
+                        content = '{"msrc":"ws-code-base","content":"%s,%s,%s"}' % (item[0],item[1],item[2])
+                    elif len(item) == 4:
+                        content = '{"msrc":"ws-code-base","content":"%s,%s,%s,%s"}' % (item[0],item[1],item[2],item[3])
+                    self.notify(content)
+            except KeyError,e:
+                logging.info('message error %s' % message)
+                    
+        #手动切换worker时发送，提供worker状态
         elif msg['msrc'] == 'ws-worker-select':
-            if len(BuildServerHandler.workers) == 0:
-                return
-            if msg['content'] == '':
-                for worker in BuildServerHandler.workers:
-                    content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s"}' % (worker.id,worker.nickname,worker.status)
-                    self.write_message(content)
-                    content = '{"msrc":"ws-worker-%s","content":"+"}' % worker.status
-                    self.write_message(content)
+            if len(BuildServerHandler.workers) != 0:
+                if msg['content'] == '':
+                    for worker in BuildServerHandler.workers:
+                        content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s,%s"}' % (worker.id,worker.nickname,worker.status,self.request.remote_ip)
+                        self.notify(content)
+                        content = '{"msrc":"ws-worker-%s","content":"+"}' % worker.status
+                        self.notify(content)
+                else:
+                    workerId = msg['content']
+                    for worker in BuildServerHandler.workers:
+                        if workerId == worker.id:
+                            if self not in worker.listeners:
+                                worker.listeners.append(self)
+                        else:
+                            if self in worker.listeners:
+                                worker.listeners.remove(self)
             else:
-                pass
+                content = '{"msrc":"ws-worker-select","content":""}'
+                self.notify(content)
             
-#处理心跳连接相应
-class HeartbeatHandler(tornado.websocket.WebSocketHandler):
-
-    def open(self):
-        print self.request.headers
-        self.workerId = ''
-
-    def on_close(self):
-        self.workerId = ''
-
-    def on_message(self, message):
-        logging.info("got message %r", message)
-        self.write_message(message)
-
-#代表一个client
-class buildClient(object):
-    def __init__(self):
-        self.clientId = uuid.uuid4()
-        self.nickname = ''
-        object.__init__(self)
-        
-    #update client ui
-    #classmethod
-    def update(cls):
-        pass
-
-    def __str__(self):
-        return '[%s]' % nickname
-
-#表征一个worker
-class buildWorker(object):
-    def __init__(self, id, nickname):
-        self.workerId = id
-        self.nickname = nickname
-        self.watchers = set()
-        object.__init__(self)
-    
-    def addWatcher(self,client):
-        self.watchers.add(client)
-        
-    def removeWatcher(self,client):
-        self.watchers.remove(client)
-        
-    def notifyWatchers(self):
-        for client in self.watchers:
-            logging.info('notify client %s' % client)
-            client.update()
-    
+        #收到worker日志，发送到这个worker的所有listener
+        elif msg['msrc'] == 'wk-build-log':
+            content = '{"msrc":"ws-build-log","content":"%s"}' % msg['content']
+            for client in self.listeners:
+                client.notify(content)
+                
+        #收到不知道是什么
+        else:
+            pass
+            
+        #如果对象是client，且是某些需要更新ui的消息类型，通知其重置ui
+        if self.type == 'client' and (msg['msrc'] == 'ws-sln-select' or msg['msrc'] == 'ws-build-options' or msg['msrc'] == 'ws-code-base'):
+            content = '{"msrc":"ws-client-update","content":""}';
+            self.notify(content)
+            
 def main():
     tornado.options.parse_command_line()
     app = Application()

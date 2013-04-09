@@ -42,17 +42,14 @@
               </a>
             </td>
             <td id="ws-sln-select-base">
-              <span class="label label-success">公共类库</span>
             </td>
           </tr>
           <tr>
             <td id="ws-sln-select-middle">
-              <span class="label label-success">中间层组件</span>
             </td>
           </tr>
           <tr>
             <td id="ws-sln-select-module">
-              <span class="label label-success">功能模块</span>
             </td>
           </tr>
           <tr><!-- build options -->
@@ -60,17 +57,14 @@
               <a href="#" class="tooltip-build-options" rel="tooltip" title="可选的打包配置">打包选项</a>
             </td>
             <td id="ws-build-options-before">
-              <span class="label label-success">打包前选项</span>
             </td>
           </tr>
           <tr>
             <td id="ws-build-options-build">
-              <span class="label label-success">构造选项</span>
             </td>
           </tr>
           <tr>
             <td id="ws-build-options-after">
-              <span class="label label-success">打包后选项</span>
             </td>
           </tr>
         </table>
@@ -84,12 +78,12 @@
             <td class="td-form-title" width="12%">
               <a href="#" rel="tooltip" title="请简述出包原因">打包原因</a>
             </td>
-            <td id="td-user-email"><input type="text" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]"></td>
+            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]" value="简要描述为何打包"></td>
             <!-- user email -->
             <td class="td-form-title">
               <a href="#" rel="tooltip" title="您的百度邮箱地址">百度邮箱</a>
             </td>
-            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]"></td>
+            <td id="td-user-email"><input type="text" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]" value="输入您的百度邮箱地址"></td>
           </tr>
         </table>
 
@@ -99,22 +93,13 @@
         <table id="table-build-depend">
           <tr><!-- start this build depends on specific revision -->
             <td class="td-form-title" width="12%">
-              <a href="#" rel="tooltip" title="基于特定版本构建">构造版本</a>
+              <a href="#" rel="tooltip" title="指定打包所依赖的代码基">构造版本</a>
             </td>
             <td>
               <div id="ws-code-base" class="btn-group" data-toggle="buttons-radio">
-                <button type="button" id="btn-branch-build-depend" class-toggle="btn-inverse" class="btn btn-mini">
-                  <a href="#" rel="tooltip" title="基于特定Branch">Branch</a>
-                </button>
-                <button type="button" id="btn-tag-build-depend" class-toggle="btn-inverse" class="btn btn-mini">
-                  <a href="#" rel="tooltip" title="基于特定Tag">Tag</a>
-                </button>
-                <button type="button" id="btn-revision-build-depend" class-toggle="btn-inverse" class="btn btn-mini">
-                  <a href="#" rel="tooltip" title="基于主线Revision">Trunk</a>
-                </button>
               </div>
             </td>
-            <td id="td-cb-detail"><input type="text" id="ws-cb-detail" data-provide="typeahead" data-items="4" data-source="[\"HEAD\";\"Tag Name\";\"Branch Name\"]"></td>
+            <td id="td-cb-detail"><input type="text" id="ws-cb-detail" data-provide="typeahead" data-items="4" data-source="[\"HEAD\";\"Tag Name\";\"Branch Name\"]" value="Branch、Tag名称或Revision号"></td>
             <!-- start build button -->
             <td><button type="button" class="btn btn-small" data-toggle="button" id="ws-btn-build"><a href="#" rel="tooltip" title="配置完毕，现在干活吧！">Build!!</a></button></td>
           </tr>
@@ -162,8 +147,8 @@
                 </select>
               </a>
             </td>
-            <td width="15%"><span id="ws-worker-status" class="label label-success">Running</span></td>
-            <td><span id="ws-worker-detail" class="label label-warning">系统当前正在打包，请稍等...</span></td>
+            <td width="15%"><span id="ws-worker-status" class="label label-warning"></span></td>
+            <td><span id="ws-worker-detail" class="label label-warning"></span></td>
             <td>
               <div class="btn-toolbar">
                 <div class="btn-group">

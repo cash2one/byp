@@ -60,15 +60,25 @@ projects = {
 #选项名称，check还是radio，阶段，显示名称，tooltip名称，对应的值
 bdkv_options = {
 	'prebuild':['check','before','清理','打包前的清理工作'],
-	'svn ':['radio','before',[('Ignore','不进行任何svn操作','0'),('checkout','所有相关工程从代码服务器重新签出','1'),('update','所有相关工程从代码服务器更新','2','default')]],
-	'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
-	'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
+
+	#'svn ':['radio','before',[('Ignore','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','1','default'),('checkout','所有相关工程从代码服务器重新签出','2')]],
+	'svn ':['check','before','更新SVN','所有相关工程从代码服务器更新'],
+
+	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+	'rewriteversion':['radio','before',[('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+
+	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
+	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','1','default')]],
+
 	'pack':['check','build','打包资源','重新打包资源'],
 	'signdriver':['check','build','驱动签名','更新驱动签名'],
 	'signkav':['check','build','卡巴签名','更新卡巴签名'],
 	'signbaidu':['check','build','百度签名','更新百度签名'],
-	'install':['check','build','Install','生成安装包'],
-	'send':['radio','after',[('Ignore','生成的安装包不发送往任何地方','0'),('安装包归档','生成的安装包发送至归档目录',1,'default'),('mailme','生成安装包后给我发邮件',2)]],
+	'install':['check','build','生成安装包','生成安装包'],
+
+	#'send':['radio','after',[('Ignore','生成的安装包不发送往任何地方','0'),('安装包归档','生成的安装包发送至归档目录',1,'default'),('mailme','生成安装包后给我发邮件',2)]],
+	'send':['check','after','安装包归档','生成的安装包发送至归档目录'],
+
 	'symadd':['check','after','符号归档','生成符号文件进行归档'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录'],
 	'postbuild':['check','after','清理','打包后的清理工作'],
@@ -76,13 +86,23 @@ bdkv_options = {
 
 bdm_options = {
 	'prebuild':['check','before','清理','打包前的清理工作'],
-	'svn ':['radio','before',[('Ignore','不进行任何svn操作','0'),('checkout','所有相关工程从代码服务器重新签出','1'),('update','所有相关工程从代码服务器更新','2','default')]],
-	'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
-	'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
+
+	#'svn ':['radio','before',[('Ignore','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','1','default'),('checkout','所有相关工程从代码服务器重新签出','2')]],
+	'svn ':['check','before','更新SVN','所有相关工程从代码服务器更新'],
+
+	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+	'rewriteversion':['radio','before',[('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+
+	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
+	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','1','default')]],
+
 	'pack':['check','build','打包资源','重新打包资源'],
 	'signbaidu':['check','build','百度签名','更新百度签名'],
-	'install':['check','build','Install','生成安装包'],
-	'send':['radio','after',[('Ignore','生成的安装包不发送往任何地方','0'),('安装包归档','生成的安装包发送至归档目录',1,'default'),('mailme','生成安装包后给我发邮件',2)]],
+	'install':['check','build','生成安装包','生成安装包'],
+
+	#'send':['radio','after',[('Ignore','生成的安装包不发送往任何地方','0'),('安装包归档','生成的安装包发送至归档目录',1,'default'),('mailme','生成安装包后给我发邮件',2)]],
+	'send':['check','after','安装包归档','生成的安装包发送至归档目录'],
+
 	'symadd':['check','after','符号归档','生成符号文件进行归档'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录'],
 	'postbuild':['check','after','清理','打包后的清理工作'],
@@ -91,4 +111,11 @@ bdm_options = {
 build_options = {
 	'X光': bdkv_options,
 	'极光': bdm_options,
+}
+
+svn_codebase = [('Branch','基于特定分支构造',1),('Tag','基于特定Tag构造',2),('Trunk','基于主线构造',3,'default'),('Revision','基于特定Revision构造',4)]
+
+build_depends = {
+	'X光': svn_codebase,
+	'极光': svn_codebase,
 }

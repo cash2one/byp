@@ -65,6 +65,10 @@ $(document).ready(function() {
     //定制默认按钮按下行为
     $('.btn-group > .btn, .btn[data-toggle="button"]').click(onInverseBtnClick);
 
+    //绑定默认build depends行为
+    $("#btn-branch-build-depend").bind('click',onBranchBtnClick);
+    $("#btn-tag-build-depend").bind('click',onTagBtnClick);
+    $("#btn-revision-build-depend").bind('click',onRevisionBtnClick);
     //绑定默认project和worker选择事件
     $('#ws-project-select').bind('change',onProjectSelect);
     $('#ws-worker-select').bind('change',onWorkerSelect);
@@ -87,19 +91,31 @@ $(document).ready(function() {
 });
 
 function onBtnBuildClick() {
-    
+    //
+    $(this).attr("disabled","true");
 }
 
 function onInputClick() {
     $(this).select();
 }
 
+function onBranchBtnClick() {
+    $("#ws-cb-detail").val("Branch Name");
+}
+
+function onTagBtnClick() {
+    $("#ws-cb-detail").val("Tag Name");
+}
+
+function onRevisionBtnClick() {
+    $("#ws-cb-detail").val("HEAD");
+}
+
 function updateUI(msg) {
-    //$("#ws-build-log").append(msg);
-    //$("#ws-build-log").append('<br>');
+    $("#ws-build-log").append(msg);
+    $("#ws-build-log").append('<br>');
 
     var jsonMsg = JSON.parse(msg)
-    //更新项目combobox
     if (jsonMsg['msrc'] == "ws-project-select") {
         //清空project项目
         $("#ws-project-select").empty();
@@ -111,24 +127,22 @@ function updateUI(msg) {
         }
         $("#ws-project-select").change();
     }
-    //更新sln按钮们
     else if (jsonMsg['msrc'] == "ws-sln-select") {
         var sln = jsonMsg['content'].split(",");
         var slnName = sln[0];
         var slnTooltip = String.format("{0},责任人:{1}",sln[1],sln[2]);
         var btnId = "ws-btn-slnselect-" + randomChar(32);
-        var node = String.format("<button type=\"button\" id=\"{0}\" class=\"btn btn-mini\" class-toggle=\"btn-inverse\" data-toggle=\"button\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\">{2}</a></button>&nbsp;",btnId,slnTooltip,slnName);
+        var node = String.format("<button type=\"button\" id=\"{0}\" class=\"btn btn-mini\" class-toggle=\"btn-inverse\" data-toggle=\"button\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\">{2}</a></button>",btnId,slnTooltip,slnName);
         $("#ws-sln-select-" + sln[3]).append(node);
         $("#"+btnId).bind('click',onInverseBtnClick);
         $("#"+btnId).click();
     }
-    //更新build options
     else if (jsonMsg['msrc'] == 'ws-build-options') {
         var ctx = jsonMsg['content'].split("|");
         if (ctx[1] == 'check') {
             var info = ctx[3].split(",");
             var btnId = "ws-btn-option-" + randomChar(32);
-            var node = String.format("<button type=\"button\" id=\"{0}\" class=\"btn btn-mini\" class-toggle=\"btn-inverse\" data-toggle=\"button\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\">{2}</a></button>&nbsp;",btnId,info[1],info[0]);
+            var node = String.format("<button type=\"button\" id=\"{0}\" class=\"btn btn-mini\" class-toggle=\"btn-inverse\" data-toggle=\"button\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\">{2}</a></button>",btnId,info[1],info[0]);
             $("#ws-build-options-" + ctx[2]).append(node);
             $("#"+btnId).bind('click',onInverseBtnClick);
             $("#"+btnId).click();
@@ -155,7 +169,7 @@ function updateUI(msg) {
                 node += option;
                 arr.push(btnId);
             }
-            node += "</div>&nbsp;"
+            node += "</div>"
             $("#ws-build-options-" + ctx[2]).append(node);
             for (var index in arr) {
                 $("#"+arr[index]).bind('click',onInverseBtnClick);
@@ -165,33 +179,18 @@ function updateUI(msg) {
             }
         }
     }
-    //更新代码基radiobutton
-    else if (jsonMsg['msrc'] == 'ws-code-base') {
-        var items = jsonMsg['content'].split(",");
-        var btnId = "ws-btn-codebase-" + randomChar(32);
-        var activeBtnId = ''
-        var node = String.format("<button type=\"button\" id=\"{0}\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
-        if (items.length == 4 && items[3] == 'default') {
-            activeBtnId = btnId;
-        }
-        $("#ws-code-base").append(node);
-        $("#"+btnId).bind('click',onInverseBtnClick);
-        $("#"+activeBtnId).click();
-    }
-    //更新worker combobox
     else if (jsonMsg['msrc'] == 'ws-worker-select') {
         var worker = jsonMsg['content'].split(",");
         if (worker[0] == 'add') {
-            var node = String.format("<option id=\"{0}\" class=\"{1}\" value=\"{2}\">{3}</option>",worker[1],worker[3],worker[4],worker[2]);    
+            var node = String.format("<option id=\"{0}\" class=\"{1}\">{2}</option>",worker[1],worker[3],worker[2]);    
             $("#ws-worker-select").append(node);
+            //处理默认选择
+            $("#ws-worker-select").change();
         }
         else if (worker[0] == 'remove') {
             $("#"+worker[1]).remove();
         }
-        //处理默认选择
-        $("#ws-worker-select").change();
     }
-    //更新worker状态
     else if (jsonMsg['msrc'] == 'ws-worker-running' || jsonMsg['msrc'] == 'ws-worker-idle' || jsonMsg['msrc'] == 'ws-worker-error') {
         var currentVal = parseInt($("#"+jsonMsg['msrc']).html());
         if (jsonMsg['content'] == "+") {
@@ -201,19 +200,13 @@ function updateUI(msg) {
             currentVal -= 1;
         }
         $("#"+jsonMsg['msrc']).html(currentVal.toString());
-        //处理默认选择
-        $("#ws-worker-select").change();
     }
-    //通知client重新注册ui
-    else if (jsonMsg['msrc'] == 'ws-client-update') {
-        //重新初始化UI
-        initUI();
+    else if (jsonMsg['msrc'] == 'ws-code-base') {
+        
     }
-    //更新build log
-    else if (jsonMsg['msrc'] == 'ws-build-log') {
-        $("#ws-build-log").append(msg);
-        $("#ws-build-log").append('<br>');
-    }
+
+    //重新初始化UI
+    initUI();
 }
 
 //生成随机字符串
@@ -251,68 +244,55 @@ function onInverseBtnClick() {
 
 //点击更换项目
 function onProjectSelect() {
-    //清空sln项目和build-options
+    //清除ws-sln-select 和ws-build-options 下所有bind
+    //
+    //清空sln项目
     $("#ws-sln-select-base").empty();
-    $("#ws-sln-select-base").append("<span class=\"label label-success\">公共类库</span>&nbsp;");
+    $("#ws-sln-select-base").append("<span class=\"label label-success\">公共类库</span>");
     $("#ws-sln-select-middle").empty();
-    $("#ws-sln-select-middle").append("<span class=\"label label-success\">中间层组件</span>&nbsp;");
+    $("#ws-sln-select-middle").append("<span class=\"label label-success\">中间层组件</span>");
     $("#ws-sln-select-module").empty();
-    $("#ws-sln-select-module").append("<span class=\"label label-success\">功能模块</span>&nbsp;");
+    $("#ws-sln-select-module").append("<span class=\"label label-success\">功能模块</span>");
     $("#ws-build-options-before").empty();
-    $("#ws-build-options-before").append("<span class=\"label label-success\">打包前选项</span>&nbsp;");
+    $("#ws-build-options-before").append("<span class=\"label label-success\">打包前选项</span>");
     $("#ws-build-options-build").empty();
-    $("#ws-build-options-build").append("<span class=\"label label-success\">构造选项</span>&nbsp;");
+    $("#ws-build-options-build").append("<span class=\"label label-success\">构造选项</span>");
     $("#ws-build-options-after").empty();
-    $("#ws-build-options-after").append("<span class=\"label label-success\">打包后选项</span>&nbsp;");
-    //清空build-depends
-    $("#ws-code-base").empty();
+    $("#ws-build-options-after").append("<span class=\"label label-success\">打包后选项</span>");
 
     var currentSel = $("#ws-project-select option:selected").text();
     var msg = formatMessage("ws-sln-select",currentSel);
     worker.postMessage(msg);
     msg = formatMessage("ws-build-options",currentSel);
     worker.postMessage(msg);
-    msg = formatMessage("ws-code-base",currentSel);
-    worker.postMessage(msg);
 }
 
 
 //切换worker响应
 function onWorkerSelect() {
-    //清空日志输出区域
-    $("#ws-build-log").empty()
-
     var cls = $("#ws-worker-select option:selected").attr('class');
-    var ip = $("#ws-worker-select option:selected").attr('value');
     $("#ws-worker-status").removeClass();
     $("#ws-worker-detail").removeClass();
 
-    if (cls == undefined || ip == undefined) {
-        $("#ws-worker-status").text("None");
-        $("#ws-worker-status").addClass("label label-warning");
-        $("#ws-worker-detail").addClass("label label-warning");
-        $("#ws-worker-detail").text("目前没有在线的编译机");
+    $("#ws-worker-status").text(cls);
+    
+    if (cls == "running") {
+        $("#ws-worker-status").addClass("label label-success");
+        $("#ws-worker-detail").addClass("label label-success");
+        $("#ws-worker-detail").text("系统当前正在打包，请稍等...");
     }
-    else {
-        $("#ws-worker-status").text(ip);
-        if (cls == "running") {
-            $("#ws-worker-status").addClass("label label-success");
-            $("#ws-worker-detail").addClass("label label-success");
-            $("#ws-worker-detail").text("系统当前正在打包，请稍等...");
-        }
-        else if (cls == "idle") {
-            $("#ws-worker-status").addClass("label");
-            $("#ws-worker-detail").addClass("label label");
-            $("#ws-worker-detail").text("该编译机当前空闲");
-        }
-        else if (cls == "error") {
-            $("#ws-worker-status").addClass("label label-important");
-            $("#ws-worker-detail").addClass("label label-important");
-            $("#ws-worker-detail").text("该编译机出现错误");
-        }
-        var msg = formatMessage("ws-worker-select",$("#ws-worker-select option:selected").attr('id'))
-        worker.postMessage(msg);
+    else if (cls == "idle") {
+        $("#ws-worker-status").addClass("label");
+        $("#ws-worker-detail").addClass("label label");
+        $("#ws-worker-detail").text("该编译机当前空闲");
     }
+    else if (cls == "error") {
+        $("#ws-worker-status").addClass("label label-important");
+        $("#ws-worker-detail").addClass("label label-important");
+        $("#ws-worker-detail").text("该编译机出现错误");
+    }
+    var msg = formatMessage("ws-worker-select",$("#ws-worker-select option:selected").attr('id'))
+    worker.postMessage(msg);
 }
 
 

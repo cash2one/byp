@@ -1,0 +1,82 @@
+/*
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: white;
+  margin: 5px;
+  padding:5px 5px;
+  width: 600px;
+  height: 550px;
+}
+
+#main {
+  bottom: 5px;
+  left: 5px;
+}
+
+form, tr, td {
+  border: 2px solid red;
+  padding: 5px solid yellow;
+  
+  text-align: center;
+  vertical-align: middle;
+}
+
+a {
+  font-weight: bold;
+}
+
+#table-build-log, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
+  width: 600px;
+}
+
+#td-build-reason, #td-user-email, #td-cb-detail {
+  text-align: left;
+  vertical-align: middle;
+}
+
+#ws-build-log {
+  overflow: auto;
+  height: 160px;
+  text-align: left;
+}
+
+#ws-sln-select-base, #ws-sln-select-middle, #ws-sln-select-module, #ws-build-options-before, #ws-build-options-build, #ws-build-options-after {
+  text-align: left;
+}
+
+#ws-btn-build {
+  text-align: right;
+  vertical-align: middle;
+}
+
+#ws-worker-running{
+  font-weight: bold;
+  color: green;
+}
+
+#ws-worker-idle{
+  font-weight: bold;
+  color: gray;
+}
+
+#ws-worker-error{
+  font-weight: bold;
+  color: red;
+}
