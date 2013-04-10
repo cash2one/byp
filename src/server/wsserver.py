@@ -86,6 +86,8 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         if msg['msrc'] == 'ws-client-connect':
             self.type = 'client'
             BuildServerHandler.clients.append(self)
+            if len(BuildServerHandler.workers) > 0:
+                BuildServerHandler.workers[0].listeners.append(self)
             
         #worker连接时发送；增加idle worker
         elif msg['msrc'] == 'wk-worker-connect':
@@ -175,6 +177,8 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                         if workerId == worker.id:
                             if self not in worker.listeners:
                                 worker.listeners.append(self)
+                                content = '{"msrc":"ws-worker-%s","content":"+"}' % worker.status
+                                self.notify(content)
                         else:
                             if self in worker.listeners:
                                 worker.listeners.remove(self)
@@ -182,11 +186,31 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 content = '{"msrc":"ws-worker-select","content":""}'
                 self.notify(content)
             
+        #收到worker状态切换，通知所有clients
+        elif msg['msrc'] == 'wk-status-change':
+            oldStatus = self.status
+            self.status = msg['content']
+            content0 = '{"msrc":"ws-worker-select","content":"update,%s,%s"}' % (self.id,self.status)
+            content1 = '{"msrc":"ws-worker-%s","content":"-"}' % (oldStatus)
+            content2 = '{"msrc":"ws-worker-%s","content":"+"}' % (msg['content'])
+            for client in self.listeners:
+                client.notify(content0)
+                client.notify(content1)
+                client.notify(content2)
+        
         #收到worker日志，发送到这个worker的所有listener
         elif msg['msrc'] == 'wk-build-log':
             content = '{"msrc":"ws-build-log","content":"%s"}' % msg['content']
             for client in self.listeners:
                 client.notify(content)
+                
+        #收到打包消息，开始干活
+        elif msg['msrc'] == 'ws-btn-build':
+            content = '{"msrc":"wk-start-build","content":"%s"}' % msg['content']
+            for worker in BuildServerHandler.workers:
+                if worker.status == 'idle':
+                    worker.notify(content)
+                    break
                 
         #收到不知道是什么
         else:

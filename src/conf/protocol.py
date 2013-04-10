@@ -39,7 +39,8 @@
 #				 = "wk-heart-beat"							判断worker是否在线
 #				 = "wk-start-build"							通知worker开始干活
 #				 = "wk-worker-connect"						worker连线
-#				 = "wk-build-log"							客户端工作日志
+#				 = "wk-build-log"							worker工作日志
+#				 = "wk-status-change"						worker状态切换
 #
 #			 sid [sender id 消息发送者id uuid格式]
 ######################################################################################

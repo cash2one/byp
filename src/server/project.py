@@ -59,7 +59,7 @@ projects = {
 
 #选项名称，check还是radio，阶段，显示名称，tooltip名称，对应的值
 bdkv_options = {
-	'prebuild':['check','before','清理','打包前的清理工作'],
+	#'prebuild':['check','before','清理','打包前的清理工作'],
 
 	#'svn ':['radio','before',[('Ignore','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','1','default'),('checkout','所有相关工程从代码服务器重新签出','2')]],
 	'svn ':['check','before','更新SVN','所有相关工程从代码服务器更新'],
@@ -81,7 +81,7 @@ bdkv_options = {
 
 	'symadd':['check','after','符号归档','生成符号文件进行归档'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录'],
-	'postbuild':['check','after','清理','打包后的清理工作'],
+	#'postbuild':['check','after','清理','打包后的清理工作'],
 }
 
 bdm_options = {

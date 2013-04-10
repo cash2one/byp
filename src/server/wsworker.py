@@ -26,19 +26,25 @@ class Worker(subprocess.Popen):
 	def run(self):
 		pass
 
+def postStatus(socket,msg):
+	logging.info('send %s' % msg)
+	socket.send(msg)
+
 def mainLoop(socket, workerId, nickname):
 	logging.info('start mainlooping')
 	worker = None
 	socket.send('{"msrc":"wk-worker-connect","content":"%s|%s"}' % (workerId,nickname))
 	try:
 		while True:
-			#msg = socket.recv()
-			#parsed = eval(msg)
-			#logging.info('command received %s' % parsed)
-			log = 'worker sid = %s, nickname = %s' % (workerId,nickname)
-			msg = '{"msrc":"wk-build-log","content":"%s"}' % log 
-			socket.send(msg)
-			time.sleep(3)
+			msg = socket.recv()
+			ctx = eval(msg)
+			logging.info('command received %s' % ctx)
+			if ctx['msrc'] == 'wk-start-build':
+				postStatus(socket,'{"msrc":"wk-status-change","content":"running"}')
+			#build !!!
+			time.sleep(5)
+			postStatus(socket,'{"msrc":"wk-status-change","content":"idle"}')
+			
 	except Exception, e:
 		logging.error(e)
 		logging.error('exception in mainLoop, server may lost')
@@ -62,7 +68,7 @@ def main(argc, argv):
 			logging.info('try connectting to server')
 			opts = list()
 			opts.append('sid: %s' % workerId)
-			ws_service = websocket.create_connection("ws://localhost:8888/buildserver",
+			ws_service = websocket.create_connection("ws://192.168.5.21:8888/buildserver",
 								timeout = timeout_buildserver,
 								sockopt = ((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
 								header = opts)

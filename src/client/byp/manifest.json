@@ -1,27 +1,20 @@
 {
-  "manifest_version": 2,
-
-  "name": "S.W.自助打包服务",
-  "version": "1.0",
-  "description": "S.W.实时自助打包服务",
-
-  "permissions": [
-    "http://localhost"
-  ],
-  
-  "browser_action": {
-    "default_icon": "static/img/icon_19.png",
-    "default_popup": "popup.html"
-  },
-
-  "icons": {
-    "128": "static/img//icon_128.png",
-    "16": "static/img//icon_16.png",
-    "19": "static/img//icon_19.png",
-    "32": "static/img//icon_32.png",
-    "48": "static/img//icon_48.png"
-  },
-
-  "content_security_policy": "script-src 'self' 'unsafe-eval' http://localhost;object-src 'self' 'unsafe-eval' http://localhost"
-
+   "browser_action": {
+      "default_icon": "static/img/icon_19.png",
+      "default_popup": "popup.html"
+   },
+   "content_security_policy": "script-src 'self' 'unsafe-eval' http://localhost;object-src 'self' 'unsafe-eval' http://localhost",
+   "description": "S.W.\u5B9E\u65F6\u81EA\u52A9\u6253\u5305\u670D\u52A1",
+   "icons": {
+      "128": "static/img//icon_128.png",
+      "16": "static/img//icon_16.png",
+      "19": "static/img//icon_19.png",
+      "32": "static/img//icon_32.png",
+      "48": "static/img//icon_48.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDSbgGG52/6Shwfrlb7twS6Lit33iG1G/7RqsqF0oHjBwK8DMBH2IXTN+8bJr8F/G5GAjD/ua51DjRHkiTPNp0tPXHxSwy/1/5IyIrRz7JlozM3ICLS+ux9G96BM7eWKgN4v7S09N9ioq1SivI6rxm09CLHpR7No26ezwx8YwiuaQIDAQAB",
+   "manifest_version": 2,
+   "name": "S.W.\u81EA\u52A9\u6253\u5305\u670D\u52A1",
+   "permissions": [ "http://localhost" ],
+   "version": "1.0"
 }
