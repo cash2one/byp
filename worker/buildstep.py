@@ -94,9 +94,9 @@ def getSvnCommands(product, value):
                 if node.getAttribute('product') != '' and node.getAttribute('product') != product:
                     continue
                 if svnAction == 'checkout':
-                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD http://192.168.10.242:8000/client/"  + svnDir + " ..\\..\\" + dir
+                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD http://192.168.10.242:8000/client/"  + svnDir + conf.sln_root + dir
                 elif svnAction == 'update':
-                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD ..\\..\\" + dir
+                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + dir
                 commands.append(command)
                 break
         except Exception,e:
@@ -152,7 +152,7 @@ def getBuildCommands(product,value):
                     logName = 'Release'
                 else:
                     continue
-                command = "vcbuild " + vcbuildAction + " /time /M16 /errfile:AutoBuild\\" + errDir + item + logName + ".log ..\\..\\" \
+                command = "vcbuild " + vcbuildAction + " /time /M16 /errfile:..\\output\\" + errDir + item + logName + ".log " + conf.sln_root \
                  + dir + "\\Projects\\" + item + ".sln \"" + type + "\""
                 commands.append(command)
             writer = open(confFile,'w')
@@ -163,66 +163,75 @@ def getBuildCommands(product,value):
             print e
     return commands
     
+def makeBinplace(product,files):
+    if product == 'bdm':
+        return conf.bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\ -:DEST BDM ' + conf.sln_root + files
+    elif product == 'bdkv':
+        return conf.bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ' + conf.sln_root + files
+
 def genSymbols(product):
     commands = []
     if product == 'bdm':
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\*.exe')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\FTSOManager\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\FTSWManager\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\bdkv\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\bdmsomanagerplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\bdmswmanagerplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\bdmtrayplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\Output\\Symbols\\Release\\Full -r ..\\Output\\Symbols\\Release\\ -:DEST BDM ..\\Output\\BinRelease\\plugins\\wsplugins\\*.dll')
-        commands.append('symstore add /r /f ..\\Output\\Symbols\\Release\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDM"')
-        commands.append('symstore add /r /f ..\\Output\\Symbols\\Release\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDM"')
-        commands.append('symstore add /r /f ..\\..\\stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
-        commands.append('symstore add /r /f ..\\..\\stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\*.exe'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\FTSOManager\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\FTSWManager\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\bdkv\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmsomanagerplugins\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmswmanagerplugins\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmtrayplugins\\*.dll'))
+        commands.append(makeBinpalce('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\wsplugins\\*.dll'))
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDM"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDM"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
     elif product == 'bdkv':
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\*.exe')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\bdmantivirus\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\bdmsysrepair\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\drivers\\*.sys')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\plugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\plugins\\bdkv\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll')
-        commands.append('.\\AutoBuild\\binplace.exe -e -a -x -s .\\Stripped -n ..\\KVOutput\\Symbols\\Release\\Full -r ..\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ..\\KVOutput\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll')
-        commands.append('symstore add /r /f ..\\KVOutput\\Symbols\\Release\\Full\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDKV"')
-        commands.append('symstore add /r /f ..\\KVOutput\\Symbols\\Release\\Stripped\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDKV"')
-        commands.append('symstore add /r /f ..\\..\\stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
-        commands.append('symstore add /r /f ..\\..\\stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.exe'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.dll'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmantivirus\\*.dll'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmsysrepair\\*.dll'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\*.sys'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\*.dll'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkv\\*.dll'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdkvtrayplugins\\*.dll'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.exe'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.exe'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.exe'))
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Full\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDKV"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Stripped\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDKV"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
     return commands
 
 def genPrebuildActions(product,value):
     commands = []
     if value == 1 or value == 2:
-        commands.append('del /Q ..\\include\\CommonInclude\\BDMVersion.h')
-        commands.append('del /Q ..\\include\\CommonInclude\\BuildVer.h')
+        commands.append('del /Q ' + conf.sln_root + 'basic\\include\\CommonInclude\\BDMVersion.h')
+        commands.append('del /Q ' + conf.sln_root + 'basic\\include\\CommonInclude\\BuildVer.h')
         if product == 'bdm':
-            commands.append('del /Q AutoBuild\\buildid.txt')
-            commands.append('del /Q AutoBuild\\versionbuildid.txt')
-            commands.append('del /Q SetupScript\\BDM_setup.nsi')
-            commands.append('del /Q /S .\\setup')
-            commands.append('del /Q /S .\\AutoBuild\\err')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\buildid.txt')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\versionbuildid.txt')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi')
+            commands.append('del /Q /S ..\\output\\setup')
+            commands.append('del /Q /S ..\\output\\err')
         elif product == 'bdkv':
-            commands.append('del /Q AutoBuild\\kvbuildid.txt')
-            commands.append('del /Q AutoBuild\\kvversionbuildid.txt')
-            commands.append('del /Q KVSetupScript\\BDKV_setup.nsi')
-            commands.append('del /Q /S .\\kvsetup')
-            commands.append('del /Q /S .\\AutoBuild\\kverr')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvbuildid.txt')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvversionbuildid.txt')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi')
+            commands.append('del /Q /S ..\\output\\kvsetup')
+            commands.append('del /Q /S ..\\output\\kverr')
     if value == 2:
-        commands.append('del /Q /S ..\\lib')
+        commands.append('del /Q /S ' + conf.sln_root + 'basic\\lib')
         if product == 'bdm':
-            commands.append('del /Q /S ..\\Output')
+            commands.append('del /Q /S ' + conf.sln_root + 'basic\\Output')
         elif product == 'bdkv':
-            commands.append('del /Q /S ..\\KVOutput')
-    commands.append('svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD ..\\..\\basic')
+            commands.append('del /Q /S ' + conf.sln_root + 'basic\\KVOutput')
+    commands.append('svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD ' + conf.sln_root + 'basic')
     return commands
 
 ##############################################
@@ -330,11 +339,11 @@ class RewriteVersion(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = 'python AutoBuild\\rewrite_version.py bdm daily'
+            command = 'python rewrite_version.py bdm daily'
             print command
             rewrite_version.main(3,['rewrite_version.py','bdm','daily'])
         elif self.value == 2:
-            command = 'python AutoBuild\\rewrite_version.py bdm version'
+            command = 'python rewrite_version.py bdm version'
             print command
             rewrite_version.main(3,['rewrite_version.py','bdm','version'])
 
@@ -350,11 +359,11 @@ class KVRewriteVersion(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = 'python AutoBuild\\rewrite_version.py bdkv daily'
+            command = 'python rewrite_version.py bdkv daily'
             print command
             rewrite_version.main(3,['rewrite_version.py','bdkv','daily'])
         elif self.value == 2:
-            command = 'python AutoBuild\\rewrite_version.py bdkv version'
+            command = 'python rewrite_version.py bdkv version'
             print command
             rewrite_version.main(3,['rewrite_version.py','bdkv','version'])
     
@@ -379,7 +388,7 @@ class Build(BuildStep):
                 for item in commands:
                     print item
                     os.system(item)
-        for file in os.listdir('./AutoBuild/err'):
+        for file in os.listdir(conf.log_path):
             if comm.getMsg('./AutoBuild/err/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
                 raise 'Build error(s) found, xbuild quit, please check AutoBuild/err for build log(s).'
@@ -403,7 +412,7 @@ class KVBuild(BuildStep):
                 for item in commands:
                     print item
                     os.system(item)
-        for file in os.listdir('./AutoBuild/kverr'):
+        for file in os.listdir(conf.kvlog_path):
             if comm.getMsg('./AutoBuild/kverr/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
                 raise 'Build error(s) found, xbuild quit, please check AutoBuild/kverr for build log(s).'
@@ -422,7 +431,7 @@ class Pack(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = 'cscript AutoBuild\\pack.vbs bdm'
+            command = 'cscript pack.vbs bdm'
             print command
             os.system(command)
     
@@ -437,7 +446,7 @@ class KVPack(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = 'cscript AutoBuild\\pack.vbs bdkv'
+            command = 'cscript pack.vbs bdkv'
             print command
             os.system(command)
     
@@ -455,9 +464,9 @@ class Sign(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = 'python AutoBuild\\sign.py bdm ..\\Output\\BinRelease\\'
+            command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             print command
-            sign.main(3,['sign.py','bdm','..\\Output\\BinRelease\\'])
+            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])
     
 class KVSign(BuildStep):
     def __init__(self, n, v, o):
@@ -471,14 +480,14 @@ class KVSign(BuildStep):
             print 'Passed'
         elif self.value == 1:
             commands = []
-            commands.append('python AutoBuild\\fileop.py kvsign ..\\KVOutput\\BinRelease\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py kvsign_kav ..\\KVOutput\\BinRelease\\ *.exe')
-            commands.append('python AutoBuild\\sign.py bdkv ..\\KVOutput\\BinRelease\\')
+            commands.append('python fileop.py kvsign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
+            commands.append('python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
+            commands.append('python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\')
             for item in commands:
                 print item
-            fileop.main(4,['fileop.py','kvsign','..\\KVOutput\\BinRelease\\','*.exe'])
-            fileop.main(4,['fileop.py','kvsign_kav','..\\KVOutput\\BinRelease\\','*.exe'])
-            sign.main(3,['sign.py','bdkv','..\\KVOutput\\BinRelease\\'])
+            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
     
 ##############################################
 # 0,1
@@ -494,16 +503,16 @@ class Verify(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            os.system('del /Q AutoBuild\\BinVerify.txt')
+            os.system('del /Q ' + conf.verify_log_file)
             commands = []
-            commands.append('python AutoBuild\\fileop.py verify_file_exist ..\\Output\\BinRelease\\ *.*')
-            #commands.append('python AutoBuild\\fileop.py verify_file_version ..\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
-            commands.append('python AutoBuild\\fileop.py verify_baidu_sign ..\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
+            commands.append('python fileop.py verify_file_exist ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.*')
+            #commands.append('python fileop.py verify_file_version ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
+            commands.append('python fileop.py verify_baidu_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             for item in commands:
                 print item
-            fileop.main(4,['fileop.py','verify_file_exist','..\\Output\\BinRelease\\','*.*'])
-            #fileop.main(4,['fileop.py','verify_file_version','..\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
-            fileop.main(4,['fileop.py','verify_baidu_sign','..\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
+            fileop.main(4,['fileop.py','verify_file_exist',conf.sln_root + 'basic\\Output\\BinRelease\\','*.*'])
+            #fileop.main(4,['fileop.py','verify_file_version',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
+            fileop.main(4,['fileop.py','verify_baidu_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
     
 class KVVerify(BuildStep):
     def __init__(self, n, v, o):
@@ -516,20 +525,20 @@ class KVVerify(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            os.system('del /Q AutoBuild\\KVBinVerify.txt')
+            os.system('del /Q ' + conf.kvverify_log_file)
             commands = []
-            commands.append('python AutoBuild\\fileop.py kvverify_file_exist ..\\KVOutput\\BinRelease\\ *.*')
-            #commands.append('python AutoBuild\\fileop.py kvverify_file_version ..\\KVOutput\\BinRelease\\ *.exe,*.dll,*.sys')
-            commands.append('python AutoBuild\\fileop.py kvverify_driver_sign ..\\KVOutput\\BinRelease\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py kvverify_kav_sign ..\\KVOutput\\BinRelease\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py kvverify_baidu_sign ..\\KVOutput\\BinRelease\\ .exe,*.dll,*.sys')
+            commands.append('python fileop.py kvverify_file_exist ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.*')
+            #commands.append('python fileop.py kvverify_file_version ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe,*.dll,*.sys')
+            commands.append('python fileop.py kvverify_driver_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
+            commands.append('python fileop.py kvverify_kav_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
+            commands.append('python fileop.py kvverify_baidu_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ .exe,*.dll,*.sys')
             for item in commands:
                 print item
-            fileop.main(4,['fileop.py','kvverify_file_exist','..\\KVOutput\\BinRelease\\','*.*'])
-            #fileop.main(4,['fileop.py','kvverify_file_version','..\\KVOutput\\BinRelease\\','.exe,*.dll,*.sys'])
-            fileop.main(4,['fileop.py','kvverify_driver_sign','..\\KVOutput\\BinRelease\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_kav_sign','..\\KVOutput\\BinRelease\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_baidu_sign','..\\KVOutput\\BinRelease\\','*.exe,*.dll,*.sys'])
+            fileop.main(4,['fileop.py','kvverify_file_exist',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.*'])
+            #fileop.main(4,['fileop.py','kvverify_file_version',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','.exe,*.dll,*.sys'])
+            fileop.main(4,['fileop.py','kvverify_driver_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_kav_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_baidu_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe,*.dll,*.sys'])
 
 ##############################################
 # 0,1
@@ -545,7 +554,7 @@ class Install(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = '..\\..\\basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ..\\..\\basic\\tools\\SetupScript\\BDM_setup.nsi'
+            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
             print command
             os.system(command)
     
@@ -560,7 +569,7 @@ class KVInstall(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = '..\\..\\basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ..\\..\\basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             print command
             os.system(command)
     
@@ -578,9 +587,9 @@ class SignInstaller(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = 'python AutoBuild\\sign.py bdm .\\setup\\'
+            command = 'python sign.py bdm .\\setup\\'
             print command
-            sign.main(3,['sign.py','bdm','.\\setup\\'])
+            sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
     
 class KVSignInstaller(BuildStep):
     def __init__(self, n, v, o):
@@ -594,14 +603,14 @@ class KVSignInstaller(BuildStep):
             print 'Passed'
         elif self.value == 1:
             commands = []
-            commands.append('python AutoBuild\\fileop.py sign .\\kvsetup\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py sign_kav .\\kvsetup\\ *.exe')
-            commands.append('python AutoBuild\\sign.py bdkv .\\kvsetup\\')
+            commands.append('python fileop.py sign ..\\output\\kvsetup\\ *.exe')
+            commands.append('python fileop.py sign_kav ..\\output\\kvsetup\\ *.exe')
+            commands.append('python sign.py bdkv ..\\output\\kvsetup\\')
             for item in commands:
                 print item
-            fileop.main(4,['fileop.py','sign','.\\kvsetup\\','*.exe'])
-            fileop.main(4,['fileop.py','sign_kav','.\\kvsetup\\','*.exe'])
-            sign.main(3,['sign.py','bdkv','.\\kvsetup\\'])
+            fileop.main(4,['fileop.py','sign','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4,['fileop.py','sign_kav','..\\output\\kvsetup\\','*.exe'])
+            sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
     
 ##############################################
 # 0,1
@@ -618,12 +627,12 @@ class VerifyInstaller(BuildStep):
             print 'Passed'
         elif self.value == 1:
             commands = []
-            #commands.append('python AutoBuild\\fileop.py verify_file_version .\\setup\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py verify_baidu_sign .\\setup\\ *.exe')
+            #commands.append('python fileop.py verify_file_version ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py verify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
                 print item
-            #fileop.main(4,['fileop.py','verify_file_version','.\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','verify_baidu_sign','.\\setup\\','*.exe'])
+            #fileop.main(4,['fileop.py','verify_file_version','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','verify_baidu_sign','..\\output\\setup\\','*.exe'])
     
 class KVVerifyInstaller(BuildStep):
     def __init__(self, n, v, o):
@@ -637,16 +646,16 @@ class KVVerifyInstaller(BuildStep):
             print 'Passed'
         elif self.value == 1:
             commands = []
-            #commands.append('python AutoBuild\\fileop.py kvverify_file_version .\\setup\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py kvverify_driver_sign .\\setup\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py kvverify_kav_sign .\\setup\\ *.exe')
-            commands.append('python AutoBuild\\fileop.py kvverify_baidu_sign .\\setup\\ *.exe')
+            #commands.append('python fileop.py kvverify_file_version ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py kvverify_driver_sign ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py kvverify_kav_sign ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py kvverify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
                 print item
-            #fileop.main(4,['fileop.py','kvverify_file_version','.\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_driver_sign','.\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_kav_sign','.\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_baidu_sign','.\\setup\\','*.exe'])
+            #fileop.main(4,['fileop.py','kvverify_file_version','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_driver_sign','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_kav_sign','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_baidu_sign','..\\output\\setup\\','*.exe'])
 
 ##############################################
 # 0,1
@@ -664,7 +673,7 @@ class Send(BuildStep):
         elif self.value == 1:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
-            commands.append('python AutoBuild\\send.py bdm daily')
+            commands.append('python send.py bdm daily')
             for item in commands:
                 print item
             send.main(3,['send.py','bdm','daily'])
@@ -672,7 +681,7 @@ class Send(BuildStep):
         elif self.value == 2:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
-            commands.append('python AutoBuild\\send.py bdm version')
+            commands.append('python send.py bdm version')
             for item in commands:
                 print item
             send.main(3,['send.py','bdm','version'])
@@ -690,17 +699,17 @@ class KVSend(BuildStep):
         elif self.value == 1:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
-            commands.append('python AutoBuild\\send.py bdkv daily')
+            commands.append('python send.py bdkv daily')
             for item in commands:
                 print item
-            send.main(3,['send.py','bdkv','daily'])
+            #send.main(3,['send.py','bdkv','daily'])
         elif self.value == 2:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
-            commands.append('python AutoBuild\\send.py bdkv version')
+            commands.append('python send.py bdkv version')
             for item in commands:
                 print item
-            send.main(3,['send.py','bdkv','version'])
+            #send.main(3,['send.py','bdkv','version'])
     
 ##############################################
 # 0,1
@@ -752,7 +761,7 @@ class Commit(BuildStep):
             print 'Passed'
         elif self.value == 1:
             msg = 'xbuild commit %s' % datetime.datetime.now()
-            command = 'svn commit ..\\..\\Basic -m "%s" --no-unlock' % msg
+            command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
             print command
             os.system(command)
     
@@ -768,7 +777,7 @@ class KVCommit(BuildStep):
             print 'Passed'
         elif self.value == 1:
             msg = 'xbuild commit %s' % datetime.datetime.now()
-            command = 'svn commit ..\\..\\Basic -m "%s" --no-unlock' % msg
+            command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
             print command
             os.system(command)
     

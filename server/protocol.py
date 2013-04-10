@@ -6,34 +6,34 @@
 	协议约定
     
 @brief
-    protocol configuration
+
 """
 
-#发送json格式化字符串，类似 unicode: {"id":"ws-project-select","type":"1",content":"hello","_xsrf":"1dd6c86a4f9a461aaafd01c014ae387f"}
+#发送json格式化字符串，unicode编码，如u'{"msrc":"ws-client-connect",content":"hello"}'
 #各字段含义为：
 #
 #
 #			msrc [message source 消息源]
 ######################################################################################
 #				 server和client通信用
-#				 = "ws-client-connect"
+#				 = "ws-client-connect"						client连线
 #				 = "ws-project-select"						发送支持打包的产品名
 #				 = "ws-sln-select"							发送该产品对应的工程列表
 #				 = "ws-build-options"						发送支持的打包配置
-#				 = "ws-code-base"							
-#				 = "ws-cb-detail"							
-#				 = "ws-build-reason"						
-#				 = "ws-user-email"							
-#				 = "ws-btn-build"
-#				 = "ws-build-progress"
-#				 = "ws-build-progress-text"
-#				 = "ws-build-log"
-#				 = "ws-worker-select"
-#				 = "ws-worker-status"
-#				 = "ws-wroker-detail"
-#				 = "ws-worker-running"
-#				 = "ws-worker-idle"
-#				 = "ws-worker-error"
+#				 = "ws-code-base"							支持的编译依赖
+#				 = "ws-cb-detail"							编译依赖细节
+#				 = "ws-build-reason"						打包原因
+#				 = "ws-user-email"							用户email
+#				 = "ws-btn-build"							通知打包
+#				 = "ws-build-progress"						打包进度更新
+#				 = "ws-build-progress-text"					打包进度细节
+#				 = "ws-build-log"							主打包log窗口
+#				 = "ws-worker-select"						切换worker响应
+#				 = "ws-worker-status"						更新worker状态
+#				 = "ws-wroker-detail"						更新worker状态细节
+#				 = "ws-worker-running"						正在运行的worker更新
+#				 = "ws-worker-idle"							当前idle的worker更新
+#				 = "ws-worker-error"						打包出错的worker更新
 ######################################################################################
 #				 server和worker通信用
 #				 = "wk-heart-beat"							判断worker是否在线
@@ -42,15 +42,8 @@
 #				 = "wk-build-log"							worker工作日志
 #				 = "wk-status-change"						worker状态切换
 #
-#			 sid [sender id 消息发送者id uuid格式]
-######################################################################################
-#				 = "92ecde39-62d3-44b9-8d48-b23f5053cbf6"
-#
 #		 content
 ######################################################################################
 #		 		 = "..."									根据具体type类型来解析
-#
-#
-#
 #
 #

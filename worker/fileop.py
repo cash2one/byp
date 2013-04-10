@@ -80,13 +80,13 @@ def Show(file):
 
 def Sign(file):
     print 'Signning File: ' + file
-    command = os.getcwd() + '\\AutoBuild\\FileSign.exe /s ' + file
+    command = conf.bin_path + 'FileSign.exe /s ' + file
     os.system(command)
     
 
 def SignKav(file):
     print 'Signning File With Kav: ' + file
-    command = os.getcwd() + '\\AutoBuild\\KavSign.exe /s"' + file + '" /u"keys\\PrivateKey.sgn"'
+    command = conf.bin_path + 'KavSign.exe /s"' + file + '" /u"keys\\PrivateKey.sgn"'
     os.system(command)
 
 def GenRC(file,writer):
@@ -183,7 +183,7 @@ def SignBaidu(file,para):
         print response
         urllib.urlretrieve('http://' + conf.cerf_addr + '/OutPut/' + file_name, file + '.sign')
         
-        command = os.getcwd() + '\\AutoBuild\\SignVerify.exe ' + file + '.sign ' + digitalSign
+        command = conf.bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
         ret = os.system(command)
         if ret == 0:
             shutil.move(file+'.sign', file)
@@ -384,10 +384,10 @@ def GetProductVersion(product):
     productversion = ''
     if product == 'bdm':
         productname = conf.ver_product_manager
-        buildlinefile = './SetupScript/include/buildline.nsi'
+        buildlinefile = conf.bdm_nsifile_buildline
     elif product == 'bdkv':
         productname = conf.ver_product_antivirus
-        buildlinefile = './KVSetupScript/include/buildline.nsi'
+        buildlinefile = conf.bdkv_nsifile_buildline
     ctx = comm.getMsg(buildlinefile)
     index = ctx.find('"')+1
     bn3 = ctx[index:index+1]
@@ -423,7 +423,7 @@ def VerifyFileVersion(path,ftype,product,logfile = ''):
 
 def DriverSignVerify(file,writer):
     log = ''
-    command = os.getcwd() + '\\AutoBuild\\FileSign.exe /v ' + file
+    command = conf.bin_path + 'FileSign.exe /v ' + file
     ret = os.system(command)
     if ret == 0:
         log = 'Verifing driver sign: %s --- SIGNED\n' % file
@@ -453,7 +453,7 @@ def VerifyDriverSign(path,ftype,product,logfile = ''):
 
 def KavSignVerify(file,writer):
     log = ''
-    command = os.getcwd() + '\\AutoBuild\\ChkKavSign.exe ' + file
+    command = conf.bin_path + 'ChkKavSign.exe ' + file
     ret = os.system(command)
     if ret == 0:
         log = 'Verifing kav sign: %s --- SIGNED\n' % file
@@ -484,7 +484,7 @@ def VerifyKavSign(path,ftype,product,logfile = ''):
 def BaiduVerify(file,para):
     digitalSign = para[0]
     writer = para[1]
-    command = os.getcwd() + '\\AutoBuild\\SignVerify.exe ' + file + ' ' + digitalSign
+    command = conf.bin_path + 'SignVerify.exe ' + file + ' ' + digitalSign
     ret = os.system(command)
     if ret == 0:
         log = 'Verifing baidu sign: %s --- SIGNED\n' % file

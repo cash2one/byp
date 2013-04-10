@@ -6,8 +6,25 @@
 """
 
 import sys,os,conf,xml.dom.minidom,buildstep,new
+import threading
 
-
+#worker thread
+class Worker(threading.Thread):
+    def __init__(self, ws, sid):
+        self.socket = ws
+        self.id = sid
+        threading.Thread.__init__(self)
+    
+    def setInitParam(ctx):
+        self.settings = ctx
+        self.applyBuildSettings()
+        
+    def run(self):
+        pass
+        
+    def applyBuildSettings(self):
+        pass
+        
 def InitBuildInfo(nickname):
     buildConfFile = './BuildSwitch/BuildStep.xml'
     buildInfo = ('nickname','product','buildtype')
@@ -79,3 +96,5 @@ def main(argc, argv):
 
 if "__main__" == __name__:
     sys.exit(main(len(sys.argv),sys.argv))
+
+

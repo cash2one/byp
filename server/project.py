@@ -3,14 +3,12 @@
 @author tomas
 @date    2013-03-31
 @desc
-	工程配置信息
+	project configuration that support
     
 @brief
-    project configuration
+    
 """
 
-#总的工程根目录
-sln_root = '../../'
 
 #sln名称，介绍，负责人，分类，目录，被哪些工程依赖
 bdkv_slns = [
@@ -113,6 +111,7 @@ build_options = {
 	'极光': bdm_options,
 }
 
+#支持的代码基依赖
 svn_codebase = [('Branch','基于特定分支构造',1),('Tag','基于特定Tag构造',2),('Trunk','基于主线构造',3,'default'),('Revision','基于特定Revision构造',4)]
 
 build_depends = {

@@ -3,48 +3,47 @@
 @author tomas
 @date    2013-03-31
 @desc
-    server
+    a websocket server that support client and worker
     
 @brief
     main build websocket server 
 """
 
 
-import logging
 import tornado.ioloop
 import tornado.options
 import tornado.web
 import tornado.websocket
+import logging
 import os.path
 import uuid
 import time
-from tornado.options import define, options
-
 import project
 
-define("port", default=8888, help="run on the given port", type=int)
+from tornado.options import define, options
+
+define("port", default=13410, help="run on the given port", type=int)
 
 #main web app
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/", MainHandler),#for web client
-            (r"/buildserver", BuildServerHandler),#for google chrome extension portable client
+            (r"/", MainHandler),#for v8 and webkit portable web client (must support websocket)
+            (r"/buildserver", BuildServerHandler),#for google chrome extension client
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            xsrf_cookies=False,
             debug=True,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
 
-#处理默认连接相应
+#处理默认连接响应
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("index.html")
 
-#处理build主页相应
+#处理build主页响应
 class BuildServerHandler(tornado.websocket.WebSocketHandler):
     clients = []
     workers = []
