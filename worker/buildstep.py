@@ -165,9 +165,9 @@ def getBuildCommands(product,value):
     
 def makeBinplace(product,files):
     if product == 'bdm':
-        return conf.bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\ -:DEST BDM ' + conf.sln_root + files
+        return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\ -:DEST BDM ' + conf.sln_root + files
     elif product == 'bdkv':
-        return conf.bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ' + conf.sln_root + files
+        return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ' + conf.sln_root + files
 
 def genSymbols(product):
     commands = []
@@ -389,9 +389,9 @@ class Build(BuildStep):
                     print item
                     os.system(item)
         for file in os.listdir(conf.log_path):
-            if comm.getMsg('./AutoBuild/err/'+file) != '':
+            if file[-3:] == 'log' and comm.getMsg('../output/err/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-                raise 'Build error(s) found, xbuild quit, please check AutoBuild/err for build log(s).'
+                raise 'Build error(s) found, xbuild quit, please check ../output/err for build log(s).'
             
     
 class KVBuild(BuildStep):
@@ -413,9 +413,9 @@ class KVBuild(BuildStep):
                     print item
                     os.system(item)
         for file in os.listdir(conf.kvlog_path):
-            if comm.getMsg('./AutoBuild/kverr/'+file) != '':
+            if file[-3:] == 'log' and comm.getMsg('../output/kverr/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-                raise 'Build error(s) found, xbuild quit, please check AutoBuild/kverr for build log(s).'
+                raise 'Build error(s) found, xbuild quit, please check ../output/kverr for build log(s).'
     
 ##############################################
 # 0,1
@@ -506,12 +506,12 @@ class Verify(BuildStep):
             os.system('del /Q ' + conf.verify_log_file)
             commands = []
             commands.append('python fileop.py verify_file_exist ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.*')
-            #commands.append('python fileop.py verify_file_version ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
+            commands.append('python fileop.py verify_file_version ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             commands.append('python fileop.py verify_baidu_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             for item in commands:
                 print item
             fileop.main(4,['fileop.py','verify_file_exist',conf.sln_root + 'basic\\Output\\BinRelease\\','*.*'])
-            #fileop.main(4,['fileop.py','verify_file_version',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
+            fileop.main(4,['fileop.py','verify_file_version',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
             fileop.main(4,['fileop.py','verify_baidu_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
     
 class KVVerify(BuildStep):
@@ -528,14 +528,14 @@ class KVVerify(BuildStep):
             os.system('del /Q ' + conf.kvverify_log_file)
             commands = []
             commands.append('python fileop.py kvverify_file_exist ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.*')
-            #commands.append('python fileop.py kvverify_file_version ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe,*.dll,*.sys')
+            commands.append('python fileop.py kvverify_file_version ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe,*.dll,*.sys')
             commands.append('python fileop.py kvverify_driver_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
             commands.append('python fileop.py kvverify_kav_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
             commands.append('python fileop.py kvverify_baidu_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ .exe,*.dll,*.sys')
             for item in commands:
                 print item
             fileop.main(4,['fileop.py','kvverify_file_exist',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.*'])
-            #fileop.main(4,['fileop.py','kvverify_file_version',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','.exe,*.dll,*.sys'])
+            fileop.main(4,['fileop.py','kvverify_file_version',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','.exe,*.dll,*.sys'])
             fileop.main(4,['fileop.py','kvverify_driver_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_kav_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_baidu_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe,*.dll,*.sys'])
@@ -557,6 +557,9 @@ class Install(BuildStep):
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
             print command
             os.system(command)
+            command = 'xcopy ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
+            print command
+            os.system(command)
     
 class KVInstall(BuildStep):
     def __init__(self, n, v, o):
@@ -570,6 +573,9 @@ class KVInstall(BuildStep):
             print 'Passed'
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+            print command
+            os.system(command)
+            command = 'xcopy ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             print command
             os.system(command)
     
@@ -587,7 +593,7 @@ class SignInstaller(BuildStep):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
-            command = 'python sign.py bdm .\\setup\\'
+            command = 'python sign.py bdm .\\output\\setup\\'
             print command
             sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
     
@@ -627,11 +633,11 @@ class VerifyInstaller(BuildStep):
             print 'Passed'
         elif self.value == 1:
             commands = []
-            #commands.append('python fileop.py verify_file_version ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py verify_file_version ..\\output\\setup\\ *.exe')
             commands.append('python fileop.py verify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
                 print item
-            #fileop.main(4,['fileop.py','verify_file_version','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','verify_file_version','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','verify_baidu_sign','..\\output\\setup\\','*.exe'])
     
 class KVVerifyInstaller(BuildStep):
@@ -646,13 +652,13 @@ class KVVerifyInstaller(BuildStep):
             print 'Passed'
         elif self.value == 1:
             commands = []
-            #commands.append('python fileop.py kvverify_file_version ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py kvverify_file_version ..\\output\\setup\\ *.exe')
             commands.append('python fileop.py kvverify_driver_sign ..\\output\\setup\\ *.exe')
             commands.append('python fileop.py kvverify_kav_sign ..\\output\\setup\\ *.exe')
             commands.append('python fileop.py kvverify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
                 print item
-            #fileop.main(4,['fileop.py','kvverify_file_version','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_file_version','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_driver_sign','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_kav_sign','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_baidu_sign','..\\output\\setup\\','*.exe'])
@@ -702,14 +708,14 @@ class KVSend(BuildStep):
             commands.append('python send.py bdkv daily')
             for item in commands:
                 print item
-            #send.main(3,['send.py','bdkv','daily'])
+            send.main(3,['send.py','bdkv','daily'])
         elif self.value == 2:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
             commands.append('python send.py bdkv version')
             for item in commands:
                 print item
-            #send.main(3,['send.py','bdkv','version'])
+            send.main(3,['send.py','bdkv','version'])
     
 ##############################################
 # 0,1

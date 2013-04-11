@@ -16,7 +16,24 @@ class Worker(threading.Thread):
         threading.Thread.__init__(self)
     
     def setInitParam(ctx):
-        self.settings = ctx
+        settings = ctx.split('|')
+        self.projName = settings[0]
+        self.slns = {}
+        for item in settings[1].split(';'):
+            slnName = item[0:item.find(',')]
+            slnBuild = item[item.find(',')+1:]
+            self.slns[slnName] = slnBuild
+        self.options = {}
+        for item in settings[2].split(';'):
+            opName = item[0:item.find(',')]
+            opVal = item[item.find(',')+1:]
+            self.options[opName] = opVal
+        self.extraOptions = {}
+        iIndex = 0
+        for i in range(3,6):
+            iIndex = settings[i].find(',')
+            self.extraOptions[settings[i][0:iReason]] = settings[i][iReason+1:]
+        
         self.applyBuildSettings()
         
     def run(self):

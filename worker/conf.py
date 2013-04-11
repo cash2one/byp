@@ -36,8 +36,11 @@ kvbin_path='../../basic/KVOutput/binRelease/'
 binList=["*.exe","*.dll","plugins","res","*.xml","*.png"]
 pdbList=["*.pdb"]
 
-setup_path='../output/setup/'
+
+original_kvsetup_path = '../../basic/tools/kvsetup/'
+original_setup_path = '../../basic/tools/setup/'
 kvsetup_path='../output/kvsetup/'
+setup_path='../output/setup/'
 setupList=["*.exe"]
 
 log_path="../output/err/"
@@ -100,13 +103,13 @@ kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.crt\\',
                                 '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',]
 
-kvsign_excluded_dir = ['..\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
-                      '..\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
+kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
+                      '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
 
-kvsign_kav_excluded_dir = ['..\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
-                          '..\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
+kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
+                          '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
 
 
 #总的工程根目录
 sln_root = '..\\..\\'
-bin_path = '..\\bin\\'
+byp_bin_path = '..\\bin\\'

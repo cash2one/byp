@@ -80,13 +80,13 @@ def Show(file):
 
 def Sign(file):
     print 'Signning File: ' + file
-    command = conf.bin_path + 'FileSign.exe /s ' + file
+    command = conf.byp_bin_path + 'FileSign.exe /s ' + file
     os.system(command)
     
 
 def SignKav(file):
     print 'Signning File With Kav: ' + file
-    command = conf.bin_path + 'KavSign.exe /s"' + file + '" /u"keys\\PrivateKey.sgn"'
+    command = conf.byp_bin_path + 'KavSign.exe /s"' + file + '" /u"keys\\PrivateKey.sgn"'
     os.system(command)
 
 def GenRC(file,writer):
@@ -183,7 +183,7 @@ def SignBaidu(file,para):
         print response
         urllib.urlretrieve('http://' + conf.cerf_addr + '/OutPut/' + file_name, file + '.sign')
         
-        command = conf.bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
+        command = conf.byp_bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
         ret = os.system(command)
         if ret == 0:
             shutil.move(file+'.sign', file)
@@ -423,7 +423,7 @@ def VerifyFileVersion(path,ftype,product,logfile = ''):
 
 def DriverSignVerify(file,writer):
     log = ''
-    command = conf.bin_path + 'FileSign.exe /v ' + file
+    command = conf.byp_bin_path + 'FileSign.exe /v ' + file
     ret = os.system(command)
     if ret == 0:
         log = 'Verifing driver sign: %s --- SIGNED\n' % file
@@ -453,7 +453,7 @@ def VerifyDriverSign(path,ftype,product,logfile = ''):
 
 def KavSignVerify(file,writer):
     log = ''
-    command = conf.bin_path + 'ChkKavSign.exe ' + file
+    command = conf.byp_bin_path + 'ChkKavSign.exe ' + file
     ret = os.system(command)
     if ret == 0:
         log = 'Verifing kav sign: %s --- SIGNED\n' % file
@@ -484,7 +484,7 @@ def VerifyKavSign(path,ftype,product,logfile = ''):
 def BaiduVerify(file,para):
     digitalSign = para[0]
     writer = para[1]
-    command = conf.bin_path + 'SignVerify.exe ' + file + ' ' + digitalSign
+    command = conf.byp_bin_path + 'SignVerify.exe ' + file + ' ' + digitalSign
     ret = os.system(command)
     if ret == 0:
         log = 'Verifing baidu sign: %s --- SIGNED\n' % file
