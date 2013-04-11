@@ -100,6 +100,13 @@ kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.crt\\',
                                 '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',]
 
+kvsign_excluded_dir = ['..\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
+                      '..\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
+
+kvsign_kav_excluded_dir = ['..\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
+                          '..\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
+
+
 #总的工程根目录
 sln_root = '..\\..\\'
 bin_path = '..\\bin\\'

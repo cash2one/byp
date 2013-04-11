@@ -615,9 +615,9 @@ gen_rc_list                           - generate rc list
     if argv[1] == 'show':
         FileOperation(argv[2],Show,ftype)
     elif argv[1] == 'kvsign':
-        FileOperation(argv[2],Sign,ftype)
+        FileOperation(argv[2],Sign,ftype,conf.kvsign_excluded_dir)
     elif argv[1] == 'kvsign_kav':
-        FileOperation(argv[2],SignKav,ftype)
+        FileOperation(argv[2],SignKav,ftype,conf.kvsign_kav_excluded_dir)
     elif argv[1] == 'sign_baidu':
         SignBaiduOfficial(argv[2],ftype,'bdm')
     elif argv[1] == 'kvsign_baidu':
