@@ -1,9 +1,9 @@
 <?xml version="1.0" ?><conf>
 	<build nickname="kvfastrelease" product="bdkv" type="KVRelease|Win32">
-		<step name="prebuild" value="0" order="1"/>
-		<step name="svn" value="0" order="2"/>
+		<step name="prebuild" value="1" order="1"/>
+		<step name="svn" value="2" order="2"/>
 		<step name="rewriteversion" value="1" order="3"/>
-		<step name="build" value="0" order="4"/>
+		<step name="build" value="1" order="4"/>
 		<step name="pack" value="1" order="5"/>
 		<step name="sign" value="1" order="6"/>
 		<step name="verify" value="1" order="7"/>
@@ -12,8 +12,8 @@
 		<step name="verifyinstaller" value="1" order="10"/>
 		<step name="send" value="1" order="11"/>
 		<step name="symadd" value="1" order="12"/>
-		<step name="commit" value="1" order="13"/>
-		<step name="postbuild" value="0" order="14"/>
+		<step name="commit" value="0" order="13"/>
+		<step name="postbuild" value="1" order="14"/>
 	</build>
 	<build nickname="mgrfastrelease" product="bdm" type="Release|Win32">
 		<step name="prebuild" value="1" order="1"/>
@@ -28,7 +28,7 @@
 		<step name="verifyinstaller" value="0" order="10"/>
 		<step name="send" value="2" order="11"/>
 		<step name="symadd" value="1" order="12"/>
-		<step name="commit" value="1" order="13"/>
+		<step name="commit" value="0" order="13"/>
 		<step name="postbuild" value="0" order="14"/>
 	</build>
 </conf>

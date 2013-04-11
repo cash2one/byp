@@ -217,14 +217,14 @@ def genPrebuildActions(product,value):
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\buildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\versionbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi')
-            commands.append('del /Q /S ..\\output\\setup')
-            commands.append('del /Q /S ..\\output\\err')
+            commands.append('del /Q ..\\output\\setup\\*.exe')
+            commands.append('del /Q ..\\output\\err\\*.log')
         elif product == 'bdkv':
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvversionbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi')
-            commands.append('del /Q /S ..\\output\\kvsetup')
-            commands.append('del /Q /S ..\\output\\kverr')
+            commands.append('del /Q ..\\output\\kvsetup\\*.exe')
+            commands.append('del /Q ..\\output\\kverr\\*.log')
     if value == 2:
         commands.append('del /Q /S ' + conf.sln_root + 'basic\\lib')
         if product == 'bdm':
