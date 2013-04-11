@@ -68,6 +68,8 @@ bdkv_options = {
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','1','default')]],
 
+	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2'),('all','全部进行编译','3')]],
+
 	'pack':['check','build','打包资源','重新打包资源'],
 	'signdriver':['check','build','驱动签名','更新驱动签名'],
 	'signkav':['check','build','卡巴签名','更新卡巴签名'],
@@ -94,6 +96,8 @@ bdm_options = {
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','1','default')]],
 
+	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2'),('all','全部进行编译','3')]],
+	
 	'pack':['check','build','打包资源','重新打包资源'],
 	'signbaidu':['check','build','百度签名','更新百度签名'],
 	'install':['check','build','生成安装包','生成安装包'],
@@ -117,49 +121,4 @@ svn_codebase = [('Branch','基于特定分支构造',1),('Tag','基于特定Tag�
 build_depends = {
 	'X光': svn_codebase,
 	'极光': svn_codebase,
-}
-
-#每个sln的配置文件
-bdkv_conf_files = {
-	'commonlib':'BDMCommonLib',
-	'commondll':'BDMCommonDll',
-	'skin':'BDMSkin',
-	'logicmisc':'BDMLogicMisc',
-	'logicutils':'BDLogicUtils',
-	'client':'BDMClient',
-	'avcommon':'AVCommon',
-	'filemon':'FileMon',
-	'avhips':'AVHips',
-	'drivermanager':'DriverManager',
-	'sysrepair':'SYSRepair',
-	'antivirus':'BDMAntiVirus',
-	'bdkv':'BDKV',
-	'bd0001':'BD0001',
-}
-
-bdm_conf_files = {
-	'commonlib':'BDMCommonLib',
-	'commondll':'BDMCommonDll',
-	'skin':'BDMSkin',
-	'logicmisc':'BDMLogicMisc',
-	'logicutils':'BDLogicUtils',
-	'client':'BDMClient',
-	'qmlib':'QMlib',
-	'bdnd':'BDND',
-	'syscleaner':'SYSCleaner',
-	'sysaccelerator':'BDMSYSAccelerator',
-	'soacceleratorplugin':'BDMSOAcceleratorPlugin',
-	'socleanerplugin':'BDMSOCleanerPlugin',
-	'somanager':'BDMSOManager',
-	'soshortcutplugin':'BDMSOShortcutPlugin',
-	'swmanager':'BDMSWManager',
-	'qmgarbagecleaner':'QMGarbageCleaner',
-	'homepageplugins':'BDMHomePagePlugins',
-	'mainframeplugins':'BDMMainFramePlugins',
-	'main':'BDMMain',
-}
-
-build_conf_files = {
-	'X光': bdkv_conf_files,
-	'极光': bdm_conf_files,
 }

@@ -19,7 +19,11 @@ class Worker(threading.Thread):
     def setInitParam(self, msg):
         ctx = msg['content']
         settings = ctx.split('|')
-        self.projName = settings[0]
+        self.projName = ''
+        if settings[0] == 'X光':
+            self.projName = 'bdkv'
+        elif settings[0] == '极光':
+            self.projName = 'bdm'
         self.slns = {}
         for item in settings[1].split(';'):
             slnName = item[0:item.find(',')]
@@ -34,15 +38,67 @@ class Worker(threading.Thread):
         iIndex = 0
         for i in range(3,6):
             iIndex = settings[i].find(',')
-            self.extraOptions[settings[i][0:iReason]] = settings[i][iReason+1:]
+            self.extraOptions[settings[i][0:iIndex]] = settings[i][iIndex+1:]
         
         self.applyBuildSettings()
         
-    def run(self):
-        pass
+    def applySlnSettings(self):
+        projConf = {}
+        if self.projName == 'bdkv':
+            projConf = conf.bdkv_conf_files
+        elif self.projName == 'bdm':
+            projConf = conf.bdm_conf_files
+            
+        try:
+            for key,val in self.slns.items():
+                confFile = './buildswitch/' + projConf[key] + '.xml'
+                dom = xml.dom.minidom.parse(confFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    product = node.getAttribute('product')
+                    if product == self.projName:
+                        node.setAttribute('build','1')
+                    else:
+                        node.setAttribute('build','0')
+                    writer = open(confFile,'w')
+                    dom.writexml(writer)
+                    writer.close()
+        except Exception,e:
+            print "error occers when parsing xml or run command:"
+            print e
+        
+    def applyBuildOptions(self):
+        bsFile = './buildswitch/buildstep.xml'
+        try:
+            dom = xml.dom.minidom.parse(bsFile)
+            root = dom.documentElement
+            for node in root.childNodes:
+                if node.nodeType != node.ELEMENT_NODE:
+                    continue
+                product = node.getAttribute('product')
+                if product != self.projName:
+                    continue;
+                else:
+                    for step in node.childNodes:
+                        name = step.getAttribute('name')
+                        if self.options.has_key(name):
+                            step.setAttribute('value',self.options[name])
+                        elif name == 'prebuild' or name == 'postbuild':
+                            step.setAttribute('value','1')
+                        else:
+                            step.setAttribute('value','0')
+                writer = open(confFile,'w')
+                dom.writexml(writer)
+                writer.close()
+        except Exception,e:
+            print "error occers when parsing xml or run command:"
+            print e
         
     def applyBuildSettings(self):
-        pass
+        self.applySlnSettings()
+        self.applyBuildOptions()
         
 def InitBuildInfo(nickname):
     buildConfFile = './BuildSwitch/BuildStep.xml'
@@ -85,15 +141,16 @@ def InitBuildInfo(nickname):
         print e
         return (buildInfo,buildStep,False)
     
-
-def main(argc, argv):
-    
-    if argc != 2:
-        print 'usage:python xbuild.py <nickname>'
-        return
-    
-    nickname = argv[1]
-    
+    def run(self):
+        nickname = ''
+        if self.projName == 'bdkv':
+            nickname = 'bdkvfastrelease'
+        elif self.projName == 'bdm':
+            nickname = 'bdmfastrelease'
+        para = ('wk-build-log', self.id, self.socket)
+        buildproject(nickname,para)
+        
+def buildproject(nickname,para = ()):
     #initialize
     (buildInfo,buildStep,bInited) = InitBuildInfo(nickname)
     
@@ -110,8 +167,16 @@ def main(argc, argv):
     buildStep.sort(lambda x,y: cmp(x.order,y.order))
     for item in buildStep:
         print '\nStep %d - %s\n-------------------------------' % (item.order,item)
-        item.act()
+        item.act(para)
+            
+def main(argc, argv):
     
+    if argc != 2:
+        print 'usage:python xbuild.py <nickname>'
+        return
+    
+    nickname = argv[1]
+    buildproject(nickname)
 
 if "__main__" == __name__:
     sys.exit(main(len(sys.argv),sys.argv))

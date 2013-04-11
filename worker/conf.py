@@ -113,3 +113,48 @@ kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udi
 #总的工程根目录
 sln_root = '..\\..\\'
 byp_bin_path = '..\\bin\\'
+
+#每个sln的配置文件
+bdkv_conf_files = {
+	'commonlib':'BDMCommonLib',
+	'commondll':'BDMCommonDll',
+	'skin':'BDMSkin',
+	'logicmisc':'BDMLogicMisc',
+	'logicutils':'BDLogicUtils',
+	'client':'BDMClient',
+	'avcommon':'AVCommon',
+	'filemon':'FileMon',
+	'avhips':'AVHips',
+	'drivermanager':'DriverManager',
+	'sysrepair':'SYSRepair',
+	'antivirus':'BDMAntiVirus',
+	'bdkv':'BDKV',
+	'bd0001':'BD0001',
+}
+
+bdm_conf_files = {
+	'commonlib':'BDMCommonLib',
+	'commondll':'BDMCommonDll',
+	'skin':'BDMSkin',
+	'logicmisc':'BDMLogicMisc',
+	'logicutils':'BDLogicUtils',
+	'client':'BDMClient',
+	'qmlib':'QMlib',
+	'bdnd':'BDND',
+	'syscleaner':'SYSCleaner',
+	'sysaccelerator':'BDMSYSAccelerator',
+	'soacceleratorplugin':'BDMSOAcceleratorPlugin',
+	'socleanerplugin':'BDMSOCleanerPlugin',
+	'somanager':'BDMSOManager',
+	'soshortcutplugin':'BDMSOShortcutPlugin',
+	'swmanager':'BDMSWManager',
+	'qmgarbagecleaner':'QMGarbageCleaner',
+	'homepageplugins':'BDMHomePagePlugins',
+	'mainframeplugins':'BDMMainFramePlugins',
+	'main':'BDMMain',
+}
+
+build_conf_files = {
+	'X光': bdkv_conf_files,
+	'极光': bdm_conf_files,
+}

@@ -246,7 +246,7 @@ class BuildStep:
         #return 'name=%s value=%s order=%d' % (self.name,self.value,self.order)
         pass
     
-    def act(self):
+    def act(self, para):
         pass
 
 ##############################################
@@ -259,7 +259,7 @@ class PreBuild(BuildStep):
     def __str__(self):
         return "BDM prebuild operations"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
              print 'Passed'
         else:
@@ -275,7 +275,7 @@ class KVPreBuild(BuildStep):
     def __str__(self):
         return "BDKV prebuild operations"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
              print 'Passed'
         else:
@@ -294,7 +294,7 @@ class Svn(BuildStep):
     def __str__(self):
         return "BDM svn operations"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         else:
@@ -313,7 +313,7 @@ class KVSvn(BuildStep):
     def __str__(self):
         return "BDKV svn operations"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         else:
@@ -335,7 +335,7 @@ class RewriteVersion(BuildStep):
     def __str__(self):
         return "BDM update build version and resource definition"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -355,7 +355,7 @@ class KVRewriteVersion(BuildStep):
     def __str__(self):
         return "BDKV update build version and resource definition"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -377,7 +377,7 @@ class Build(BuildStep):
     def __str__(self):
         return "BDM compiling and building"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         else:
@@ -401,7 +401,7 @@ class KVBuild(BuildStep):
     def __str__(self):
         return "BDKV compiling and building"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         else:
@@ -427,7 +427,7 @@ class Pack(BuildStep):
     def __str__(self):
         return "BDM packing resources"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -442,7 +442,7 @@ class KVPack(BuildStep):
     def __str__(self):
         return "BDKV packing resources"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -460,7 +460,7 @@ class Sign(BuildStep):
     def __str__(self):
         return "BDM signning files"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -475,7 +475,7 @@ class KVSign(BuildStep):
     def __str__(self):
         return "BDKV signning files"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -499,7 +499,7 @@ class Verify(BuildStep):
     def __str__(self):
         return "BDM verifing files"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -521,7 +521,7 @@ class KVVerify(BuildStep):
     def __str__(self):
         return "BDKV verifing files"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -550,7 +550,7 @@ class Install(BuildStep):
     def __str__(self):
         return "BDM building installer"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -568,7 +568,7 @@ class KVInstall(BuildStep):
     def __str__(self):
         return "BDKV building installer"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -589,7 +589,7 @@ class SignInstaller(BuildStep):
     def __str__(self):
         return "BDM signning installer"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -604,7 +604,7 @@ class KVSignInstaller(BuildStep):
     def __str__(self):
         return "BDKV signning installer"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -628,7 +628,7 @@ class VerifyInstaller(BuildStep):
     def __str__(self):
         return "BDM verifing installer"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -647,7 +647,7 @@ class KVVerifyInstaller(BuildStep):
     def __str__(self):
         return "BDKV verifing installer"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -673,7 +673,7 @@ class Send(BuildStep):
     def __str__(self):
         return "BDM sending files to archive folder"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -699,7 +699,7 @@ class KVSend(BuildStep):
     def __str__(self):
         return "BDKV sending files to archive folder"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -727,7 +727,7 @@ class SymAdd(BuildStep):
     def __str__(self):
         return "BDM collecting symbols to symbol server"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -743,7 +743,7 @@ class KVSymAdd(BuildStep):
     def __str__(self):
         return "BDKV collecting symbols to symbol server"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -762,7 +762,7 @@ class Commit(BuildStep):
     def __str__(self):
         return "BDM Committing files"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -778,7 +778,7 @@ class KVCommit(BuildStep):
     def __str__(self):
         return "BDKV Committing files"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
         elif self.value == 1:
@@ -797,7 +797,7 @@ class PostBuild(BuildStep):
     def __str__(self):
         return "BDM postbuild operations"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
     
@@ -808,7 +808,7 @@ class KVPostBuild(BuildStep):
     def __str__(self):
         return "BDKV postbuild operations"
     
-    def act(self):
+    def act(self, para):
         if self.value == 0:
             print 'Passed'
     
