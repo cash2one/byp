@@ -248,6 +248,15 @@ class BuildStep:
     
     def act(self, para):
         pass
+    
+    def report(self, para, msg):
+        if len(para) == 0:
+            pass
+        elif para[0] == 'wk-build-log':
+            sid = para[1]
+            ws = para[2]
+            logging.info('sid : %s, buildlog : %s' % sid, msg)
+            ws.send('{"msrc":"wk-build-log","content":"%s|%s"}',sid, msg)
 
 ##############################################
 # 0
