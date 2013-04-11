@@ -92,6 +92,9 @@ $(document).ready(function() {
 
 function onBtnBuildClick() {
     var ctx = "";
+    //proj name
+    ctx += $("#ws-project-select option:selected").text();
+    ctx += "|";
     //sln list
     $(".btn[id^='ws-btn-slnselect-']").each( function() {
         if ($(this).hasClass("active")) {

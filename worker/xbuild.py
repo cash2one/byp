@@ -10,12 +10,14 @@ import threading
 
 #worker thread
 class Worker(threading.Thread):
-    def __init__(self, ws, sid):
+    def __init__(self, ws, sid, evt):
         self.socket = ws
         self.id = sid
+        self.evt = evt
         threading.Thread.__init__(self)
     
-    def setInitParam(ctx):
+    def setInitParam(self, msg):
+        ctx = msg['content']
         settings = ctx.split('|')
         self.projName = settings[0]
         self.slns = {}
