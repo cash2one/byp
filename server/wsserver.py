@@ -199,7 +199,9 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         
         #收到worker日志，发送到这个worker的所有listener
         elif msg['msrc'] == 'wk-build-log':
-            content = '{"msrc":"ws-build-log","content":"%s"}' % msg['content']
+            ctx = msg['content']
+            ctx = ctx.replace('\\','/')
+            content = '{"msrc":"ws-build-log","content":"%s"}' % ctx
             for client in self.listeners:
                 client.notify(content)
                 

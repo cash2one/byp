@@ -157,7 +157,19 @@ def InitBuildInfo(nickname,para):
         logging.error(e)
         return (buildStep,False)
     
-    
+def report(msrc, msg, para):
+    if len(para) == 0:
+        logging.info(msg)
+    elif para[0] == 'wk-build-log':
+        sid = para[1]
+        ws = para[2]
+        #整饰特殊字符
+        msg = msg.replace('"',' ')
+        if msg[-1] == '\\':
+            msg = msg[0:-1]
+        content = '{"msrc":"%s","content":"%s"}' % (msrc, msg)
+        logging.info('send message from worker, sid:%s, message:%s' % (sid,content))
+        ws.send(content)
         
 def buildproject(nickname,para = ()):
     #initialize
@@ -168,14 +180,16 @@ def buildproject(nickname,para = ()):
         return
     
     #info print
-    logging.info('\nXBuild Start\n-------------------------------')
-    logging.info('Build Nickname: %s\nProduct: %s\n')
-    logging.info('\nBuild Step(s)\n-------------------------------')
+    report('wk-build-log', 'XBuild Start', para)
+    report('wk-build-log', '-------------------------------', para)
+    report('wk-build-log', 'Build Step(s)', para)
+    report('wk-build-log', '-------------------------------', para)
     
     #do homework
     buildStep.sort(lambda x,y: cmp(x.order,y.order))
     for item in buildStep:
-        logging.info('\nStep %d - %s\n-------------------------------' % (item.order,item))
+        report('wk-build-log', 'Step %d - %s' % (item.order,item), para)
+        report('wk-build-log', '-------------------------------', para)
         item.act()
             
 def main(argc, argv):

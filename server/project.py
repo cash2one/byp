@@ -59,7 +59,7 @@ projects = {
 bdkv_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作'],
 
-	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('checkout','所有相关工程从代码服务器重新签出','1'),('update','所有相关工程从代码服务器更新','2','default')]],
+	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新'],
 
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
@@ -90,7 +90,7 @@ bdkv_options = {
 bdm_options = {
 	'prebuild':['check','before','清理','打包前的清理工作'],
 
-	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('checkout','所有相关工程从代码服务器重新签出','1'),('update','所有相关工程从代码服务器更新','2','default')]],
+	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','4','default'),('checkout','所有相关工程从代码服务器重新签出','3')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新'],
 
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],

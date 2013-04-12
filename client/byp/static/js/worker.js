@@ -46,7 +46,7 @@ var updater = {
     start: function() {
         //1. connect to server
         //console.log('connect to server');
-        var url = "ws://192.168.5.21:13412/buildserver";
+        var url = "ws://127.0.0.1:13412/buildserver";
         updater.socket = new WebSocket(url);
         
         //2 register callbacks

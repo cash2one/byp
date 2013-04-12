@@ -8,7 +8,7 @@
 
 import sys,os,conf,xml.dom.minidom,datetime,comm
 import rewrite_version,sign,fileop,send
-import logging
+import logging,time
 
 build_step_creator = {
                       'prebuild':'PreBuild',
@@ -594,7 +594,7 @@ class KVSign(BuildStep):
             #fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             self.update_step(60)
             
-            commands.append('python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\')
+            command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\'
             self.report('wk-build-log', command)
             time.sleep(15)
             #sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
@@ -671,7 +671,7 @@ class Install(BuildStep):
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
             self.report('wk-build-log', command)
             os.system(command)
-            command = 'xcopy ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
+            command = 'xcopy /Y' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
             os.system(command)
         BuildStep.act(self)
@@ -690,7 +690,7 @@ class KVInstall(BuildStep):
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             self.report('wk-build-log', command)
             os.system(command)
-            command = 'xcopy ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
+            command = 'xcopy /Y' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
             os.system(command)
         BuildStep.act(self)

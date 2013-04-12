@@ -138,8 +138,8 @@ function onInputClick() {
 }
 
 function updateUI(msg) {
-    $("#ws-build-log").append(msg);
-    $("#ws-build-log").append('<br>');
+    //$("#ws-build-log").append(msg);
+    //$("#ws-build-log").append('<br>');
 
     var jsonMsg = JSON.parse(msg)
     //更新项目combobox
@@ -262,7 +262,7 @@ function updateUI(msg) {
     }
     //更新build log
     else if (jsonMsg['msrc'] == 'ws-build-log') {
-        $("#ws-build-log").append(msg);
+        $("#ws-build-log").append(jsonMsg['content']);
         $("#ws-build-log").append('<br>');
     }
     else if (jsonMsg['msrc'] == 'ws-build-progress') {
