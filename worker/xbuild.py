@@ -7,6 +7,7 @@
 
 import sys,os,conf,xml.dom.minidom,buildstep,new
 import threading
+import logging
 
 #worker thread
 class Worker(threading.Thread):
@@ -100,7 +101,7 @@ class Worker(threading.Thread):
         self.applySlnSettings()
         self.applyBuildOptions()
         
-def InitBuildInfo(nickname):
+def InitBuildInfo(nickname,para):
     buildConfFile = './BuildSwitch/BuildStep.xml'
     buildInfo = ('nickname','product','buildtype')
     buildStep = []
@@ -115,6 +116,8 @@ def InitBuildInfo(nickname):
             product = buildNode.getAttribute('product')
             buildtype = buildNode.getAttribute('type')
             buildInfo = (nickname,product,buildtype.split(','))
+            buildstep.g_t_weight = 0
+            buildstep.g_c_weight = 0
             
             for stepNode in buildNode.childNodes:
                 if stepNode.nodeType != stepNode.ELEMENT_NODE:
@@ -122,6 +125,8 @@ def InitBuildInfo(nickname):
                 name = stepNode.getAttribute('name')
                 value = stepNode.getAttribute('value')
                 order = stepNode.getAttribute('order')
+                weight = stepNode.getAttribute('weight')
+                buildstep.g_t_weight += weight
                 try:
                     clsName = ''
                     if product == 'bdm':
@@ -129,7 +134,7 @@ def InitBuildInfo(nickname):
                     elif product == 'bdkv':
                         clsName = getattr(buildstep,buildstep.kvbuild_step_creator[name])
                     step = new.instance(clsName)
-                    step.__init__(name,int(value),int(order))
+                    step.__init__(name,int(value),int(order),int(weight),para)
                     buildStep.append(step)
                 except Exception,e:
                     print "error occers when creating buildsteps"
@@ -152,7 +157,7 @@ def InitBuildInfo(nickname):
         
 def buildproject(nickname,para = ()):
     #initialize
-    (buildInfo,buildStep,bInited) = InitBuildInfo(nickname)
+    (buildInfo,buildStep,bInited) = InitBuildInfo(nickname,para)
     
     if not bInited:
         print 'configuration error, please check BuildSwitch/BuildStep.xml'
@@ -167,13 +172,16 @@ def buildproject(nickname,para = ()):
     buildStep.sort(lambda x,y: cmp(x.order,y.order))
     for item in buildStep:
         print '\nStep %d - %s\n-------------------------------' % (item.order,item)
-        item.act(para)
+        item.act()
             
 def main(argc, argv):
     
     if argc != 2:
         print 'usage:python xbuild.py <nickname>'
         return
+    
+    #init logging system, it's told logging is threadsafe, so do NOT need to sync
+    logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
     
     nickname = argv[1]
     buildproject(nickname)

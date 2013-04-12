@@ -41,7 +41,8 @@
 #				 = "wk-worker-connect"						worker连线
 #				 = "wk-build-log"							worker工作日志
 #				 = "wk-status-change"						worker状态切换
-#
+#				 = "wk-build-progress"						打包进度更新
+#				 = 'wk-build-error'							打包失败
 #		 content
 ######################################################################################
 #		 		 = "..."									根据具体type类型来解析

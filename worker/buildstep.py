@@ -58,6 +58,7 @@ def getSlns(product):
         finally:
             fileObj.close()
     except Exception,e:
+        logging.info(e)
         print e
     
     return slns
@@ -100,6 +101,8 @@ def getSvnCommands(product, value):
                 commands.append(command)
                 break
         except Exception,e:
+            logging.info("error occers when parsing xml or run command:")
+            logging.info(e)
             print "error occers when parsing xml or run command:"
             print e
     commands = list(set(commands))
@@ -159,6 +162,8 @@ def getBuildCommands(product,value):
             dom.writexml(writer)
             writer.close()
         except Exception,e:
+            logging.info("error occers when parsing xml or run command:")
+            logging.info(e)
             print "error occers when parsing xml or run command:"
             print e
     return commands
@@ -236,281 +241,341 @@ def genPrebuildActions(product,value):
 
 ##############################################
 
+g_t_weight = 0
+g_c_weight = 0
+
+##############################################
+
 class BuildStep:
-    def __init__(self,n,v,o):
+    def __init__(self,n,v,o,w,p):
         self.name = n
         self.value = v
         self.order = o
+        self.weight = w
+        self.cweight = 0
+        self.para = p
     
     def __str__(self):
         #return 'name=%s value=%s order=%d' % (self.name,self.value,self.order)
         pass
     
-    def act(self, para):
-        pass
+    def act(self):
+        self.update_step(0, bFinish = True)
     
-    def report(self, para, msg):
-        if len(para) == 0:
+    def report(self, msrc, msg):
+        if len(self.para) == 0:
             pass
-        elif para[0] == 'wk-build-log':
-            sid = para[1]
-            ws = para[2]
-            logging.info('sid : %s, buildlog : %s' % sid, msg)
-            ws.send('{"msrc":"wk-build-log","content":"%s|%s"}',sid, msg)
+        elif self.para[0] == 'wk-build-log':
+            sid = self.para[1]
+            ws = self.para[2]
+            logging.info('sid : %s, msrc : %s, buildlog : %s' % sid, msrc, msg)
+            ws.send('{"msrc":"%s","content":"%s|%s"}',msrc, sid, msg)
+    
+    def update_step(self, w, bFinish = False):
+        if self.cweight == self.weight:
+            pass
+        elif self.cweight + w >= self.weight or bFinish:
+            g_c_weight += self.weight - self.cweight
+            self.cweight = self.weight
+            msg = '%d' % g_c_weight/g_t_weight
+            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, g_c_weight, g_t_weight)
+            self.report('wk-build-progress',msg)
+        else:
+            g_c_weight += w
+            self.cweight += w
+            msg = '%d' % g_c_weight/g_t_weight
+            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, g_c_weight, g_t_weight)
+            self.report('wk-build-progress',msg)
 
 ##############################################
 # 0
 
 class PreBuild(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM prebuild operations"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-             print 'Passed'
+             logging.info('Passed')
         else:
             commands = genPrebuildActions('bdm',self.value)
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', item)
                 os.system(item)
+        BuildStep.act(self)
     
 class KVPreBuild(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV prebuild operations"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-             print 'Passed'
+             logging.info('Passed')
         else:
             commands = genPrebuildActions('bdkv',self.value)
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', item)
                 os.system(item)
+        BuildStep.act(self)
+            
     
 ##############################################
 # 0,1,2,3,4
 
 class Svn(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM svn operations"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         else:
             commands = getSvnCommands('bdm',self.value)
             if len(commands) == 0:
-                print "No svn commands"
+                logging.info("No svn commands")
             else:
                 for item in commands:
-                    print item
+                    logging.info(item)
+                    self.report('wk-build-log', item)
+                    self.update_step(3)
                     os.system(item)
+        BuildStep.act(self)
     
 class KVSvn(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV svn operations"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         else:
             commands = getSvnCommands('bdkv',self.value)
             if len(commands) == 0:
-                print "No svn commands"
+                logging.info("No svn commands")
             else:
                 for item in commands:
-                    print item
+                    logging.info(item)
+                    self.report('wk-build-log', item)
+                    self.update_step(3)
                     os.system(item)
+        BuildStep.act(self)
     
 ##############################################
 # 0,1,2
 
 class RewriteVersion(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM update build version and resource definition"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = 'python rewrite_version.py bdm daily'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdm','daily'])
         elif self.value == 2:
             command = 'python rewrite_version.py bdm version'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdm','version'])
+        BuildStep.act(self)
 
     
 class KVRewriteVersion(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV update build version and resource definition"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = 'python rewrite_version.py bdkv daily'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdkv','daily'])
         elif self.value == 2:
             command = 'python rewrite_version.py bdkv version'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdkv','version'])
+        BuildStep.act(self)
     
 ##############################################
 # 0,1,2
 
 class Build(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM compiling and building"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         else:
             commands = getBuildCommands('bdm',self.value)
             if len(commands) == 0:
-                print "No build commands"
+                logging.info("No build commands")
             else:
                 for item in commands:
-                    print item
-                    os.system(item)
+                    logging.info(item)
+                    self.report('wk-build-log', command)
+                    self.update_step(10)
+                    #os.system(item)
+        BuildStep.act(self)
         for file in os.listdir(conf.log_path):
             if file[-3:] == 'log' and comm.getMsg('../output/err/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-                raise 'Build error(s) found, xbuild quit, please check ../output/err for build log(s).'
+                msg = 'Build error(s) found, xbuild quit, please check ../output/err for build log(s).'
+                logging.info(msg)
+                self.report('wk-build-error', msg)
+                raise msg
             
     
 class KVBuild(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV compiling and building"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         else:
             commands = getBuildCommands('bdkv',self.value)
             if len(commands) == 0:
-                print "No build commands"
+                logging.info("No build commands")
             else:
                 for item in commands:
-                    print item
-                    os.system(item)
+                    logging.info(item)
+                    self.report('wk-build-log', command)
+                    self.update_step(10)
+                    #os.system(item)
+        BuildStep.act(self)
         for file in os.listdir(conf.kvlog_path):
             if file[-3:] == 'log' and comm.getMsg('../output/kverr/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
+                logging.info('Build error(s) found, xbuild quit, please check ../output/kverr for build log(s).')
                 raise 'Build error(s) found, xbuild quit, please check ../output/kverr for build log(s).'
     
 ##############################################
 # 0,1
 
 class Pack(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM packing resources"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = 'cscript pack.vbs bdm'
-            print command
+            logging.info(command)
             os.system(command)
+        BuildStep.act(self)
     
 class KVPack(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV packing resources"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = 'cscript pack.vbs bdkv'
-            print command
+            logging.info(command)
             os.system(command)
+        BuildStep.act(self)
     
 ##############################################
 # 0,1
 
 class Sign(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM signning files"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])
+        BuildStep.act(self)
     
 class KVSign(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV signning files"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = []
             commands.append('python fileop.py kvsign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
             commands.append('python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
             commands.append('python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\')
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', command)
             fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            self.update_step(20)
             fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            self.update_step(60)
             sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
+            self.update_step(100)
+        BuildStep.act(self)
     
 ##############################################
 # 0,1
 
 class Verify(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM verifing files"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             os.system('del /Q ' + conf.verify_log_file)
             commands = []
@@ -518,21 +583,23 @@ class Verify(BuildStep):
             commands.append('python fileop.py verify_file_version ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             commands.append('python fileop.py verify_baidu_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', command)
             fileop.main(4,['fileop.py','verify_file_exist',conf.sln_root + 'basic\\Output\\BinRelease\\','*.*'])
             fileop.main(4,['fileop.py','verify_file_version',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
             fileop.main(4,['fileop.py','verify_baidu_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
+        BuildStep.act(self)
     
 class KVVerify(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV verifing files"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             os.system('del /Q ' + conf.kvverify_log_file)
             commands = []
@@ -542,123 +609,140 @@ class KVVerify(BuildStep):
             commands.append('python fileop.py kvverify_kav_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
             commands.append('python fileop.py kvverify_baidu_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ .exe,*.dll,*.sys')
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', command)
             fileop.main(4,['fileop.py','kvverify_file_exist',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.*'])
             fileop.main(4,['fileop.py','kvverify_file_version',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','.exe,*.dll,*.sys'])
             fileop.main(4,['fileop.py','kvverify_driver_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_kav_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_baidu_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe,*.dll,*.sys'])
+        BuildStep.act(self)
 
 ##############################################
 # 0,1
 
 class Install(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM building installer"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             os.system(command)
             command = 'xcopy ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             os.system(command)
+        BuildStep.act(self)
     
 class KVInstall(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV building installer"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             os.system(command)
             command = 'xcopy ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             os.system(command)
+        BuildStep.act(self)
     
 ##############################################
 # 0,1
 
 class SignInstaller(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM signning installer"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             command = 'python sign.py bdm .\\output\\setup\\'
-            print command
+            logging.info(command)
+            self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
+        BuildStep.act(self)
     
 class KVSignInstaller(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV signning installer"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = []
             commands.append('python fileop.py sign ..\\output\\kvsetup\\ *.exe')
             commands.append('python fileop.py sign_kav ..\\output\\kvsetup\\ *.exe')
             commands.append('python sign.py bdkv ..\\output\\kvsetup\\')
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', item)
             fileop.main(4,['fileop.py','sign','..\\output\\kvsetup\\','*.exe'])
+            self.update_step(1)
             fileop.main(4,['fileop.py','sign_kav','..\\output\\kvsetup\\','*.exe'])
+            self.update_step(3)
             sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
+            self.update_step(5)
+        BuildStep.act(self)
     
 ##############################################
 # 0,1
 
 class VerifyInstaller(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM verifing installer"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = []
             commands.append('python fileop.py verify_file_version ..\\output\\setup\\ *.exe')
             commands.append('python fileop.py verify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', item)
             fileop.main(4,['fileop.py','verify_file_version','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','verify_baidu_sign','..\\output\\setup\\','*.exe'])
+        BuildStep.act(self)
     
 class KVVerifyInstaller(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV verifing installer"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = []
             commands.append('python fileop.py kvverify_file_version ..\\output\\setup\\ *.exe')
@@ -666,159 +750,178 @@ class KVVerifyInstaller(BuildStep):
             commands.append('python fileop.py kvverify_kav_sign ..\\output\\setup\\ *.exe')
             commands.append('python fileop.py kvverify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
-                print item
+                logging.info(item)
+                self.report('wk-build-log', item)
             fileop.main(4,['fileop.py','kvverify_file_version','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_driver_sign','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_kav_sign','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','kvverify_baidu_sign','..\\output\\setup\\','*.exe'])
+        BuildStep.act(self)
 
 ##############################################
 # 0,1
 
 class Send(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM sending files to archive folder"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
             commands.append('python send.py bdm daily')
             for item in commands:
-                print item
-            send.main(3,['send.py','bdm','daily'])
-            
+                logging.info(item)
+                self.report('wk-build-log', item)
+            #send.main(3,['send.py','bdm','daily'])
         elif self.value == 2:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
             commands.append('python send.py bdm version')
             for item in commands:
-                print item
-            send.main(3,['send.py','bdm','version'])
+                logging.info(item)
+                self.report('wk-build-log', item)
+            #send.main(3,['send.py','bdm','version'])
+        BuildStep.act(self)
     
 class KVSend(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV sending files to archive folder"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
             commands.append('python send.py bdkv daily')
             for item in commands:
-                print item
-            send.main(3,['send.py','bdkv','daily'])
+                logging.info(item)
+                self.report('wk-build-log', item)
+            #send.main(3,['send.py','bdkv','daily'])
         elif self.value == 2:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
             commands.append('python send.py bdkv version')
             for item in commands:
-                print item
-            send.main(3,['send.py','bdkv','version'])
+                logging.info(item)
+                self.report('wk-build-log', item)
+            #send.main(3,['send.py','bdkv','version'])
+        BuildStep.act(self)
     
 ##############################################
 # 0,1
 
 class SymAdd(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM collecting symbols to symbol server"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = genSymbols('bdm')
             for item in commands:
-                print item
-                os.system(item)
+                logging.info(item)
+                self.report('wk-build-log', item)
+                self.update_step(3)
+                #os.system(item)
+        BuildStep.act(self)
     
 class KVSymAdd(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV collecting symbols to symbol server"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             commands = genSymbols('bdkv')
             for item in commands:
-                print item
-                os.system(item)
+                logging.info(item)
+                self.report('wk-build-log', item)
+                self.update_step(3)
+                #os.system(item)
+        BuildStep.act(self)
     
 ##############################################
 # 0,1
 
 class Commit(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM Committing files"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             msg = 'xbuild commit %s' % datetime.datetime.now()
             command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            print command
-            os.system(command)
+            logging.info(command)
+            self.report('wk-build-log', command)
+            #os.system(command)
+        BuildStep.act(self)
     
 class KVCommit(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV Committing files"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
         elif self.value == 1:
             msg = 'xbuild commit %s' % datetime.datetime.now()
             command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            print command
-            os.system(command)
+            logging.info(command)
+            self.report('wk-build-log', command)
+            #os.system(command)
+        BuildStep.act(self)
     
 ##############################################
 # 0,1
 
 class PostBuild(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDM postbuild operations"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
+        BuildStep.act(self)
     
 class KVPostBuild(BuildStep):
-    def __init__(self, n, v, o):
-        BuildStep.__init__(self, n, v, o)
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
         return "BDKV postbuild operations"
     
-    def act(self, para):
+    def act(self):
         if self.value == 0:
-            print 'Passed'
+            logging.info('Passed')
+        BuildStep.act(self)
     
 ##############################################
