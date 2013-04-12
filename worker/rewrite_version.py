@@ -1,5 +1,6 @@
+# coding=UTF-8
 """
-@author yihongzhang
+@author tomas
 @date	2012-3-9
 @desc
 

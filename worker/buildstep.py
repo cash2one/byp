@@ -1,3 +1,4 @@
+# coding=UTF-8
 """
 @author    tomas
 @date    2013-03-07
@@ -7,6 +8,7 @@
 
 import sys,os,conf,xml.dom.minidom,datetime,comm
 import rewrite_version,sign,fileop,send
+import logging
 
 build_step_creator = {
                       'prebuild':'PreBuild',
@@ -241,12 +243,9 @@ def genPrebuildActions(product,value):
 
 ##############################################
 
-g_t_weight = 0
-g_c_weight = 0
-
-##############################################
-
 class BuildStep:
+    g_t_weight = 0
+    g_c_weight = 0
     def __init__(self,n,v,o,w,p):
         self.name = n
         self.value = v
@@ -268,23 +267,29 @@ class BuildStep:
         elif self.para[0] == 'wk-build-log':
             sid = self.para[1]
             ws = self.para[2]
-            logging.info('sid : %s, msrc : %s, buildlog : %s' % sid, msrc, msg)
-            ws.send('{"msrc":"%s","content":"%s|%s"}',msrc, sid, msg)
+            #整饰特殊字符
+            msg.replace('"',' ')
+            logging.info('sid : %s, msrc : %s, buildlog : %s' % (sid, msrc, msg))
+            ws.send('{"msrc":"%s","content":"%s"}' % (msrc, msg))
     
     def update_step(self, w, bFinish = False):
         if self.cweight == self.weight:
             pass
         elif self.cweight + w >= self.weight or bFinish:
-            g_c_weight += self.weight - self.cweight
+            BuildStep.g_c_weight += self.weight - self.cweight
             self.cweight = self.weight
-            msg = '%d' % g_c_weight/g_t_weight
-            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, g_c_weight, g_t_weight)
+            print BuildStep.g_c_weight
+            print BuildStep.g_t_weight
+            percentage = BuildStep.g_c_weight // BuildStep.g_t_weight * 100
+            msg = '%d' % percentage
+            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
             self.report('wk-build-progress',msg)
         else:
-            g_c_weight += w
+            BuildStep.g_c_weight += w
             self.cweight += w
-            msg = '%d' % g_c_weight/g_t_weight
-            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, g_c_weight, g_t_weight)
+            percentage = BuildStep.g_c_weight // BuildStep.g_t_weight * 100
+            msg = '%d' % percentage
+            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
             self.report('wk-build-progress',msg)
 
 ##############################################
@@ -442,7 +447,7 @@ class Build(BuildStep):
             else:
                 for item in commands:
                     logging.info(item)
-                    self.report('wk-build-log', command)
+                    self.report('wk-build-log', item)
                     self.update_step(10)
                     #os.system(item)
         BuildStep.act(self)
@@ -472,7 +477,7 @@ class KVBuild(BuildStep):
             else:
                 for item in commands:
                     logging.info(item)
-                    self.report('wk-build-log', command)
+                    self.report('wk-build-log', item)
                     self.update_step(10)
                     #os.system(item)
         BuildStep.act(self)

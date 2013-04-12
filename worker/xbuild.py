@@ -1,3 +1,4 @@
+# coding=UTF-8
 """
 @author    tomas
 @date    2013-03-07
@@ -59,13 +60,13 @@ class Worker(threading.Thread):
                     if node.nodeType != node.ELEMENT_NODE:
                         continue
                     product = node.getAttribute('product')
-                    if product == self.projName:
+                    if product == self.projName or product == '':
                         node.setAttribute('build','1')
                     else:
                         node.setAttribute('build','0')
-                    writer = open(confFile,'w')
-                    dom.writexml(writer)
-                    writer.close()
+                writer = open(confFile,'w')
+                dom.writexml(writer)
+                writer.close()
         except Exception,e:
             print "error occers when parsing xml or run command:"
             print e
@@ -83,16 +84,18 @@ class Worker(threading.Thread):
                     continue;
                 else:
                     for step in node.childNodes:
+                        if step.nodeType != step.ELEMENT_NODE:
+                            continue
                         name = step.getAttribute('name')
-                        if self.options.has_key(name):
-                            step.setAttribute('value',self.options[name])
-                        elif name == 'prebuild' or name == 'postbuild':
+                        if name == 'prebuild' or name == 'postbuild':
                             step.setAttribute('value','1')
+                        elif self.options.has_key(name):
+                            step.setAttribute('value',self.options[name])
                         else:
                             step.setAttribute('value','0')
-                writer = open(confFile,'w')
-                dom.writexml(writer)
-                writer.close()
+            writer = open(bsFile,'w')
+            dom.writexml(writer)
+            writer.close()
         except Exception,e:
             print "error occers when parsing xml or run command:"
             print e
@@ -101,9 +104,17 @@ class Worker(threading.Thread):
         self.applySlnSettings()
         self.applyBuildOptions()
         
+    def run(self):
+        nickname = ''
+        if self.projName == 'bdkv':
+            nickname = 'kvfastrelease'
+        elif self.projName == 'bdm':
+            nickname = 'mgrfastrelease'
+        para = ('wk-build-log', self.id, self.socket)
+        buildproject(nickname,para)
+        
 def InitBuildInfo(nickname,para):
     buildConfFile = './BuildSwitch/BuildStep.xml'
-    buildInfo = ('nickname','product','buildtype')
     buildStep = []
     try:
         dom = xml.dom.minidom.parse(buildConfFile)
@@ -114,10 +125,8 @@ def InitBuildInfo(nickname,para):
             if nickname.lower() != buildNode.getAttribute('nickname'):
                 continue
             product = buildNode.getAttribute('product')
-            buildtype = buildNode.getAttribute('type')
-            buildInfo = (nickname,product,buildtype.split(','))
-            buildstep.g_t_weight = 0
-            buildstep.g_c_weight = 0
+            buildstep.BuildStep.g_t_weight = 0
+            buildstep.BuildStep.g_c_weight = 0
             
             for stepNode in buildNode.childNodes:
                 if stepNode.nodeType != stepNode.ELEMENT_NODE:
@@ -126,7 +135,7 @@ def InitBuildInfo(nickname,para):
                 value = stepNode.getAttribute('value')
                 order = stepNode.getAttribute('order')
                 weight = stepNode.getAttribute('weight')
-                buildstep.g_t_weight += weight
+                buildstep.BuildStep.g_t_weight += int(weight)
                 try:
                     clsName = ''
                     if product == 'bdm':
@@ -139,25 +148,18 @@ def InitBuildInfo(nickname,para):
                 except Exception,e:
                     print "error occers when creating buildsteps"
                     print e
-                    return (buildInfo,buildStep,False)
-        return (buildInfo,buildStep,True)
+                    return (buildStep,False)
+        return (buildStep,True)
     except Exception,e:
         print "error occers when initializing xbuild system"
         print e
-        return (buildInfo,buildStep,False)
+        return (buildStep,False)
     
-    def run(self):
-        nickname = ''
-        if self.projName == 'bdkv':
-            nickname = 'bdkvfastrelease'
-        elif self.projName == 'bdm':
-            nickname = 'bdmfastrelease'
-        para = ('wk-build-log', self.id, self.socket)
-        buildproject(nickname,para)
+    
         
 def buildproject(nickname,para = ()):
     #initialize
-    (buildInfo,buildStep,bInited) = InitBuildInfo(nickname,para)
+    (buildStep,bInited) = InitBuildInfo(nickname,para)
     
     if not bInited:
         print 'configuration error, please check BuildSwitch/BuildStep.xml'
@@ -165,7 +167,7 @@ def buildproject(nickname,para = ()):
     
     #info print
     print '\nXBuild Start\n-------------------------------'
-    print 'Build Nickname: %s\nProduct: %s\nBuild Type: %s' % buildInfo
+    print 'Build Nickname: %s\nProduct: %s\n'
     print '\nBuild Step(s)\n-------------------------------'
     
     #do homework

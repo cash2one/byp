@@ -1,4 +1,4 @@
-# encoding=utf-8
+# coding=UTF-8
 """
 @author    tomas
 @date    2013-03-13
