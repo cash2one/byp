@@ -268,7 +268,9 @@ class BuildStep:
             sid = self.para[1]
             ws = self.para[2]
             #整饰特殊字符
-            msg.replace('"',' ')
+            msg = msg.replace('"',' ')
+            if msg[-1] == '\\':
+                msg = msg[0:-1] #python bug maybe
             logging.info('sid : %s, msrc : %s, buildlog : %s' % (sid, msrc, msg))
             ws.send('{"msrc":"%s","content":"%s"}' % (msrc, msg))
     
@@ -278,16 +280,14 @@ class BuildStep:
         elif self.cweight + w >= self.weight or bFinish:
             BuildStep.g_c_weight += self.weight - self.cweight
             self.cweight = self.weight
-            print BuildStep.g_c_weight
-            print BuildStep.g_t_weight
-            percentage = BuildStep.g_c_weight // BuildStep.g_t_weight * 100
+            percentage = float(BuildStep.g_c_weight) / float(BuildStep.g_t_weight) * 100
             msg = '%d' % percentage
             logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
             self.report('wk-build-progress',msg)
         else:
             BuildStep.g_c_weight += w
             self.cweight += w
-            percentage = BuildStep.g_c_weight // BuildStep.g_t_weight * 100
+            percentage = float(BuildStep.g_c_weight) / float(BuildStep.g_t_weight) * 100
             msg = '%d' % percentage
             logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
             self.report('wk-build-progress',msg)
@@ -559,7 +559,7 @@ class KVSign(BuildStep):
             commands.append('python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\')
             for item in commands:
                 logging.info(item)
-                self.report('wk-build-log', command)
+                self.report('wk-build-log', item)
             fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             self.update_step(20)
             fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])

@@ -211,6 +211,11 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                     worker.notify(content)
                     break
                 
+        #收到进度更新消息，通知所有listener更新进度
+        elif msg['msrc'] == 'wk-build-progress':
+            content = '{"msrc":"ws-build-progress","content":"%s"}' % msg['content']
+            for client in self.listeners:
+                client.notify(content)
         #收到不知道是什么
         else:
             pass

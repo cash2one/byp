@@ -109,7 +109,7 @@ function onBtnBuildClick() {
     //build options
     $(".btn[id^='ws-btn-option-']").each( function() {
         if ($(this).hasClass("active")) {
-            if ($(this).attr('value') == undefined) {
+            if ($(this).children().attr('value') == undefined) {
                 ctx += String.format("{0},1;",$(this).children().attr('name'));
             }
             else {
@@ -138,8 +138,8 @@ function onInputClick() {
 }
 
 function updateUI(msg) {
-    //$("#ws-build-log").append(msg);
-    //$("#ws-build-log").append('<br>');
+    $("#ws-build-log").append(msg);
+    $("#ws-build-log").append('<br>');
 
     var jsonMsg = JSON.parse(msg)
     //更新项目combobox
@@ -264,6 +264,10 @@ function updateUI(msg) {
     else if (jsonMsg['msrc'] == 'ws-build-log') {
         $("#ws-build-log").append(msg);
         $("#ws-build-log").append('<br>');
+    }
+    else if (jsonMsg['msrc'] == 'ws-build-progress') {
+        $("#ws-build-progress").attr("style","width:"+jsonMsg['content']+"%;");
+        $("#ws-build-progress-text").text(jsonMsg['content']+"%");
     }
 }
 

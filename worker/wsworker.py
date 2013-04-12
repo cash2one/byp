@@ -37,6 +37,7 @@ def mainLoop(socket, workerId, nickname):
 				#init xbuild system with custom options
 				slave.setInitParam(ctx)
 				slave.start()
+				sleep(100000)
 				postStatus(socket,'{"msrc":"wk-status-change","content":"idle"}')
 			elif ctx['msrc'] == 'wk-stop-build':
 				evt.set()

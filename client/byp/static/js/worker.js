@@ -36,8 +36,7 @@ onmessage = function (evt){
 
 function updateUI (message) {
     //console.log('notify ui to update view');
-    var msg = String.format("{\"msrc\":\"{0}\",\"content\":\"{1}\"}", message['msrc'], message['content']);
-    postMessage(msg);
+    postMessage(message);
 }
 
 //main websocket service object
@@ -52,7 +51,7 @@ var updater = {
         
         //2 register callbacks
 	    updater.socket.onmessage = function(event) {
-	        updateUI(JSON.parse(event.data));
+	        updateUI(event.data);
 	    }
         updater.socket.onopen = function (event) {
             // handshaked, init ui
