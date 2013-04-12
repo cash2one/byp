@@ -15,7 +15,7 @@
 """
 
 import sys,os,glob,httplib,urllib,mimetypes,comm,conf,xml.dom.minidom,win32api,shutil
-
+import logging
 
 def FileOperation(dir,op,fileType,excluded_dir=[]):
     #root dir
@@ -76,26 +76,25 @@ def FileOperationWithExtraPara(dir,op,para,fileType,excluded_dir=[]):
 
 
 def Show(file):
-    print file
-
+    logging.info(file)
 
 def Sign(file):
-    print 'Signning File: ' + file
+    logging.info('Signning File: ' + file)
     command = conf.byp_bin_path + 'FileSign.exe /s ' + file
     os.system(command)
     
 
 def SignKav(file):
-    print 'Signning File With Kav: ' + file
+    logging.info('Signning File With Kav: ' + file)
     command = conf.byp_bin_path + 'KavSign.exe /s"' + file + '" /u"keys\\PrivateKey.sgn"'
     os.system(command)
 
 def GenRC(file,writer):
     lfile = file.lower()
     if lfile.find('\\basic\\') != -1 or lfile.find('\\vdc_proj\\') != -1 or lfile.find('\\webshield_proj\\') != -1:
-        print 'ignoring file : %s' % file
+        logging.info( 'ignoring file : %s' % file)
     else:
-        print 'analysing file : %s' % file
+        logging.info( 'analysing file : %s' % file)
         index = file.rfind('\\')
         projdir = file[6:index]
         modulename = file[index+1:file.rfind('.vcproj')]
@@ -163,7 +162,7 @@ def SignBaidu(file,para):
         sign_product = conf.kvsign_file_product.encode(sys.getfilesystemencoding())
     file_path = file[0:file.rfind('\\')+1]
     file_name = file[file.rfind('\\')+1:]
-    print 'Signning File ' + file + ' through vpn connection to ' + conf.cerf_addr
+    logging.info( 'Signning File ' + file + ' through vpn connection to ' + conf.cerf_addr)
     files,fields = [],[]
     fields.append(('desc',sign_product))
     fields.append(('cert',signType))
@@ -181,7 +180,7 @@ def SignBaidu(file,para):
     
     for i in range(0,5):
         response = post_multipart(conf.cerf_addr,'/sign.php',fields,files,blanks)
-        print response
+        logging.info( response)
         urllib.urlretrieve('http://' + conf.cerf_addr + '/OutPut/' + file_name, file + '.sign')
         
         command = conf.byp_bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
@@ -191,6 +190,7 @@ def SignBaidu(file,para):
             break;
         
         if i == 4:
+            logging.info('Sign baidu official digital signature failed.')
             print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
             raise 'Sign baidu official digital signature failed.'
         
@@ -594,6 +594,9 @@ kvgen_file_list                       - generate kv verify file list
 gen_rc_list                           - generate rc list
                '''
         return
+
+    #init logging system, it's told logging is threadsafe, so do NOT need to sync
+    logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
 
     argv[2] = argv[2].strip('"')
     if argv[2][-1] != '\\':

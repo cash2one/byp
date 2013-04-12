@@ -18,7 +18,7 @@ def main(argc, argv):
         projdir = node.getAttribute('projdir')
         modulename = node.getAttribute('modulename')
         filedesc = node.getAttribute('filedesc')
-        command = os.getcwd() + '\\AutoBuild\\rcgen.exe --projdir="%s" --modulename="%s" --filedesc="%s"' % (projdir,modulename,filedesc)
+        command = byp_bin_path + 'rcgen.exe --projdir="%s" --modulename="%s" --filedesc="%s"' % (projdir,modulename,filedesc)
         os.system(command.encode(sys.getfilesystemencoding()))
 
 if "__main__" == __name__:

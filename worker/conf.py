@@ -9,6 +9,9 @@
 	
 """
 
+svn_url = 'http://192.168.10.242:8000/client/'
+svn_conf_file = './buildswitch/SVN.xml'
+
 buildver_headerfile = "../../basic/include/CommonInclude/BuildVer.h"
 buildver_definefile = "../../basic/include/CommonInclude/BDMVersion.h"
 
@@ -22,8 +25,8 @@ kvsign_conf_file='./buildswitch/KVSignature.xml'
 verify_log_file = '../output/BinVerify.txt'
 kvverify_log_file = '../output/KVBinVerify.txt'
 
-exist_verify_file = './conf/FileVerify.xml'
-kvexist_verify_file = './conf/KVFileVerify.xml'
+exist_verify_file = './verifylist/FileVerify.xml'
+kvexist_verify_file = './verifylist/KVFileVerify.xml'
 
 checklog_file = "./conf/checklog.conf"
 kvchecklog_file = "./conf/kvchecklog.conf"

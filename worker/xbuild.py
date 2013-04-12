@@ -68,8 +68,8 @@ class Worker(threading.Thread):
                 dom.writexml(writer)
                 writer.close()
         except Exception,e:
-            print "error occers when parsing xml or run command:"
-            print e
+            logging.error("error occers when parsing xml or run command:")
+            logging.error(e)
         
     def applyBuildOptions(self):
         bsFile = './buildswitch/buildstep.xml'
@@ -97,8 +97,8 @@ class Worker(threading.Thread):
             dom.writexml(writer)
             writer.close()
         except Exception,e:
-            print "error occers when parsing xml or run command:"
-            print e
+            logging.error("error occers when parsing xml or run command:")
+            logging.error(e)
         
     def applyBuildSettings(self):
         self.applySlnSettings()
@@ -112,6 +112,8 @@ class Worker(threading.Thread):
             nickname = 'mgrfastrelease'
         para = ('wk-build-log', self.id, self.socket)
         buildproject(nickname,para)
+        logging.info('build complete !!')
+        self.socket.send('{"msrc":"wk-status-change","content":"idle"}')
         
 def InitBuildInfo(nickname,para):
     buildConfFile = './BuildSwitch/BuildStep.xml'
@@ -146,13 +148,13 @@ def InitBuildInfo(nickname,para):
                     step.__init__(name,int(value),int(order),int(weight),para)
                     buildStep.append(step)
                 except Exception,e:
-                    print "error occers when creating buildsteps"
-                    print e
+                    logging.error("error occers when creating buildsteps")
+                    logging.error(e)
                     return (buildStep,False)
         return (buildStep,True)
     except Exception,e:
-        print "error occers when initializing xbuild system"
-        print e
+        logging.error("error occers when initializing xbuild system")
+        logging.error(e)
         return (buildStep,False)
     
     
@@ -162,18 +164,18 @@ def buildproject(nickname,para = ()):
     (buildStep,bInited) = InitBuildInfo(nickname,para)
     
     if not bInited:
-        print 'configuration error, please check BuildSwitch/BuildStep.xml'
+        logging.info('configuration error, please check BuildSwitch/BuildStep.xml')
         return
     
     #info print
-    print '\nXBuild Start\n-------------------------------'
-    print 'Build Nickname: %s\nProduct: %s\n'
-    print '\nBuild Step(s)\n-------------------------------'
+    logging.info('\nXBuild Start\n-------------------------------')
+    logging.info('Build Nickname: %s\nProduct: %s\n')
+    logging.info('\nBuild Step(s)\n-------------------------------')
     
     #do homework
     buildStep.sort(lambda x,y: cmp(x.order,y.order))
     for item in buildStep:
-        print '\nStep %d - %s\n-------------------------------' % (item.order,item)
+        logging.info('\nStep %d - %s\n-------------------------------' % (item.order,item))
         item.act()
             
 def main(argc, argv):

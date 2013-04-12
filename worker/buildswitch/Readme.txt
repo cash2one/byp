@@ -13,11 +13,11 @@
 
 3.关于BuildStep.xml，各步骤键值对含义：
 	prebuild				0-pass;1-simpleclean;2-fullclean
-	svn					0-pass;1-forcecheckout;2-forceupdate;3-optionalcheckout;4-optionalupdate
+	svn					0-pass;1-forceupdate;2-forcecheckout;3-optionalupdate;4-optionalcheckout
 	rewriteversion				0-pass;1-daily;2-version
-	build					0-pass;1-rebuildrelease;2-buildrelease;3-optionalrebuildrelease;4-optionalbuildrelease;5-rebuildall;6-buildall;7-optionalrebuildall;8-optionalbuildall
+	build					0-pass;1-forcebuildrelease;2-optionalbuild;3-forcerebuildrelease;4-optionalrebuild
 	pack					0-pass;1-packrelease
-	sign					0-pass;1-signrelease;
+	sign					0-pass;1-signrelease
 	verify					0-pass;1-doit
 	install					0-pass;1-doit
 	signinstaller				0-pass;1-doit

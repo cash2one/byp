@@ -3,51 +3,51 @@
 @author tomas
 @date    2013-03-31
 @desc
-	project configuration that support
+	project configuration
     
 @brief
     
 """
 
 
-#sln名称，介绍，负责人，分类，目录，被哪些工程依赖
+#sln名称，介绍，负责人，分类，被哪些工程依赖
 bdkv_slns = [
-	['commonlib','公共lib库','刘恒','base','common_proj',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['skin','公共皮肤库','王超','middle','skin_proj',[]],
-	['logicmisc','产品中间层组件','杨彦召','middle','client_proj',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['logicutils','产品中间层组件','杨彦召','middle','client_proj',[]],
-	['client','产品中间层组件','杨彦召','middle','client_proj',[]],
-	['commondll','公共dll库','刘恒','base','common_proj',[]],
-	['avcommon','杀毒公共模块','务孟庆','module','avcommon_proj',[]],
-	['filemon','文件监控','武广柱','module','avfilemon_proj',[]],
-	['avhips','主动防御','曹杨','module','avhips_proj',[]],
-	['drivermanager','驱动管理','曹杨','module','avhips_proj',[]],
-	['sysrepair','系统修复','周吉文','module','sysrepair_proj',[]],
-	['antivirus','杀毒模块','赵欣','module','antivirus_proj',[]],
-	['bdkv','杀毒主程序','易善鸿','module','avmain_proj',[]],
-	['bd0001','驱动模块','曹杨','module','avdriver_proj',[]],
+	['commonlib','公共lib库','刘恒','base',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['skin','公共皮肤库','王超','middle',[]],
+	['logicmisc','产品中间层组件','杨彦召','middle',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['logicutils','产品中间层组件','杨彦召','middle',[]],
+	['client','产品中间层组件','杨彦召','middle',[]],
+	['commondll','公共dll库','刘恒','base',[]],
+	['avcommon','杀毒公共模块','务孟庆','module',[]],
+	['filemon','文件监控模块','武广柱','module',[]],
+	['avhips','主动防御模块','曹杨','module',[]],
+	['drivermanager','驱动管理模块','曹杨','module',[]],
+	['sysrepair','系统修复模块','周吉文','module',[]],
+	['antivirus','杀毒模块','赵欣','module',[]],
+	['bdkv','杀毒主程序模块','易善鸿','module',[]],
+	['bd0001','驱动模块','曹杨','module',[]],
 ]
 
 bdm_slns = [
-	['commonlib','公共lib库','刘恒','base','common_proj',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['skin','公共皮肤库','王超','middle','skin_proj',[]],
-	['logicmisc','产品中间层组件','杨彦召','middle','client_proj',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['logicutils','通用功能组件','杨彦召','middle','client_proj',[]],
-	['client','产品中间层组件','杨彦召','middle','client_proj',[]],
-	['commondll','公共dll库','刘恒','base','common_proj',[]],
-	['bdnd','bdnd是什么','王超','module','ndmain_proj',[]],
-	['syscleaner','系统清理','张巍','module','system_proj',[]],
-	['sysaccelerator','系统加速','赫卫卿','module','system_proj',[]],
-	['soacceleratorplugin','软件优化加速插件','赫卫卿','module','system_proj',[]],
-	['socleanerplugin','系统优化清理插件','张巍','module','system_proj',[]],
-	['somanager','软件优化管家','张凯','module','system_proj',[]],
-	['soshortcutplugin','软件优化快捷插件','张凯','module','system_proj',[]],
-	['swmanager','软件管理','张凯','module','system_proj',[]],
-	['qmlib','qmlib是什么','张巍','middle','qmold_proj',[]],
-	['qmgarbagecleaner','垃圾清理','张巍','module','qmold_proj',[]],
-	['homepageplugins','主页插件','杨彦召','module','main_proj',[]],
-	['mainframeplugins','框架插件','杨彦召','module','main_proj',[]],
-	['main','极光主程序','杨彦召','module','main_proj',[]],
+	['commonlib','公共lib库','刘恒','base',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['skin','公共皮肤库','王超','middle',[]],
+	['logicmisc','产品中间层组件','杨彦召','middle',['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['logicutils','产品中间层组件','杨彦召','middle',[]],
+	['client','产品中间层组件','杨彦召','middle',[]],
+	['commondll','公共dll库','刘恒','base',[]],
+	['bdnd','bdnd是什么','王超','module',[]],
+	['syscleaner','系统清理模块','张巍','module',[]],
+	['sysaccelerator','系统加速模块','赫卫卿','module',[]],
+	['soacceleratorplugin','软件优化加速插件','赫卫卿','module',[]],
+	['socleanerplugin','系统优化清理插件','张巍','module',[]],
+	['somanager','软件优化管家','张凯','module',[]],
+	['soshortcutplugin','软件优化快捷插件','张凯','module',[]],
+	['swmanager','软件管理模块','张凯','module',[]],
+	['qmlib','qmlib是什么','张巍','middle',[]],
+	['qmgarbagecleaner','垃圾清理模块','张巍','module',[]],
+	['homepageplugins','主页插件','杨彦召','module',[]],
+	['mainframeplugins','框架插件','杨彦召','module',[]],
+	['main','极光主程序','杨彦召','module',[]],
 ]
 
 projects = {
@@ -82,7 +82,7 @@ bdkv_options = {
 	'send':['check','after','安装包归档','生成的安装包发送至归档目录'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名'],
 
-	'symadd':['check','after','符号归档','生成符号文件进行归档'],
+	'symadd':['check','after','符号归档','生成的符号文件进行归档'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录'],
 	#'postbuild':['check','after','清理','打包后的清理工作'],
 }
@@ -111,7 +111,7 @@ bdm_options = {
 	'send':['check','after','安装包归档','生成的安装包发送至归档目录'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名'],
 
-	'symadd':['check','after','符号归档','生成符号文件进行归档'],
+	'symadd':['check','after','符号归档','生成的符号文件进行归档'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录'],
 	'postbuild':['check','after','清理','打包后的清理工作'],
 }

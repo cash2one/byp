@@ -1,0 +1,7 @@
+<?xml version="1.0" ?><conf use="trunk">
+    <item name="branches" value=""/>
+    <item name="tag" value=""/>
+    <item name="trunk"/>
+    <item name="revision" value=""/>
+</conf>
+   

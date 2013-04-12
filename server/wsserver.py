@@ -15,7 +15,7 @@ import tornado.options
 import tornado.web
 import tornado.websocket
 import logging
-import os.path
+import sys,os.path
 import uuid
 import time
 import project
@@ -226,6 +226,9 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             self.notify(content)
             
 def main():
+    #init logging system, it's told logging is threadsafe, so do NOT need to sync
+    logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
+    
     tornado.options.parse_command_line()
     app = Application()
     app.listen(options.port)
