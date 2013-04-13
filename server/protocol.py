@@ -26,7 +26,6 @@
 #				 = "ws-user-email"							用户email
 #				 = "ws-btn-build"							通知打包
 #				 = "ws-build-progress"						打包进度更新
-#				 = "ws-build-progress-text"					打包进度细节
 #				 = "ws-build-log"							主打包log窗口
 #				 = "ws-worker-select"						切换worker响应
 #				 = "ws-worker-status"						更新worker状态

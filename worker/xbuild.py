@@ -112,8 +112,6 @@ class Worker(threading.Thread):
             nickname = 'mgrfastrelease'
         para = ('wk-build-log', self.id, self.socket)
         buildproject(nickname,para)
-        logging.info('build complete !!')
-        self.socket.send('{"msrc":"wk-status-change","content":"idle"}')
         
 def InitBuildInfo(nickname,para):
     buildConfFile = './BuildSwitch/BuildStep.xml'
@@ -165,8 +163,7 @@ def report(msrc, msg, para):
         ws = para[2]
         #整饰特殊字符
         msg = msg.replace('"',' ')
-        if len(msg) != 0 and msg[-1] == '\\':
-            msg = msg[0:-1]
+        msg = msg.replace('\\','/')
         content = '{"msrc":"%s","content":"%s"}' % (msrc, msg)
         logging.info('send message from worker, sid:%s, message:%s' % (sid,content))
         ws.send(content)
@@ -179,6 +176,8 @@ def buildproject(nickname,para = ()):
         logging.info('configuration error, please check BuildSwitch/BuildStep.xml')
         return
     
+    #reset progress
+    report('wk-build-progress','0',para)
     #info print
     report('wk-build-log', 'XBuild Start', para)
     report('wk-build-log', '------------------------------------------------------', para)
@@ -192,6 +191,11 @@ def buildproject(nickname,para = ()):
         report('wk-build-log', 'Step %d - %s' % (item.order,item), para)
         report('wk-build-log', '------------------------------------------------------', para)
         item.act()
+    logging.info('build complete !!')
+    report('wk-build-log', '', para)
+    report('wk-build-log', '------------------------------------------------------', para)
+    report('wk-build-finish','',para)
+    report('wk-status-change','idle',para)
             
 def main(argc, argv):
     

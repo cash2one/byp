@@ -296,8 +296,7 @@ class BuildStep:
             ws = self.para[2]
             #整饰特殊字符
             msg = msg.replace('"',' ')
-            if msg[-1] == '\\':
-                msg = msg[0:-1]
+            msg = msg.replace('\\','/')
             content = '{"msrc":"%s","content":"%s"}' % (msrc, msg)
             logging.info('send message from worker, sid:%s, message:%s' % (sid,content))
             ws.send(content)
@@ -379,7 +378,7 @@ class Svn(BuildStep):
                 self.report('wk-build-log', 'No svn commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item)
+                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
                     self.update_step(3)
                     time.sleep(1)
                     #os.system(item)
@@ -401,7 +400,7 @@ class KVSvn(BuildStep):
                 self.report('wk-build-log', 'No svn commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item)
+                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
                     self.update_step(3)
                     time.sleep(1)
                     #os.system(item)

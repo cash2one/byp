@@ -1,6 +1,16 @@
 //
 //
-//	main ui handler js
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 
@@ -53,7 +63,9 @@ $(document).ready(function() {
     initUI();
 
     //定制默认按钮按下行为
-    $('.btn-group > .btn, .btn[data-toggle="button"]').click(onInverseBtnClick);
+    //$('.btn-group > .btn, .btn[data-toggle="button"]').bind('click',onInverseBtnClick);
+    //buildall按钮按下行为
+    $("#ws-sln-buildall").bind('click',onBuildallBtnClick);
 
     //绑定默认project和worker选择事件
     $('#ws-project-select').bind('change',onProjectSelect);
@@ -67,6 +79,8 @@ $(document).ready(function() {
 
     //激活默认build depends
     $("#btn-revision-build-depend").click();
+    //默认激活build all
+    $("#ws-sln-buildall").click();
 
     //start backend communication worker
     worker = new Worker("static/js/worker.js");
@@ -77,7 +91,46 @@ $(document).ready(function() {
 });
 
 function onBtnBuildClick() {
-    
+    var ctx = "";
+    //proj name
+    ctx += $("#ws-project-select option:selected").text();
+    ctx += "|";
+    //sln list
+    $(".btn[id^='ws-btn-slnselect-']").each( function() {
+        if ($(this).hasClass("active")) {
+            ctx += String.format("{0},1;",$(this).children().html());
+        }
+        else {
+            ctx += String.format("{0},0;",$(this).children().html());   
+        }
+    });
+    ctx = ctx.slice(0,-1);
+    ctx += "|"
+    //build options
+    $(".btn[id^='ws-btn-option-']").each( function() {
+        if ($(this).hasClass("active")) {
+            if ($(this).children().attr('value') == undefined) {
+                ctx += String.format("{0},1;",$(this).children().attr('name'));
+            }
+            else {
+                ctx += String.format("{0},{1};",$(this).children().attr('name'),$(this).children().attr('value'));
+            }
+        }
+    })
+    ctx = ctx.slice(0,-1);
+    ctx += "|"
+    //build-reason and user-email
+    ctx += String.format("reason,{0}|",$("#ws-build-reason").attr('value'));
+    ctx += String.format("email,{0}|",$("#ws-user-email").attr('value'));
+    //codebase
+    $(".btn[id^='ws-btn-codebase-']").each( function() {
+        if ($(this).hasClass("active")) {
+            ctx += String.format("codebase,{0}",$(this).attr('value'));
+        }
+    })
+    alert(ctx);
+    var msg = formatMessage("ws-btn-build",ctx);
+    worker.postMessage(msg);
 }
 
 function onInputClick() {
@@ -109,7 +162,7 @@ function updateUI(msg) {
         var btnId = "ws-btn-slnselect-" + randomChar(32);
         var node = String.format("<button type=\"button\" id=\"{0}\" class=\"btn btn-mini\" class-toggle=\"btn-inverse\" data-toggle=\"button\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\">{2}</a></button>&nbsp;",btnId,slnTooltip,slnName);
         $("#ws-sln-select-" + sln[3]).append(node);
-        $("#"+btnId).bind('click',onInverseBtnClick);
+        $("#"+btnId).bind('click',onSlnBtnClick);
         $("#"+btnId).click();
     }
     //更新build options
@@ -118,7 +171,7 @@ function updateUI(msg) {
         if (ctx[1] == 'check') {
             var info = ctx[3].split(",");
             var btnId = "ws-btn-option-" + randomChar(32);
-            var node = String.format("<button type=\"button\" id=\"{0}\" class=\"btn btn-mini\" class-toggle=\"btn-inverse\" data-toggle=\"button\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\">{2}</a></button>&nbsp;",btnId,info[1],info[0]);
+            var node = String.format("<button type=\"button\" id=\"{0}\" class=\"btn btn-mini\" class-toggle=\"btn-inverse\" data-toggle=\"button\"><a href=\"#\" rel=\"tooltip\" name=\"{1}\"title=\"{2}\">{3}</a></button>&nbsp;",btnId,ctx[0],info[1],info[0]);
             $("#ws-build-options-" + ctx[2]).append(node);
             $("#"+btnId).bind('click',onInverseBtnClick);
             $("#"+btnId).click();
@@ -135,11 +188,11 @@ function updateUI(msg) {
                 var btnId = "ws-btn-option-" + randomChar(32);
                 var option = "";
                 if (items.length == 4 && items[3] == 'default') {
-                    var option = String.format("<button type=\"button\" id=\"{0}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\" value=\"{2}\">{3}</a></button>",btnId,items[1],items[2],items[0]);
+                    var option = String.format("<button type=\"button\" id=\"{0}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" name=\"{1}\" title=\"{2}\" value=\"{3}\">{4}</a></button>",btnId,ctx[0],items[1],items[2],items[0]);
                     arrActive.push(btnId);
                 }
                 else {
-                    option = String.format("<button type=\"button\" id=\"{0}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{1}\" value=\"{2}\">{3}</a></button>",btnId,items[1],items[2],items[0]);
+                    option = String.format("<button type=\"button\" id=\"{0}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" name=\"{1}\" title=\"{2}\" value=\"{3}\">{4}</a></button>",btnId,ctx[0],items[1],items[2],items[0]);
                 }
                 
                 node += option;
@@ -178,8 +231,15 @@ function updateUI(msg) {
         else if (worker[0] == 'remove') {
             $("#"+worker[1]).remove();
         }
+        else if (worker[0] == 'update') {
+            var ip = $("#"+worker[1]).attr('value');
+            var nickname = $("#"+worker[1]).html();
+            $("#"+worker[1]).remove();
+            var node = String.format("<option id=\"{0}\" class=\"{1}\" value=\"{2}\">{3}</option>",worker[1],worker[2],ip,nickname);    
+            $("#ws-worker-select").append(node);
+        }
         //处理默认选择
-        $("#ws-worker-select").change();
+        updateWorkerStatus();
     }
     //更新worker状态
     else if (jsonMsg['msrc'] == 'ws-worker-running' || jsonMsg['msrc'] == 'ws-worker-idle' || jsonMsg['msrc'] == 'ws-worker-error') {
@@ -191,8 +251,9 @@ function updateUI(msg) {
             currentVal -= 1;
         }
         $("#"+jsonMsg['msrc']).html(currentVal.toString());
+        
         //处理默认选择
-        $("#ws-worker-select").change();
+        updateWorkerStatus();
     }
     //通知client重新注册ui
     else if (jsonMsg['msrc'] == 'ws-client-update') {
@@ -201,8 +262,20 @@ function updateUI(msg) {
     }
     //更新build log
     else if (jsonMsg['msrc'] == 'ws-build-log') {
-        $("#ws-build-log").append(msg);
+        $("#ws-build-log").append(jsonMsg['content']);
         $("#ws-build-log").append('<br>');
+        $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
+    }
+    //更新进度
+    else if (jsonMsg['msrc'] == 'ws-build-progress') {
+        $("#ws-build-progress").attr("style","width:"+jsonMsg['content']+"%;");
+        $("#ws-build-progress-text").text(jsonMsg['content']+"%");
+    }
+    //打包完成
+    else if (jsonMsg['msrc'] == 'ws-build-finish') {
+        $("#ws-build-log").append("打包完成!!");
+        $("#ws-build-log").append('<br>');
+        $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
     }
 }
 
@@ -218,6 +291,7 @@ function  randomChar(length) {
 
 //checkbox color change action
 function onInverseBtnClick() {
+    //common
     if($(this).attr('class-toggle') != undefined && !$(this).hasClass('disabled')){
         var btnGroup = $(this).parent('.btn-group');
 
@@ -235,8 +309,62 @@ function onInverseBtnClick() {
                 $(this).addClass($(this).attr('class-toggle'));
             }
         }
+    }    
+}
 
-    }
+//sln按钮的默认行为
+function onSlnBtnClick() {
+    if($(this).attr('class-toggle') != undefined && !$(this).hasClass('disabled')){
+        var btnGroup = $(this).parent('.btn-group');
+
+        if(btnGroup.attr('data-toggle') == 'buttons-radio') {
+            btnGroup.find('.btn').each(function() {
+                $(this).removeClass($(this).attr('class-toggle'));
+            });
+            $(this).addClass($(this).attr('class-toggle'));
+        }
+
+        if(btnGroup.attr('data-toggle') == 'buttons-checkbox' || $(this).attr('data-toggle') == 'button') {
+            if($(this).hasClass('active')) {
+                $(this).removeClass($(this).attr('class-toggle'));
+            } else {
+                $(this).addClass($(this).attr('class-toggle'));
+            }
+        }
+    }    
+}
+
+//buildall按钮默认行为
+function onBuildallBtnClick() {
+    //common
+    if($(this).attr('class-toggle') != undefined && !$(this).hasClass('disabled')){
+        var btnGroup = $(this).parent('.btn-group');
+
+        if(btnGroup.attr('data-toggle') == 'buttons-radio') {
+            btnGroup.find('.btn').each(function() {
+                $(this).removeClass($(this).attr('class-toggle'));
+            });
+            $(this).addClass($(this).attr('class-toggle'));
+        }
+
+        if(btnGroup.attr('data-toggle') == 'buttons-checkbox' || $(this).attr('data-toggle') == 'button') {
+            if($(this).hasClass('active')) {
+                $(this).removeClass($(this).attr('class-toggle'));
+                $(".btn[id^='ws-btn-slnselect']").each( function() {
+                    if ($(this).hasClass("active")) {
+                        $(this).click();
+                    }
+                });
+            } else {
+                $(this).addClass($(this).attr('class-toggle'));
+                $(".btn[id^='ws-btn-slnselect']").each( function() {
+                    if (!$(this).hasClass("active")) {
+                        $(this).click();
+                    }
+                });
+            }
+        }
+    }    
 }
 
 //点击更换项目
@@ -266,17 +394,13 @@ function onProjectSelect() {
     worker.postMessage(msg);
 }
 
-
-//切换worker响应
-function onWorkerSelect() {
-    //清空日志输出区域
-    $("#ws-build-log").empty()
-
-    var cls = $("#ws-worker-select option:selected").attr('class');
-    var ip = $("#ws-worker-select option:selected").attr('value');
+function updateWorkerStatus() {
     $("#ws-worker-status").removeClass();
     $("#ws-worker-detail").removeClass();
 
+    var cls = $("#ws-worker-select option:selected").attr('class');
+    var ip = $("#ws-worker-select option:selected").attr('value');
+    
     if (cls == undefined || ip == undefined) {
         $("#ws-worker-status").text("None");
         $("#ws-worker-status").addClass("label label-warning");
@@ -300,9 +424,15 @@ function onWorkerSelect() {
             $("#ws-worker-detail").addClass("label label-important");
             $("#ws-worker-detail").text("该编译机出现错误");
         }
-        var msg = formatMessage("ws-worker-select",$("#ws-worker-select option:selected").attr('id'))
-        worker.postMessage(msg);
     }
+}
+
+//切换worker响应
+function onWorkerSelect() {
+    //清空日志输出区域
+    $("#ws-build-log").empty();
+
+    updateWorkerStatus();
 }
 
 
