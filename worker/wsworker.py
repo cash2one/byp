@@ -25,8 +25,6 @@ def mainLoop(socket, workerId, nickname):
 	logging.info('start mainlooping')
 	worker = None
 	socket.send('{"msrc":"wk-worker-connect","content":"%s|%s"}' % (workerId,nickname))
-	evt = threading.Event()
-	slave = xbuild.Worker(socket, workerId,evt)
 	try:
 		while True:
 			msg = socket.recv()
@@ -35,6 +33,8 @@ def mainLoop(socket, workerId, nickname):
 			if ctx['msrc'] == 'wk-start-build':
 				postStatus(socket,'{"msrc":"wk-status-change","content":"running"}')
 				#init xbuild system with custom options
+				evt = threading.Event()
+				slave = xbuild.Worker(socket, workerId,evt)
 				slave.setInitParam(ctx)
 				slave.start()
 			elif ctx['msrc'] == 'wk-stop-build':

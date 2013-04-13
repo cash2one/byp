@@ -165,7 +165,7 @@ def report(msrc, msg, para):
         ws = para[2]
         #整饰特殊字符
         msg = msg.replace('"',' ')
-        if msg[-1] == '\\':
+        if len(msg) != 0 and msg[-1] == '\\':
             msg = msg[0:-1]
         content = '{"msrc":"%s","content":"%s"}' % (msrc, msg)
         logging.info('send message from worker, sid:%s, message:%s' % (sid,content))
@@ -181,15 +181,16 @@ def buildproject(nickname,para = ()):
     
     #info print
     report('wk-build-log', 'XBuild Start', para)
-    report('wk-build-log', '-------------------------------', para)
+    report('wk-build-log', '------------------------------------------------------', para)
     report('wk-build-log', 'Build Step(s)', para)
-    report('wk-build-log', '-------------------------------', para)
+    report('wk-build-log', '------------------------------------------------------', para)
     
     #do homework
     buildStep.sort(lambda x,y: cmp(x.order,y.order))
     for item in buildStep:
+        report('wk-build-log', '', para)
         report('wk-build-log', 'Step %d - %s' % (item.order,item), para)
-        report('wk-build-log', '-------------------------------', para)
+        report('wk-build-log', '------------------------------------------------------', para)
         item.act()
             
 def main(argc, argv):

@@ -48,6 +48,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
     clients = []
     workers = []
     
+    
     #发送消息
     def notify(self, content):
         logging.info('send message %s' % content)
@@ -96,6 +97,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             self.status = 'idle'
             self.type = 'worker'
             self.listeners = []
+            self.cachedBuildInfo = []
             BuildServerHandler.workers.append(self)
             
             #通知所有clients，worker增加了一个
@@ -184,7 +186,22 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             else:
                 content = '{"msrc":"ws-worker-select","content":""}'
                 self.notify(content)
-            
+                
+        #client刚连上，询问打包状态，发送所有缓存进度
+        elif msg['msrc'] == 'ws-query-buildlog':
+            for worker in BuildServerHandler.workers:
+                if self in worker.listeners:
+                    for content in worker.cachedBuildInfo:
+                        self.notify(content)
+                
+        #收到打包消息，开始干活
+        elif msg['msrc'] == 'ws-btn-build':
+            content = '{"msrc":"wk-start-build","content":"%s"}' % msg['content']
+            for worker in BuildServerHandler.workers:
+                if worker.status == 'idle':
+                    worker.notify(content)
+                    break
+                
         #收到worker状态切换，通知所有clients
         elif msg['msrc'] == 'wk-status-change':
             oldStatus = self.status
@@ -196,28 +213,30 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 client.notify(content0)
                 client.notify(content1)
                 client.notify(content2)
-        
-        #收到worker日志，发送到这个worker的所有listener
+                
+        #收到worker日志，缓存之，然后发送到这个worker的所有listener
         elif msg['msrc'] == 'wk-build-log':
             ctx = msg['content']
             ctx = ctx.replace('\\','/')
             content = '{"msrc":"ws-build-log","content":"%s"}' % ctx
+            self.cachedBuildInfo.append(content)
             for client in self.listeners:
                 client.notify(content)
-                
-        #收到打包消息，开始干活
-        elif msg['msrc'] == 'ws-btn-build':
-            content = '{"msrc":"wk-start-build","content":"%s"}' % msg['content']
-            for worker in BuildServerHandler.workers:
-                if worker.status == 'idle':
-                    worker.notify(content)
-                    break
-                
-        #收到进度更新消息，通知所有listener更新进度
+        
+        #收到进度更新消息，缓存之，然后通知所有listener更新进度
         elif msg['msrc'] == 'wk-build-progress':
             content = '{"msrc":"ws-build-progress","content":"%s"}' % msg['content']
+            self.cachedBuildInfo.append(content)
             for client in self.listeners:
                 client.notify(content)
+                
+        #收到打包完成消息，清空缓存，然后通知所有listener
+        elif msg['msrc'] == 'wk-build-finish':
+            self.cachedBuildInfo = []
+            content = '{"msrc":"ws-build-finish","content":""}'
+            for client in self.listeners:
+                client.notify(content)
+        
         #收到不知道是什么
         else:
             pass
