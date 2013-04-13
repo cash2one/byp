@@ -264,10 +264,18 @@ function updateUI(msg) {
     else if (jsonMsg['msrc'] == 'ws-build-log') {
         $("#ws-build-log").append(jsonMsg['content']);
         $("#ws-build-log").append('<br>');
+        $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
     }
+    //更新进度
     else if (jsonMsg['msrc'] == 'ws-build-progress') {
         $("#ws-build-progress").attr("style","width:"+jsonMsg['content']+"%;");
         $("#ws-build-progress-text").text(jsonMsg['content']+"%");
+    }
+    //打包完成
+    else if (jsonMsg['msrc'] == 'ws-build-finish') {
+        $("#ws-build-log").append("打包完成!!");
+        $("#ws-build-log").append('<br>');
+        $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
     }
 }
 

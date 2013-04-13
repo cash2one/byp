@@ -59,6 +59,7 @@ var updater = {
             updater.send("{\"msrc\":\"ws-client-connect\",\"content\":\"\"}");
             updater.send("{\"msrc\":\"ws-project-select\",\"content\":\"\"}");
             updater.send("{\"msrc\":\"ws-worker-select\",\"content\":\"\"}");
+            updater.send("{\"msrc\":\"ws-query-buildlog\",\"content\":\"\"}");
         }
         updater.socket.onerror = function (event) {
             //console.log('websocket error occer');
