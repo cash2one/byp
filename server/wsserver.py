@@ -30,6 +30,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r"/", MainHandler),#for v8 and webkit portable web client (must support websocket)
             (r"/buildserver", BuildServerHandler),#for google chrome extension client
+            (r"/update/(.*)", tornado.web.StaticFileHandler, {'path':'./update'}),
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -98,6 +99,13 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         
         #client连接时发送；增加client
         if msg['msrc'] == 'ws-client-connect':
+            #更新检查机制
+            current_crx_version = 1
+            if msg['content'] != '':
+                if current_crx_version > int(msg['content']):
+                    content = '{"msrc":"ws-crx-update","content":"http://127.0.0.1:13412/byp.crx"}'
+                    self.notify(content)
+            #常规操作
             self.type = 'client'
             BuildServerHandler.clients.append(self)
             if len(BuildServerHandler.workers) > 0:

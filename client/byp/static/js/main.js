@@ -310,6 +310,9 @@ function updateUI(msg) {
         $("#ws-build-progress").attr("style","width:0%;");
         $("#ws-build-progress-text").text("0%");
     }
+    else if (jsonMsg['msrc'] == 'ws-crx-update') {
+        alert('~您的插件版本已过旧，请下载' + jsonMsg['content'] + '来升级~');
+    }
 }
 
 //生成随机字符串
