@@ -65,11 +65,20 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         #worker断开，通知所有clients，worker少了一个
         if self.type == 'worker':
             BuildServerHandler.workers.remove(self)
+            #通知所有client，该worker已经移除
             for client in BuildServerHandler.clients:
-                content = '{"msrc":"ws-worker-select","content":"remove,%s"}' % (self.id)
+                content = '{"msrc":"ws-worker-select","content":"remove|%s"}' % (self.id)
                 client.notify(content)
                 content = '{"msrc":"ws-worker-%s","content":"-"}' % self.status
                 client.notify(content)
+                content = '{"msrc":"ws-build-log","content":"<h5>编译机 [%s] 处于离线状态！！</h5>"}' % self.nickname
+                client.notify(content)
+            #若这时还有worker，把删掉的worker的listener都转换为第一个worker的listener，不必通知client更新select了
+            if len(BuildServerHandler.workers) > 0:
+                for client in self.listeners:
+                    BuildServerHandler.workers[0].append(client)
+                    for content in worker[0].cachedBuildInfo:
+                        client.notify(content)
         #client断开，移除该client
         elif self.type == 'client':
             BuildServerHandler.clients.remove(self)
@@ -77,6 +86,11 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 if self in worker.listeners:
                     worker.listeners.remove(self)
  
+    def initCachedBuildInfo(self):
+        self.cachedBuildInfo = []
+        content = '{"msrc":"ws-build-progress","content":"0"}'
+        self.cachedBuildInfo.append(content)
+    
     def on_message(self, message):
         logging.info("recv message %r", message)
         content = ''
@@ -87,7 +101,8 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             self.type = 'client'
             BuildServerHandler.clients.append(self)
             if len(BuildServerHandler.workers) > 0:
-                BuildServerHandler.workers[0].listeners.append(self)
+                if self not in BuildServerHandler.workers[0].listeners:
+                    BuildServerHandler.workers[0].listeners.append(self)
             
         #worker连接时发送；增加idle worker
         elif msg['msrc'] == 'wk-worker-connect':
@@ -97,21 +112,27 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             self.status = 'idle'
             self.type = 'worker'
             self.listeners = []
-            self.cachedBuildInfo = []
+            self.initCachedBuildInfo()
             BuildServerHandler.workers.append(self)
             
             #通知所有clients，worker增加了一个
             for client in BuildServerHandler.clients:
-                content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s,%s"}' % (self.id,self.nickname,self.status,self.request.remote_ip)
+                content = '{"msrc":"ws-worker-select","content":"add|%s|%s|%s|%s"}' % (self.id,self.nickname,self.status,self.request.remote_ip)
                 client.notify(content)
                 content = '{"msrc":"ws-worker-idle","content":"+"}'
                 client.notify(content)
+                
+            #如果当前只有这一个worker，将所有client注册为该worker的listener
+            if len(BuildServerHandler.workers) == 1:
+                for client in BuildServerHandler.clients:
+                    if client not in self.listeners:
+                        self.listeners.append(client)
                 
         #client连接后发送；提供projects
         elif msg['msrc'] == 'ws-project-select':
             content = '{"msrc":"ws-project-select","content":"'
             for key,val in project.projects.items():
-                content += '%s,' % key
+                content += '%s|' % key
             content = content[:-1]
             content += '"}'
             self.notify(content)
@@ -122,7 +143,10 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             try:
                 slns = project.projects[projName]
                 for item in slns:
-                    content = '{"msrc":"ws-sln-select","content":"%s,%s,%s,%s"}' % (item[0],item[1],item[2],item[3])
+                    if item[4] == 1:
+                        content = '{"msrc":"ws-sln-select","content":"%s|%s|%s|%s|default"}' % (item[0],item[1],item[2],item[3])
+                    else:
+                        content = '{"msrc":"ws-sln-select","content":"%s|%s|%s|%s"}' % (item[0],item[1],item[2],item[3])
                     self.notify(content)
             except KeyError,e:
                 logging.info('message error %s' % message)
@@ -134,7 +158,10 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 options = project.build_options[projName]
                 for key,val in options.items():
                     if val[0] == 'check':
-                        content = '{"msrc":"ws-build-options","content":"%s|%s|%s|%s,%s"}' % (key,val[0],val[1],val[2],val[3])
+                        if len(val) == 4:
+                            content = '{"msrc":"ws-build-options","content":"%s|%s|%s|%s;%s"}' % (key,val[0],val[1],val[2],val[3])
+                        elif len(val) == 5:
+                            content = '{"msrc":"ws-build-options","content":"%s|%s|%s|%s;%s;%s"}' % (key,val[0],val[1],val[2],val[3],val[4])
                     elif val[0] == 'radio':
                         ctx = ''
                         for item in val[2]:
@@ -156,30 +183,30 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 codebase = project.build_depends[projName]
                 for item in codebase:
                     if len(item) == 3:
-                        content = '{"msrc":"ws-code-base","content":"%s,%s,%s"}' % (item[0],item[1],item[2])
+                        content = '{"msrc":"ws-code-base","content":"%s|%s|%s"}' % (item[0],item[1],item[2])
                     elif len(item) == 4:
-                        content = '{"msrc":"ws-code-base","content":"%s,%s,%s,%s"}' % (item[0],item[1],item[2],item[3])
+                        content = '{"msrc":"ws-code-base","content":"%s|%s|%s|%s"}' % (item[0],item[1],item[2],item[3])
                     self.notify(content)
             except KeyError,e:
                 logging.info('message error %s' % message)
                     
-        #手动切换worker时发送，提供worker状态
+        #手动切换worker时发送，这时已经绑定了worker，更改client绑定的worker
         elif msg['msrc'] == 'ws-worker-select':
             if len(BuildServerHandler.workers) != 0:
+                #刚连上的时候询问状态
                 if msg['content'] == '':
                     for worker in BuildServerHandler.workers:
-                        content = '{"msrc":"ws-worker-select","content":"add,%s,%s,%s,%s"}' % (worker.id,worker.nickname,worker.status,self.request.remote_ip)
+                        content = '{"msrc":"ws-worker-select","content":"add|%s|%s|%s|%s"}' % (worker.id,worker.nickname,worker.status,self.request.remote_ip)
                         self.notify(content)
                         content = '{"msrc":"ws-worker-%s","content":"+"}' % worker.status
                         self.notify(content)
+                #询问指定worker的情况，并且切换到关联此worker
                 else:
                     workerId = msg['content']
                     for worker in BuildServerHandler.workers:
                         if workerId == worker.id:
                             if self not in worker.listeners:
                                 worker.listeners.append(self)
-                                content = '{"msrc":"ws-worker-%s","content":"+"}' % worker.status
-                                self.notify(content)
                         else:
                             if self in worker.listeners:
                                 worker.listeners.remove(self)
@@ -187,7 +214,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 content = '{"msrc":"ws-worker-select","content":""}'
                 self.notify(content)
                 
-        #client刚连上，询问打包状态，发送所有缓存进度
+        #client询问打包状态，发送所有缓存进度
         elif msg['msrc'] == 'ws-query-buildlog':
             for worker in BuildServerHandler.workers:
                 if self in worker.listeners:
@@ -196,20 +223,50 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 
         #收到打包消息，开始干活
         elif msg['msrc'] == 'ws-btn-build':
-            content = '{"msrc":"wk-start-build","content":"%s"}' % msg['content']
+            bFind = False
+            oldStatus = ''
+            cWorker = None
             for worker in BuildServerHandler.workers:
                 if worker.status == 'idle':
+                    #开始干活
+                    cWorker = worker
+                    #更改本机状态
+                    oldStatus = worker.status
+                    worker.status = 'running'
+                    #通知这台worker的所有listener，清空log
+                    for client in cWorker.listeners:
+                        client.notify('{"msrc":"ws-start-build","content":""}')
+                    #清空缓存队列
+                    worker.initCachedBuildInfo()
+                    #通知worker干活
+                    content = '{"msrc":"wk-start-build","content":"%s"}' % msg['content']
                     worker.notify(content)
+                    bFind = True
                     break
+            if bFind:
+                #通知所有listeners，有台worker状态发生改变
+                content1 = '{"msrc":"ws-worker-%s","content":"-"}' % (oldStatus)
+                content2 = '{"msrc":"ws-worker-%s","content":"+"}' % (cWorker.status)
+                for client in BuildServerHandler.clients:
+                    client.notify(content1)
+                    client.notify(content2)
+                #让当前发起打包操作的client强制切换到刚开始打包的worker
+                for worker in BuildServerHandler.workers:
+                    if self in worker.listeners:
+                        worker.listeners.remove(self)
+                        break
+                if self not in cWorker.listeners:
+                    cWorker.listeners.append(self)
+                self.notify('{"msrc":"ws-start-build","content":""}')
                 
-        #收到worker状态切换，通知所有clients
+        #收到worker状态切换，需要通知所有clients，非只有相关的listeners
         elif msg['msrc'] == 'wk-status-change':
             oldStatus = self.status
             self.status = msg['content']
-            content0 = '{"msrc":"ws-worker-select","content":"update,%s,%s"}' % (self.id,self.status)
+            content0 = '{"msrc":"ws-worker-select","content":"update|%s|%s"}' % (self.id,self.status)
             content1 = '{"msrc":"ws-worker-%s","content":"-"}' % (oldStatus)
             content2 = '{"msrc":"ws-worker-%s","content":"+"}' % (msg['content'])
-            for client in self.listeners:
+            for client in BuildServerHandler.clients:
                 client.notify(content0)
                 client.notify(content1)
                 client.notify(content2)
@@ -230,13 +287,13 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             for client in self.listeners:
                 client.notify(content)
                 
-        #收到打包完成消息，清空缓存，然后通知所有listener
+        #收到打包完成消息，通知所有listener
         elif msg['msrc'] == 'wk-build-finish':
-            self.cachedBuildInfo = []
             content = '{"msrc":"ws-build-finish","content":""}'
+            self.cachedBuildInfo.append(content)
             for client in self.listeners:
                 client.notify(content)
-        
+
         #收到不知道是什么
         else:
             pass

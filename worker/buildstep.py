@@ -91,7 +91,7 @@ def getSvnCommands(product, value):
                 continue
             name = node.getAttribute('name')
             if name == svnConfig:
-                if name == 'branches':
+                if name == 'branch':
                     codeDir = '/branches/' + getAttribute('value')
                     revision = 'HEAD'
                 elif name == 'tag':
@@ -482,7 +482,7 @@ class Build(BuildStep):
             if file[-3:] == 'log' and comm.getMsg('../output/err/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
                 msg = 'Build error(s) found, xbuild quit, please check ../output/err for build log(s).'
-                self.report('wk-build-error', msg)
+                self.report('wk-status-change', 'error')
                 raise msg
             
     
@@ -510,7 +510,8 @@ class KVBuild(BuildStep):
         for file in os.listdir(conf.kvlog_path):
             if file[-3:] == 'log' and comm.getMsg('../output/kverr/'+file) != '':
                 print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-                logging.info('Build error(s) found, xbuild quit, please check ../output/kverr for build log(s).')
+                msg = 'Build error(s) found, xbuild quit, please check ../output/err for build log(s).'
+                self.report('wk-status-change', 'error')
                 raise 'Build error(s) found, xbuild quit, please check ../output/kverr for build log(s).'
     
 ##############################################
@@ -669,10 +670,12 @@ class Install(BuildStep):
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
             self.report('wk-build-log', command)
-            os.system(command)
+            time.sleep(1)
+            #os.system(command)
             command = 'xcopy /Y' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            os.system(command)
+            time.sleep(5)
+            #os.system(command)
         BuildStep.act(self)
     
 class KVInstall(BuildStep):
@@ -688,10 +691,12 @@ class KVInstall(BuildStep):
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             self.report('wk-build-log', command)
-            os.system(command)
+            time.sleep(1)
+            #os.system(command)
             command = 'xcopy /Y' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            os.system(command)
+            time.sleep(5)
+            #os.system(command)
         BuildStep.act(self)
     
 ##############################################

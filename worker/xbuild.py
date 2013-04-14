@@ -38,7 +38,7 @@ class Worker(threading.Thread):
             self.options[opName] = opVal
         self.extraOptions = {}
         iIndex = 0
-        for i in range(3,6):
+        for i in range(3,len(settings)):
             iIndex = settings[i].find(',')
             self.extraOptions[settings[i][0:iIndex]] = settings[i][iIndex+1:]
         
@@ -60,10 +60,12 @@ class Worker(threading.Thread):
                     if node.nodeType != node.ELEMENT_NODE:
                         continue
                     product = node.getAttribute('product')
-                    if product == self.projName or product == '':
-                        node.setAttribute('build','1')
-                    else:
+                    if product != '' and product != self.projName:
                         node.setAttribute('build','0')
+                    elif val == '0':
+                        node.setAttribute('build','0')
+                    else:
+                        node.setAttribute('build','1')
                 writer = open(confFile,'w')
                 dom.writexml(writer)
                 writer.close()
@@ -100,9 +102,45 @@ class Worker(threading.Thread):
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
         
+    def applyExtraOptions(self):
+        svnFile = './buildswitch/svn.xml'
+        try:
+            dom = xml.dom.minidom.parse(svnFile)
+            root = dom.documentElement
+            cbName = ''
+            cbVal = self.extraOptions['cbdetail']
+            if self.extraOptions['codebase'] == '1':
+                cbName = 'branch'
+            elif self.extraOptions['codebase'] == '2':
+                cbName = 'tag'
+            elif self.extraOptions['codebase'] == '3':
+                cbName = 'trunk'
+                cbValue = 'HEAD'
+            elif self.extraOptions['codebase'] == '4':
+                cbName = 'revision'
+            else:
+                cbName = 'trunk'
+            root.setAttribute('use',cbName)
+            for node in root.childNodes:
+                if node.nodeType != node.ELEMENT_NODE:
+                    continue
+                name = node.getAttribute('name')
+                if name != cbName:
+                    continue;
+                else:
+                    node.setAttribute('value',cbVal)
+                    break
+            writer = open(svnFile,'w')
+            dom.writexml(writer)
+            writer.close()
+        except Exception,e:
+            logging.error("error occers when parsing xml or run command:")
+            logging.error(e)
+        
     def applyBuildSettings(self):
         self.applySlnSettings()
         self.applyBuildOptions()
+        self.applyExtraOptions()
         
     def run(self):
         nickname = ''
