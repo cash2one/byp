@@ -84,7 +84,8 @@ $(document).ready(function() {
 
 function onBtnBuildClick() {
     var idleWorker = $("#ws-worker-idle").text()
-    if (idleWorker == '0') {
+    var errorWorker = $("#ws-worker-error").text()
+    if (idleWorker == '0' && errorWorker == '0') {
         alert("~当前没有空闲编译机，请等待当前打包完成~");
         return;
     }
@@ -127,7 +128,7 @@ function onBtnBuildClick() {
         }
     })
     ctx += String.format("cbdetail,{0}",$("#ws-cb-detail").attr('value'));
-    alert(ctx);
+    //alert(ctx);
     var msg = formatMessage("ws-btn-build",ctx);
     worker.postMessage(msg);
 }
@@ -309,6 +310,9 @@ function updateUI(msg) {
         $("#ws-build-log").empty();
         $("#ws-build-progress").attr("style","width:0%;");
         $("#ws-build-progress-text").text("0%");
+    }
+    else if (jsonMsg['msrc'] == 'ws-crx-update') {
+        alert('~您的插件版本已过旧，请下载' + jsonMsg['content'] + '来升级~');
     }
 }
 

@@ -235,7 +235,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             oldStatus = ''
             cWorker = None
             for worker in BuildServerHandler.workers:
-                if worker.status == 'idle':
+                if worker.status == 'idle' or worker.status == 'error':
                     #开始干活
                     cWorker = worker
                     #更改本机状态

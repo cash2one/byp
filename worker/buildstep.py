@@ -336,6 +336,7 @@ class PreBuild(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item.replace('123456','XXXXXX'))
                 os.system(item)
+                self.update_step(1)
         BuildStep.act(self)
     
 class KVPreBuild(BuildStep):
@@ -353,6 +354,7 @@ class KVPreBuild(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
                 os.system(item)
+                self.update_step(1)
         BuildStep.act(self)
             
     
@@ -467,13 +469,26 @@ class Build(BuildStep):
                     self.report('wk-build-log', item)
                     self.update_step(10)
                     os.system(item)
-        BuildStep.act(self)
-        for file in os.listdir(conf.log_path):
-            if file[-3:] == 'log' and comm.getMsg('../output/err/'+file) != '':
-                print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-                msg = 'Build error(s) found, xbuild quit, please check ../output/err for build log(s).'
+            BuildStep.act(self)
+            bErr = False
+            for file in os.listdir(conf.log_path):
+                if file[-3:] == 'log':
+                    errLog = comm.getMsg(conf.log_path + file)
+                    if errLog != '':
+                        bErr = True
+                        break
+            if bErr:
+                msg = 'Build error(s) found, xbuild quit, please handler these error(s) below : '
                 self.report('wk-status-change', 'error')
+                self.report('wk-build-log',msg)
+                for file in os.listdir(conf.log_path):
+                    if file[-3:] == 'log':
+                        errLog = comm.getMsg(conf.log_path + file)
+                        self.report('wk-build-log','------------------------------------------------------')
+                        self.report('wk-build-log',file)
+                        self.report('wk-build-log',errLog)
                 raise msg
+        BuildStep.act(self)
             
     
 class KVBuild(BuildStep):
@@ -495,13 +510,26 @@ class KVBuild(BuildStep):
                     self.report('wk-build-log', item)
                     self.update_step(10)
                     os.system(item)
-        BuildStep.act(self)
-        for file in os.listdir(conf.kvlog_path):
-            if file[-3:] == 'log' and comm.getMsg('../output/kverr/'+file) != '':
-                print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-                msg = 'Build error(s) found, xbuild quit, please check ../output/err for build log(s).'
+            BuildStep.act(self)
+            bErr = False
+            for file in os.listdir(conf.kvlog_path):
+                if file[-3:] == 'log':
+                    errLog = comm.getMsg(conf.kvlog_path + file)
+                    if errLog != '':
+                        bErr = True
+                        break
+            if bErr:
+                msg = 'Build error(s) found, xbuild quit, please handler these error(s) below : '
                 self.report('wk-status-change', 'error')
-                raise 'Build error(s) found, xbuild quit, please check ../output/kverr for build log(s).'
+                self.report('wk-build-log',msg)
+                for file in os.listdir(conf.kvlog_path):
+                    if file[-3:] == 'log':
+                        errLog = comm.getMsg(conf.kvlog_path + file)
+                        self.report('wk-build-log','------------------------------------------------------')
+                        self.report('wk-build-log',file)
+                        self.report('wk-build-log',errLog)
+                raise msg
+        BuildStep.act(self)
     
 ##############################################
 # 0,1

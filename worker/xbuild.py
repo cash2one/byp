@@ -101,9 +101,7 @@ class Worker(threading.Thread):
                         if step.nodeType != step.ELEMENT_NODE:
                             continue
                         name = step.getAttribute('name')
-                        if name == 'prebuild' or name == 'postbuild':
-                            step.setAttribute('value','2')#深度清理
-                        elif self.options.has_key(name):
+                        if self.options.has_key(name):
                             step.setAttribute('value',self.options[name])
                         else:
                             step.setAttribute('value','0')
@@ -236,11 +234,15 @@ def buildproject(nickname,para = ()):
     
     #do homework
     buildStep.sort(lambda x,y: cmp(x.order,y.order))
-    for item in buildStep:
-        report('wk-build-log', '', para)
-        report('wk-build-log', 'Step %d - %s' % (item.order,item), para)
-        report('wk-build-log', '------------------------------------------------------', para)
-        item.act()
+    try:
+        for item in buildStep:
+            report('wk-build-log', '', para)
+            report('wk-build-log', 'Step %d - %s' % (item.order,item), para)
+            report('wk-build-log', '------------------------------------------------------', para)
+            item.act()
+    except Exception,e:
+        logging.error(e)
+        return
     logging.info('build complete !!')
     report('wk-build-log', '', para)
     report('wk-build-log', '------------------------------------------------------', para)

@@ -56,12 +56,13 @@ projects = {
 #选项名称，check还是radio，阶段，显示名称，tooltip名称，对应的值
 bdkv_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作','default'],
+	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1','default'),('完全清理','打包前清理所有生成文件','2')]],
 
 	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
-	'rewriteversion':['radio','before',[('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+	'rewriteversion':['radio','before',[('不更新版本','此次打包不更新版本','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
@@ -86,13 +87,14 @@ bdkv_options = {
 }
 
 bdm_options = {
-	'prebuild':['check','before','清理','打包前的清理工作','default'],
+	#'prebuild':['check','before','清理','打包前的清理工作','default'],
+	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1','default'),('完全清理','打包前清理所有生成文件','2')]],
 
 	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','4','default'),('checkout','所有相关工程从代码服务器重新签出','3')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
-	'rewriteversion':['radio','before',[('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+	'rewriteversion':['radio','before',[('不更新版本','此次打包不更新版本','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
