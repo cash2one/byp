@@ -127,7 +127,7 @@ function onBtnBuildClick() {
         }
     })
     ctx += String.format("cbdetail,{0}",$("#ws-cb-detail").attr('value'));
-    alert(ctx);
+    //alert(ctx);
     var msg = formatMessage("ws-btn-build",ctx);
     worker.postMessage(msg);
 }

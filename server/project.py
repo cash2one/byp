@@ -43,8 +43,6 @@ bdm_slns = [
 	['somanager','软件优化管家','张凯','module',1,[]],
 	['soshortcutplugin','软件优化快捷插件','张凯','module',1,[]],
 	['swmanager','软件管理模块','张凯','module',1,[]],
-	['qmlib','qmlib是什么','张巍','middle',1,[]],
-	['qmgarbagecleaner','垃圾清理模块','张巍','module',1,[]],
 	['homepageplugins','主页插件','杨彦召','module',1,[]],
 	['mainframeplugins','框架插件','杨彦召','module',1,[]],
 	['main','极光主程序','杨彦召','module',1,[]],
@@ -65,8 +63,8 @@ bdkv_options = {
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 	'rewriteversion':['radio','before',[('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 
-	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
-	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','1','default')]],
+	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
+	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
 
 	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2','default'),('all','全部进行编译','3')]],
 
@@ -96,8 +94,8 @@ bdm_options = {
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 	'rewriteversion':['radio','before',[('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 
-	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','1','default'),('rebuild','完全重新编译','2')]],
-	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','1','default')]],
+	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
+	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
 
 	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2','default'),('all','全部进行编译','3')]],
 	

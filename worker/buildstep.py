@@ -146,7 +146,7 @@ def getBuildCommands(product,value):
         errDir = conf.log_path
     elif product == 'bdkv':
         checklogFile = conf.kvchecklog_file
-        errDir = conf.log_path
+        errDir = conf.kvlog_path
 
     vcbuildAction = ''
     if value == 3 or value == 4:
@@ -175,7 +175,6 @@ def getBuildCommands(product,value):
                     continue
                 if node.getAttribute('product') != '' and node.getAttribute('product') != product:
                     continue
-                node.setAttribute('build','0')
                 type = node.getAttribute('type')
                 logName = ''
                 if type.lower().find('release') != -1:
@@ -335,9 +334,8 @@ class PreBuild(BuildStep):
         else:
             commands = genPrebuildActions('bdm',self.value)
             for item in commands:
-                self.report('wk-build-log', item)
-                time.sleep(1)
-                #os.system(item)
+                self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                os.system(item)
         BuildStep.act(self)
     
 class KVPreBuild(BuildStep):
@@ -354,8 +352,7 @@ class KVPreBuild(BuildStep):
             commands = genPrebuildActions('bdkv',self.value)
             for item in commands:
                 self.report('wk-build-log', item)
-                time.sleep(1)
-                #os.system(item)
+                os.system(item)
         BuildStep.act(self)
             
     
@@ -380,8 +377,7 @@ class Svn(BuildStep):
                 for item in commands:
                     self.report('wk-build-log', item.replace('123456','XXXXXX'))
                     self.update_step(3)
-                    time.sleep(1)
-                    #os.system(item)
+                    os.system(item)
         BuildStep.act(self)
     
 class KVSvn(BuildStep):
@@ -402,8 +398,7 @@ class KVSvn(BuildStep):
                 for item in commands:
                     self.report('wk-build-log', item.replace('123456','XXXXXX'))
                     self.update_step(3)
-                    time.sleep(1)
-                    #os.system(item)
+                    os.system(item)
         BuildStep.act(self)
     
 ##############################################
@@ -422,13 +417,11 @@ class RewriteVersion(BuildStep):
         elif self.value == 1:
             command = 'python rewrite_version.py bdm daily'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #rewrite_version.main(3,['rewrite_version.py','bdm','daily'])
+            rewrite_version.main(3,['rewrite_version.py','bdm','daily'])
         elif self.value == 2:
             command = 'python rewrite_version.py bdm version'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #rewrite_version.main(3,['rewrite_version.py','bdm','version'])
+            rewrite_version.main(3,['rewrite_version.py','bdm','version'])
         BuildStep.act(self)
 
     
@@ -445,13 +438,11 @@ class KVRewriteVersion(BuildStep):
         elif self.value == 1:
             command = 'python rewrite_version.py bdkv daily'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #rewrite_version.main(3,['rewrite_version.py','bdkv','daily'])
+            rewrite_version.main(3,['rewrite_version.py','bdkv','daily'])
         elif self.value == 2:
             command = 'python rewrite_version.py bdkv version'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #rewrite_version.main(3,['rewrite_version.py','bdkv','version'])
+            rewrite_version.main(3,['rewrite_version.py','bdkv','version'])
         BuildStep.act(self)
     
 ##############################################
@@ -475,8 +466,7 @@ class Build(BuildStep):
                 for item in commands:
                     self.report('wk-build-log', item)
                     self.update_step(10)
-                    time.sleep(3)
-                    #os.system(item)
+                    os.system(item)
         BuildStep.act(self)
         for file in os.listdir(conf.log_path):
             if file[-3:] == 'log' and comm.getMsg('../output/err/'+file) != '':
@@ -504,8 +494,7 @@ class KVBuild(BuildStep):
                 for item in commands:
                     self.report('wk-build-log', item)
                     self.update_step(10)
-                    time.sleep(3)
-                    #os.system(item)
+                    os.system(item)
         BuildStep.act(self)
         for file in os.listdir(conf.kvlog_path):
             if file[-3:] == 'log' and comm.getMsg('../output/kverr/'+file) != '':
@@ -530,8 +519,7 @@ class Pack(BuildStep):
         elif self.value == 1:
             command = 'cscript pack.vbs bdm'
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #os.system(command)
+            os.system(command)
         BuildStep.act(self)
     
 class KVPack(BuildStep):
@@ -547,8 +535,7 @@ class KVPack(BuildStep):
         elif self.value == 1:
             command = 'cscript pack.vbs bdkv'
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #os.system(command)
+            os.system(command)
         BuildStep.act(self)
     
 ##############################################
@@ -567,8 +554,7 @@ class Sign(BuildStep):
         elif self.value == 1:
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])
+            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])
         BuildStep.act(self)
     
 class KVSign(BuildStep):
@@ -584,20 +570,17 @@ class KVSign(BuildStep):
         elif self.value == 1:
             command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             self.update_step(14)
             
             command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe'
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
             self.update_step(14)
             
             command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\'
             self.report('wk-build-log', command)
-            time.sleep(5)
-            #sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
+            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
             self.update_step(14)
         BuildStep.act(self)
     
@@ -670,12 +653,10 @@ class Install(BuildStep):
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #os.system(command)
+            os.system(command)
             command = 'xcopy /Y' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            time.sleep(5)
-            #os.system(command)
+            os.system(command)
         BuildStep.act(self)
     
 class KVInstall(BuildStep):
@@ -691,12 +672,10 @@ class KVInstall(BuildStep):
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #os.system(command)
-            command = 'xcopy /Y' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
+            os.system(command)
+            command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            time.sleep(5)
-            #os.system(command)
+            os.system(command)
         BuildStep.act(self)
     
 ##############################################
@@ -715,8 +694,7 @@ class SignInstaller(BuildStep):
         elif self.value == 1:
             command = 'python sign.py bdm .\\output\\setup\\'
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
+            sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
         BuildStep.act(self)
     
 class KVSignInstaller(BuildStep):
@@ -732,20 +710,17 @@ class KVSignInstaller(BuildStep):
         elif self.value == 1:
             command = 'python fileop.py sign ..\\output\\kvsetup\\ *.exe'
             self.report('wk-build-log', command)
-            time.sleep(1)
-            #fileop.main(4,['fileop.py','kvsign','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvsign','..\\output\\kvsetup\\','*.exe'])
             self.update_step(1)
             
             command = 'python fileop.py sign_kav ..\\output\\kvsetup\\ *.exe'
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #fileop.main(4,['fileop.py','sign_kav','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4,['fileop.py','sign_kav','..\\output\\kvsetup\\','*.exe'])
             self.update_step(1)
             
             command = 'python sign.py bdkv ..\\output\\kvsetup\\'
             self.report('wk-build-log', command)
-            time.sleep(5)
-            #sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
+            sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
             self.update_step(2)
         BuildStep.act(self)
     
@@ -815,16 +790,14 @@ class Send(BuildStep):
             commands.append('python send.py bdm daily')
             for item in commands:
                 self.report('wk-build-log', item)
-            time.sleep(3)
-            #send.main(3,['send.py','bdm','daily'])
+            send.main(3,['send.py','bdm','daily'])
         elif self.value == 2:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
             commands.append('python send.py bdm version')
             for item in commands:
                 self.report('wk-build-log', item)
-            time.sleep(3)
-            #send.main(3,['send.py','bdm','version'])
+            send.main(3,['send.py','bdm','version'])
         BuildStep.act(self)
     
 class KVSend(BuildStep):
@@ -843,16 +816,14 @@ class KVSend(BuildStep):
             commands.append('python send.py bdkv daily')
             for item in commands:
                 self.report('wk-build-log', item)
-            time.sleep(3)
-            #send.main(3,['send.py','bdkv','daily'])
+            send.main(3,['send.py','bdkv','daily'])
         elif self.value == 2:
             commands = []
             commands.append('net use \\\\192.168.10.242\\public')
             commands.append('python send.py bdkv version')
             for item in commands:
                 self.report('wk-build-log', item)
-            time.sleep(3)
-            #send.main(3,['send.py','bdkv','version'])
+            send.main(3,['send.py','bdkv','version'])
         BuildStep.act(self)
     
 ##############################################
@@ -873,8 +844,7 @@ class SymAdd(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
                 self.update_step(2)
-                time.sleep(1)
-                #os.system(item)
+                os.system(item)
         BuildStep.act(self)
     
 class KVSymAdd(BuildStep):
@@ -892,8 +862,7 @@ class KVSymAdd(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
                 self.update_step(2)
-                time.sleep(1)
-                #os.system(item)
+                os.system(item)
         BuildStep.act(self)
     
 ##############################################
@@ -913,8 +882,7 @@ class Commit(BuildStep):
             msg = 'xbuild commit %s' % datetime.datetime.now()
             command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #os.system(command)
+            os.system(command)
         BuildStep.act(self)
     
 class KVCommit(BuildStep):
@@ -931,8 +899,7 @@ class KVCommit(BuildStep):
             msg = 'xbuild commit %s' % datetime.datetime.now()
             command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
             self.report('wk-build-log', command)
-            time.sleep(3)
-            #os.system(command)
+            os.system(command)
         BuildStep.act(self)
     
 ##############################################
@@ -950,7 +917,6 @@ class PostBuild(BuildStep):
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
             self.report('wk-build-log', 'Cleanning...')
-            time.sleep(3)
         BuildStep.act(self)
     
 class KVPostBuild(BuildStep):
@@ -965,7 +931,6 @@ class KVPostBuild(BuildStep):
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
             self.report('wk-build-log', 'Cleanning...')
-            time.sleep(3)
         BuildStep.act(self)
     
 ##############################################

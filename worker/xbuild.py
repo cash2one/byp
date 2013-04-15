@@ -9,6 +9,7 @@
 import sys,os,conf,xml.dom.minidom,buildstep,new
 import threading
 import logging
+import time
 
 #worker thread
 class Worker(threading.Thread):
@@ -62,10 +63,21 @@ class Worker(threading.Thread):
                     product = node.getAttribute('product')
                     if product != '' and product != self.projName:
                         node.setAttribute('build','0')
+                        continue
                     elif val == '0':
                         node.setAttribute('build','0')
-                    else:
-                        node.setAttribute('build','1')
+                        continue
+                    type = node.getAttribute('type')
+                    if type.lower().find('debug') != -1:
+                        if self.options['buildtype'] == '1' or self.options['buildtype'] == '3':
+                            node.setAttribute('build','1')
+                        else:
+                            node.setAttribute('build','0')
+                    elif type.lower().find('release') != -1:
+                        if self.options['buildtype'] == '2' or self.options['buildtype'] == '3':
+                            node.setAttribute('build','1')
+                        else:
+                            node.setAttribute('build','0')
                 writer = open(confFile,'w')
                 dom.writexml(writer)
                 writer.close()
@@ -90,7 +102,7 @@ class Worker(threading.Thread):
                             continue
                         name = step.getAttribute('name')
                         if name == 'prebuild' or name == 'postbuild':
-                            step.setAttribute('value','1')
+                            step.setAttribute('value','2')#深度清理
                         elif self.options.has_key(name):
                             step.setAttribute('value',self.options[name])
                         else:
