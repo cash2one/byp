@@ -95,7 +95,12 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         logging.info("recv message %r", message)
         content = ''
-        msg = eval(message)
+        try:
+            msg = eval(message)
+        except Exception,e:
+            logging.error(message)
+            logging.error('server error: '+ e)
+            return
         
         #client连接时发送；增加client
         if msg['msrc'] == 'ws-client-connect':

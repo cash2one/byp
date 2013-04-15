@@ -135,6 +135,7 @@ def getSvnCommands(product, value):
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
+    commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "basic")
     commands = list(set(commands))
     return commands
 
@@ -294,8 +295,11 @@ class BuildStep:
             sid = self.para[1]
             ws = self.para[2]
             #整饰特殊字符
-            msg = msg.replace('"',' ')
             msg = msg.replace('\\','/')
+            msg = msg.replace('"',' ')
+            msg = msg.replace('\'',' ')
+            msg = msg.replace('\r',' ')
+            msg = msg.replace('\n',' ')
             content = '{"msrc":"%s","content":"%s"}' % (msrc, msg)
             logging.info('send message from worker, sid:%s, message:%s' % (sid,content))
             ws.send(content)
@@ -484,9 +488,10 @@ class Build(BuildStep):
                 for file in os.listdir(conf.log_path):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.log_path + file)
-                        self.report('wk-build-log','------------------------------------------------------')
-                        self.report('wk-build-log',file)
-                        self.report('wk-build-log',errLog)
+                        if errLog != '':
+                            self.report('wk-build-log','------------------------------------------------------')
+                            self.report('wk-build-log',file)
+                            self.report('wk-build-log',errLog)
                 raise msg
         BuildStep.act(self)
             
@@ -525,9 +530,13 @@ class KVBuild(BuildStep):
                 for file in os.listdir(conf.kvlog_path):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.kvlog_path + file)
-                        self.report('wk-build-log','------------------------------------------------------')
-                        self.report('wk-build-log',file)
-                        self.report('wk-build-log',errLog)
+                        if errLog != '':
+                            self.report('wk-build-log','------------------------------------------------------')
+                            self.report('wk-build-log','<h5>' + file + '</h5>')
+                            fp = open(conf.kvlog_path + file)
+                            lines = fp.readlines()
+                            for line in lines:
+                                self.report('wk-build-log',line)
                 raise msg
         BuildStep.act(self)
     
