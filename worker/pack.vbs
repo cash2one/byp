@@ -1,11 +1,11 @@
-include "AutoBuild/util.vbs"
+include "util.vbs"
 Dim arg
 arg = GetCommandProduct()
 If StrComp(arg,"bdm") = 0 Then
-	Call Pack("..\Output\SkinResources", "..\Output\BinRelease\Skins\Default\")
+	Call Pack("..\..\basic\Output\SkinResources", "..\..\basic\Output\BinRelease\Skins\Default\")
 End If
 If StrComp(arg,"bdkv") = 0 Then
-	Call Pack("..\KVOutput\SkinResources", "..\KVOutput\BinRelease\Skins\Default\")
+	Call Pack("..\..\basic\KVOutput\SkinResources", "..\..\basic\KVOutput\BinRelease\Skins\Default\")
 End If
 
 Sub include(file)

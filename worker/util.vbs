@@ -110,10 +110,10 @@ Function Pack(sFolderName, sOutFolderName)
         If fso.fileExists(sfd.Path & ".zip") Then
             fso.deletefile sfd.Path & ".zip"
         End If
-		ShellRun(".\AutoBuild\7z.exe" & " a " & sfd.Path & ".zip " & sfd.Path & "\*")
+		ShellRun("..\bin\7z.exe" & " a " & sfd.Path & ".zip " & sfd.Path & "\*")
 		CopyFile sfd.Path & ".zip", sOutFolderName & sfd.Name & ".rdb"
 		For Each ssfd In sfd.SubFolders
-			ShellRun(".\AutoBuild\7z.exe" & " a " & ssfd.Path & ".zip " & ssfd.Path & "\*")
+			ShellRun("..\bin\7z.exe" & " a " & ssfd.Path & ".zip " & ssfd.Path & "\*")
 			CreateFolder(sOutFolderName & sfd.Name)
 			CopyFile ssfd.Path & ".zip", sOutFolderName & sfd.Name & "\" & ssfd.Name & ".rdb"			
 		Next
