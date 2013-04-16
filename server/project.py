@@ -43,8 +43,6 @@ bdm_slns = [
 	['somanager','软件优化管家','张凯','module',1,[]],
 	['soshortcutplugin','软件优化快捷插件','张凯','module',1,[]],
 	['swmanager','软件管理模块','张凯','module',1,[]],
-	['homepageplugins','主页插件','杨彦召','module',1,[]],
-	['mainframeplugins','框架插件','杨彦召','module',1,[]],
 	['main','极光主程序','杨彦召','module',1,[]],
 ]
 
@@ -90,7 +88,7 @@ bdm_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作','default'],
 	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1','default'),('完全清理','打包前清理所有生成文件','2')]],
 
-	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','4','default'),('checkout','所有相关工程从代码服务器重新签出','3')]],
+	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
