@@ -92,17 +92,17 @@ def getSvnCommands(product, value):
             name = node.getAttribute('name')
             if name == svnConfig:
                 if name == 'branch':
-                    codeDir = '/branches/' + getAttribute('value')
+                    codeDir = '/branches/' + node.getAttribute('value')
                     revision = 'HEAD'
                 elif name == 'tag':
-                    codeDir = '/tags/' + getAttribute('value')
+                    codeDir = '/tags/' + node.getAttribute('value')
                     revision = 'HEAD'
                 elif name == 'trunk':
                     codeDir = '/trunk'
                     revision = 'HEAD'
                 elif name == 'revision':
                     codeDir = '/trunk'
-                    revision = getAttribute('value')
+                    revision = node.getAttribute('value')
                 break
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
@@ -127,7 +127,7 @@ def getSvnCommands(product, value):
                 if node.getAttribute('product') != '' and node.getAttribute('product') != product:
                     continue
                 if svnAction == 'checkout':
-                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url  + svnDir + conf.sln_root + dir
+                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.sln_root + dir
                 elif svnAction == 'update':
                     command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + dir
                 commands.append(command)
@@ -135,7 +135,11 @@ def getSvnCommands(product, value):
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
-    commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "basic")
+    if svnAction == 'update':
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "basic")
+    elif svnAction == 'checkout':
+        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
+        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
     commands = list(set(commands))
     return commands
 
