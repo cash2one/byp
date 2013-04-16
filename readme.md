@@ -10,7 +10,7 @@
 
 2. client端基于[realtime web](https://en.wikipedia.org/wiki/Real-time_web)，可实时同步编译机状态，用户界面UI基于[bootstrap](http://twitter.github.io/bootstrap/)和[jquery](http://jquery.com/)。支持chrome、safari等严格实现标准的浏览器（内网访问[http://192.168.10.62:13412/](http://192.168.10.68:13412/)），支持firefox开发版、ios safari，推荐用chrome浏览，或以chrome插件形式使用。
 
-3. server端基于[python tornado](http://www.tornadoweb.org/)框架，纯python编写，完全异步高并发，支持多用户，多台编译机同时部署和工作。
+3. server端基于[python tornado](http://www.tornadoweb.org/)框架，异步高并发，支持多用户，多台编译机同时部署。
 
 4. worker端支持单机多份和多机方式部署，纯python编写，同时支持offline模式下的手动命令行方式工作。由于SVN集中式代码提交的局限性，目前仅提供一个worker。
 
