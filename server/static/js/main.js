@@ -119,15 +119,15 @@ function onBtnBuildClick() {
     ctx = ctx.slice(0,-1);
     ctx += "|"
     //build-reason and user-email
-    ctx += String.format("reason,{0}|",$("#ws-build-reason").attr('value'));
-    ctx += String.format("email,{0}|",$("#ws-user-email").attr('value'));
+    ctx += String.format("reason,{0}|",document.getElementById("ws-build-reason").value);
+    ctx += String.format("email,{0}|",document.getElementById("ws-user-email").value);
     //codebase
     $(".btn[id^='ws-btn-codebase-']").each( function() {
         if ($(this).hasClass("active")) {
             ctx += String.format("codebase,{0}|",$(this).attr('value'));
         }
     })
-    ctx += String.format("cbdetail,{0}",$("#ws-cb-detail").attr('value'));
+    ctx += String.format("cbdetail,{0}",document.getElementById("ws-cb-detail").value);
     //alert(ctx);
     var msg = formatMessage("ws-btn-build",ctx);
     worker.postMessage(msg);
