@@ -85,21 +85,30 @@ $(document).ready(function() {
 function onBtnBuildClick() {
     var idleWorker = $("#ws-worker-idle").text()
     var errorWorker = $("#ws-worker-error").text()
-    if (idleWorker == '0' && errorWorker == '0') {
-        alert("~当前没有空闲编译机，请等待当前打包完成~");
-        return;
-    }
+    //if (idleWorker == '0' && errorWorker == '0') {
+    //    alert("~当前没有空闲编译机，请等待当前打包完成~");
+    //    return;
+    //}
 
     var ctx = "";
+    var defaultProjChanged = false;
+    var defaultOptionChanged = false;
+    var defaultCbChanged = false;
     //proj name
     ctx += $("#ws-project-select option:selected").text();
     ctx += "|";
     //sln list
     $(".btn[id^='ws-btn-slnselect-']").each( function() {
         if ($(this).hasClass("active")) {
+            if ($(this).attr('default') != 'true') {
+                defaultPorjChanged = true;
+            }
             ctx += String.format("{0},1;",$(this).children().html());
         }
         else {
+            if ($(this).attr('default') == 'true') {
+                defaultProjChanged = true;
+            }
             ctx += String.format("{0},0;",$(this).children().html());   
         }
     });
@@ -108,6 +117,9 @@ function onBtnBuildClick() {
     //build options
     $(".btn[id^='ws-btn-option-']").each( function() {
         if ($(this).hasClass("active")) {
+            if ($(this).attr('default') != 'true') {
+                defaultOptionChanged = true;
+            }
             if ($(this).children().attr('value') == undefined) {
                 ctx += String.format("{0},1;",$(this).children().attr('name'));
             }
@@ -124,13 +136,29 @@ function onBtnBuildClick() {
     //codebase
     $(".btn[id^='ws-btn-codebase-']").each( function() {
         if ($(this).hasClass("active")) {
+            if ($(this).attr('default') != 'true') {
+                defaultCbChanged = true;
+            }
             ctx += String.format("codebase,{0}|",$(this).attr('value'));
         }
     })
     ctx += String.format("cbdetail,{0}",document.getElementById("ws-cb-detail").value);
     //alert(ctx);
-    var msg = formatMessage("ws-btn-build",ctx);
-    worker.postMessage(msg);
+    g_bFirst = true;
+    $("#btn-build-confirm").bind('click',function() {
+        if (g_bFirst) {
+            var msg = formatMessage("ws-btn-build",ctx);
+            worker.postMessage(msg);
+            g_bFirst = false;   
+        }
+    })
+    if (defaultProjChanged || defaultOptionChanged || defaultCbChanged) {
+        $("#defaultOptionChangedModal").modal();
+    }
+    else {
+        var msg = formatMessage("ws-btn-build",ctx);
+        worker.postMessage(msg);
+    }
 }
 
 function onInputClick() {
@@ -235,7 +263,7 @@ function updateUI(msg) {
         var node = "";
         node = String.format("<button type=\"button\" id=\"{0}\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
         if (items.length == 4 && items[3] == 'default') {
-            node = String.format("<button type=\"button\" id=\"{0}\" default = \"\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
+            node = String.format("<button type=\"button\" id=\"{0}\" default = \"true\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
             activeBtnId = btnId;
         }
         else {
@@ -312,7 +340,7 @@ function updateUI(msg) {
         $("#ws-build-progress-text").text("0%");
     }
     else if (jsonMsg['msrc'] == 'ws-crx-update') {
-        $("#myModal").modal();
+        $("#updateModal").modal();
     }
 }
 

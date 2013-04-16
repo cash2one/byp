@@ -34,7 +34,7 @@
       <div class="tab-pane active" id="tabMain">
 
         <!-- 版本过旧升级警告 -->
-        <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="updateModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalLabel">插件更新</h3>
@@ -46,6 +46,25 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
           </div>
         </div>
+
+        <!-- 选项更改警告 -->
+        <div id="defaultOptionChangedModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">警告：</h3><h4>你更改了默认选项</h4>
+          </div>
+          <div class="modal-body">
+            <li><h4>更改要编译的项目可能会导致版本完整性问题；</h4></li>
+            <li><h4>更改打包选项将可能导致某些操作不能成功完成；</h4></li>
+            <li><h4>更改编译所依赖的代码版本将可能导致更严重的问题。</h4></li>
+            <br>
+            <h4>请确认你知道这些选项的含义，并且确认要这么做。</h4>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-build-confirm">确认打包</button>
+          </div>
+        </div>        
 
         <!-- 功能选择表格 -->
         <table id="table-build-config">
