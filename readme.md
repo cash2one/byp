@@ -14,14 +14,16 @@
 
 4. worker端支持单机多份和多机方式部署，纯python编写，同时支持offline模式下的手动命令行方式工作。由于SVN集中式代码提交的局限性，目前仅提供一个worker。
 
-5. 为方便开发，代码托管在[bitbucket](https://bitbucket.org/xfork)上：
+5. client端chrome插件提供更新机制，server端支持热更新，server和worker端都支持挂起自动重连，理论上可保持7X24小时不当机。
+
+6. 为方便开发，代码托管在[bitbucket](https://bitbucket.org/xfork)上：
 
 	```
 	$ git clone https://bitbucket.org/xfork/byp.git
 	```
 
 
-6. 图片资源、have a rest 中的小游戏基于网络。 
+7. 图片资源、have a rest 中的小游戏基于网络。 
 
 ##
 # Have fun!
