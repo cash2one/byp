@@ -242,6 +242,7 @@ def buildproject(nickname,para = ()):
             item.act()
     except Exception,e:
         logging.error(e)
+        report('wk-status-change','error',para)
         return
     logging.info('build complete !!')
     report('wk-build-log', '', para)

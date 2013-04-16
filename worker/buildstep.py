@@ -492,7 +492,7 @@ class Build(BuildStep):
                             self.report('wk-build-log','------------------------------------------------------')
                             self.report('wk-build-log',file)
                             self.report('wk-build-log',errLog)
-                raise msg
+                raise Exception(msg)
         BuildStep.act(self)
             
     
@@ -537,7 +537,7 @@ class KVBuild(BuildStep):
                             lines = fp.readlines()
                             for line in lines:
                                 self.report('wk-build-log',line)
-                raise msg
+                raise Exception(msg)
         BuildStep.act(self)
     
 ##############################################
@@ -691,6 +691,16 @@ class Install(BuildStep):
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
             self.report('wk-build-log', command)
             os.system(command)
+            bOk = False
+            for file in os.listdir(conf.original_setup_path):
+                if file[-3:] == 'exe':
+                    bOk = True
+                    break
+            if not bOk:
+                msg = 'failed to build installer, please check nsis script files'
+                self.report('wk-build-log','------------------------------------------------------')
+                self.report('wk-build-log','<h5>'+msg+'</h5>')
+                raise Exception(msg)
             command = 'xcopy /Y' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
             os.system(command)
@@ -710,6 +720,16 @@ class KVInstall(BuildStep):
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             self.report('wk-build-log', command)
             os.system(command)
+            bOk = False
+            for file in os.listdir(conf.original_kvsetup_path):
+                if file[-3:] == 'exe':
+                    bOk = True
+                    break
+            if not bOk:
+                msg = 'failed to build installer, please check nsis script files'
+                self.report('wk-build-log','------------------------------------------------------')
+                self.report('wk-build-log','<h5>'+msg+'</h5>')
+                raise Exception(msg)
             command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
             os.system(command)
