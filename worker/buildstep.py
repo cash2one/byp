@@ -356,7 +356,7 @@ class KVPreBuild(BuildStep):
         else:
             commands = genPrebuildActions('bdkv',self.value)
             for item in commands:
-                self.report('wk-build-log', item)
+                self.report('wk-build-log', item.replace('123456','XXXXXX'))
                 os.system(item)
                 self.update_step(1)
         BuildStep.act(self)
