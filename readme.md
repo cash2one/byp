@@ -17,12 +17,9 @@
 5. client端chrome插件提供更新机制，server端支持热更新，server和worker端都支持挂起自动重连，理论上可保持7X24小时不当机。
 
 6. 为方便开发，代码托管在[bitbucket](https://bitbucket.org/xfork)上：
-
 	```
 	$ git clone https://bitbucket.org/xfork/byp.git
 	```
-
-
 7. 图片资源、have a rest 中的小游戏基于网络。 
 
 ##
