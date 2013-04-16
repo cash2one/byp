@@ -701,7 +701,7 @@ class Install(BuildStep):
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
                 raise Exception(msg)
-            command = 'xcopy /Y' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
+            command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
             os.system(command)
         BuildStep.act(self)
@@ -749,7 +749,12 @@ class SignInstaller(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = 'python sign.py bdm .\\output\\setup\\'
+            command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
+            self.report('wk-build-log', command)
+            os.system(command)
+            self.update_step(1)
+
+            command = 'python sign.py bdm ..\\output\\setup\\'
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
         BuildStep.act(self)
@@ -765,6 +770,11 @@ class KVSignInstaller(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
+            self.report('wk-build-log', command)
+            os.system(command)
+            self.update_step(1)
+
             command = 'python fileop.py sign ..\\output\\kvsetup\\ *.exe'
             self.report('wk-build-log', command)
             fileop.main(4,['fileop.py','kvsign','..\\output\\kvsetup\\','*.exe'])
@@ -778,7 +788,7 @@ class KVSignInstaller(BuildStep):
             command = 'python sign.py bdkv ..\\output\\kvsetup\\'
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
-            self.update_step(2)
+            self.update_step(1)
         BuildStep.act(self)
     
 ##############################################
