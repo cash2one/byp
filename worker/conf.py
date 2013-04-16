@@ -16,7 +16,7 @@ buildver_headerfile = "../../basic/include/CommonInclude/BuildVer.h"
 buildver_definefile = "../../basic/include/CommonInclude/BDMVersion.h"
 
 cerf_addr='m1-scm-cluster-test03.m1.baidu.com:8111'
-sign_file_exts='*.exe,*.dll,*.sys'
+sign_file_exts='*.exe,*.dll'
 sign_file_product=u'百度卫士'
 kvsign_file_product=u'百度杀毒'
 sign_conf_file='./buildswitch/Signature.xml'
