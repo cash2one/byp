@@ -137,6 +137,7 @@ def getSvnCommands(product, value):
             logging.error(e)
     if svnAction == 'update':
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "basic")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "stable_proj")
     elif svnAction == 'checkout':
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
@@ -385,9 +386,18 @@ class Svn(BuildStep):
                 self.report('wk-build-log', 'No svn commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                    if item.find('checkout') != -1:
+                        subdir = item[item.find(conf.svn_url) + len(conf.svn_url):]
+                        subdir = subdir[0:subdir.find('/')]
+                        command = 'rd /Q /S ..\\..\\' + subdir
+                        self.report('wk-build-log', command)
+                        os.system(command)
+                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        os.system(item)
+                    else:
+                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        os.system(item)
                     self.update_step(3)
-                    os.system(item)
         BuildStep.act(self)
     
 class KVSvn(BuildStep):
@@ -406,9 +416,18 @@ class KVSvn(BuildStep):
                 self.report('wk-build-log', 'No svn commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                    if item.find('checkout') != -1:
+                        subdir = item[item.find(conf.svn_url) + len(conf.svn_url):]
+                        subdir = subdir[0:subdir.find('/')]
+                        command = 'rd /Q /S ..\\..\\' + subdir
+                        self.report('wk-build-log', command)
+                        os.system(command)
+                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        os.system(item)
+                    else:
+                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        os.system(item)
                     self.update_step(3)
-                    os.system(item)
         BuildStep.act(self)
     
 ##############################################
