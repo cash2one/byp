@@ -135,8 +135,27 @@ function onBtnBuildClick() {
     ctx = ctx.slice(0,-1);
     ctx += "|"
     //build-reason and user-email
-    ctx += String.format("reason,{0}|",document.getElementById("ws-build-reason").value);
-    ctx += String.format("email,{0}|",document.getElementById("ws-user-email").value);
+    var reason = document.getElementById("ws-build-reason").value;
+    if (reason.length > 15) {
+        reason = reason.substring(0,15);
+    }
+    if(reason == ''){
+        alert("请输入打包原因。");
+        $("#ws-build-reason").focus();
+        return;
+    }
+    var email = document.getElementById("ws-user-email").value
+    if (email.length > 30) {
+        email = email.substring(0,30);
+    }
+    if(!email.match(/^\w+((-\w+)|(\.\w+))*\@baidu.com$/)){
+        alert("百度邮箱格式不正确，请重新输入。");
+        $("#ws-user-email").focus();
+        $("#ws-user-email").select();
+        return;
+    }
+    ctx += String.format("reason,{0}|",reason);
+    ctx += String.format("email,{0}|",email);
     //codebase
     $(".btn[id^='ws-btn-codebase-']").each( function() {
         if ($(this).hasClass("active")) {
@@ -347,6 +366,14 @@ function updateUI(msg) {
     }
     else if (jsonMsg['msrc'] == 'ws-crx-update') {
         $("#updateModal").modal();
+    }
+    //更新使用者信息
+    else if (jsonMsg['msrc'] == 'ws-user-info') {
+        ctx = jsonMsg['content'].split('|');
+        info = String.format("当前用户：{0} ; 打包原因：{1}",ctx[0],ctx[1]);
+        content = String.format('<a href=\"#\" rel=\"tooltip\" title=\"{0}\"><font color=\"yellow\">{1}</font></a>',info,info);
+        $("#ws-build-progress").empty();
+        $("#ws-build-progress").append(content);
     }
 }
 

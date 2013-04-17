@@ -73,7 +73,7 @@
             <h3 id="myModalLabel">请求确认：</h3><h4>即将开始打包</h4>
           </div>
           <div class="modal-body">
-            只是确认你确实要打包，而不是不小心点到了Build按钮。
+            只是确认你不是不小心点到了Build按钮。
           </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
@@ -141,14 +141,14 @@
           <tr>
             <!-- why start the build -->
             <td class="td-form-title" width="12%">
-              <a href="#" rel="tooltip" title="请简述出包原因[可选]">打包原因</a>
+              <a href="#" rel="tooltip" title="简述这次打包的原因 [必选 15字以内] ">打包原因</a>
             </td>
-            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]" value="简要描述为何打包[可选]"></td>
+            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]" value="daily build"></td>
             <!-- user email -->
             <td class="td-form-title">
-              <a href="#" rel="tooltip" title="您的百度邮箱地址[可选]">百度邮箱</a>
+              <a href="#" rel="tooltip" title="您的百度邮箱地址 [必选 30字符以内] ">百度邮箱</a>
             </td>
-            <td id="td-user-email"><input type="text" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]" value="输入您的百度邮箱地址[可选]"></td>
+            <td id="td-user-email"><input type="text" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]" value="sw@baidu.com"></td>
           </tr>
         </table>
 
