@@ -339,7 +339,7 @@ function updateUI(msg) {
         $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
     }
     //关注的编译机开始工作
-    else if (jsonMsg['msrc'] == 'ws-start-build') {
+    else if (jsonMsg['msrc'] == 'ws-build-reset') {
         $("#ws-build-log").empty();
         $("#ws-build-progress").attr("style","width:0%;");
         $("#ws-build-progress-text").text("0%");
