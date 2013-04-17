@@ -64,7 +64,22 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
             <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-build-confirm">确认打包</button>
           </div>
-        </div>        
+        </div>  
+
+        <!-- 确认开始打包 -->
+        <div id="buildConfirmModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">请求确认：</h3><h4>即将开始打包</h4>
+          </div>
+          <div class="modal-body">
+            只是确认你确实要打包，而不是不小心点到了Build按钮。
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-common-build-confirm">确认打包</button>
+          </div>
+        </div>      
 
         <!-- 功能选择表格 -->
         <table id="table-build-config">

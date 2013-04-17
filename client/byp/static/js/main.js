@@ -148,7 +148,7 @@ function onBtnBuildClick() {
     })
     ctx += String.format("cbdetail,{0}",document.getElementById("ws-cb-detail").value);
     g_bFirst = true;
-    $("#btn-build-confirm").bind('click',function() {
+    $("#btn-build-confirm, #btn-common-build-confirm").bind('click',function() {
         if (g_bFirst) {
             //alert(ctx);
             var msg = formatMessage("ws-btn-build",ctx);
@@ -160,9 +160,7 @@ function onBtnBuildClick() {
         $("#defaultOptionChangedModal").modal();
     }
     else {
-        //alert(ctx);
-        var msg = formatMessage("ws-btn-build",ctx);
-        worker.postMessage(msg);
+        $("#buildConfirmModal").modal();
     }
 }
 
