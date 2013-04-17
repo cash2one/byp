@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf>
 	<build nickname="kvfastrelease" product="bdkv" type="KVRelease|Win32">
-		<step name="prebuild" order="1" value="0" weight="20"/>
+		<step name="prebuild" order="1" value="2" weight="20"/>
 		<step name="svn" order="2" value="0" weight="42"/>
 		<step name="rewriteversion" order="3" value="0" weight="1"/>
 		<step name="build" order="4" value="0" weight="140"/>

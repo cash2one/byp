@@ -307,6 +307,13 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             self.cachedBuildInfo.append(content)
             for client in self.listeners:
                 client.notify(content)
+        
+        #收到user-info信息，缓存之，并通知所有listener    
+        elif msg['msrc'] == 'wk-user-info':
+            content = '{"msrc":"ws-user-info","content":"%s"}' % (msg['content'])
+            self.cachedBuildInfo.append(content)
+            for client in self.listeners:
+                client.notify(content)
 
         #收到不知道是什么
         else:
@@ -316,6 +323,11 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         if self.type == 'client' and (msg['msrc'] == 'ws-sln-select' or msg['msrc'] == 'ws-build-options' or msg['msrc'] == 'ws-code-base'):
             content = '{"msrc":"ws-client-update","content":""}';
             self.notify(content)
+        elif self.type == 'worker' and msg['msrc'] == 'wk-user-info':
+            content = '{"msrc":"ws-client-update","content":""}';
+            self.cachedBuildInfo.append(content)
+            for client in self.listeners:
+                client.notify(content)
             
 def main():
     #init logging system, it's told logging is threadsafe, so do NOT need to sync

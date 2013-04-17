@@ -35,6 +35,7 @@
 #				 = "ws-worker-error"						打包出错的worker更新
 #				 = "ws-query-buildlog"						client刚连上，询问当前打包状态
 #				 = "ws-build-reset"							编译机开始工作
+#				 = "ws-user-info"							通知客户端更新编译机使用者信息
 ######################################################################################
 #				 server和worker通信用
 #				 = "wk-heart-beat"							判断worker是否在线
@@ -43,7 +44,8 @@
 #				 = "wk-build-log"							worker工作日志
 #				 = "wk-status-change"						worker状态切换
 #				 = "wk-build-progress"						打包进度更新
-#				 = 'wk-build-finish'						打包完成
+#				 = "wk-build-finish"						打包完成
+#				 = "wk-user-info"							告知server当前worker使用者信息
 #
 #
 #		 content
