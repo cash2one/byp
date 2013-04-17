@@ -85,10 +85,10 @@ $(document).ready(function() {
 function onBtnBuildClick() {
     var idleWorker = $("#ws-worker-idle").text()
     var errorWorker = $("#ws-worker-error").text()
-    //if (idleWorker == '0' && errorWorker == '0') {
-    //    alert("~当前没有空闲编译机，请等待当前打包完成~");
-    //    return;
-    //}
+    if (idleWorker == '0' && errorWorker == '0') {
+        alert("~当前没有空闲编译机，请等待当前打包完成~");
+        return;
+    }
 
     var ctx = "";
     var defaultProjChanged = false;
