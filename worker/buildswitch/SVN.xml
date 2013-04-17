@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf use="trunk">
-    <item name="branch" value=""/>
-    <item name="tag" value=""/>
+    <item name="branch" value="adfasdfaf"/>
+    <item name="tag" value="hretre"/>
     <item name="trunk" value="版本构建细节[可选]"/>
-    <item name="revision" value=""/>
+    <item name="revision" value="232341"/>
 </conf>

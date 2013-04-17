@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf dir="skin_proj">
 	<item build="0" product="bdm" type="Debug|Win32"/>
-	<item build="1" product="bdm" type="Release|Win32"/>
+	<item build="0" product="bdm" type="Release|Win32"/>
 	<item build="0" product="bdkv" type="KVDebug|Win32"/>
 	<item build="0" product="bdkv" type="KVRelease|Win32"/>
 </conf>
