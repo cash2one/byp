@@ -245,8 +245,6 @@ def buildproject(nickname,para = ()):
         report('wk-status-change','error',para)
         return
     logging.info('build complete !!')
-    report('wk-build-log', '', para)
-    report('wk-build-log', '------------------------------------------------------', para)
     report('wk-build-finish','',para)
     report('wk-status-change','idle',para)
             
