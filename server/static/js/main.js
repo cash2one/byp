@@ -332,8 +332,11 @@ function updateUI(msg) {
     }
     //打包完成
     else if (jsonMsg['msrc'] == 'ws-build-finish') {
-        $("#ws-build-log").append("打包完成!!");
-        $("#ws-build-log").append('<br>');
+        $("#ws-build-log").append('<p>');
+        $("#ws-build-log").append("<font color='green'>------------------------------------------------------------------------------------------------------------</font>");
+        $("#ws-build-log").append('<p>');
+        $("#ws-build-log").append("<font color='green'><h4>打包完成!!</h4></font>");
+        $("#ws-build-log").append('<p>');
         $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
     }
     //关注的编译机开始工作
