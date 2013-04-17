@@ -40,7 +40,7 @@
             <h3 id="myModalLabel">插件更新</h3>
           </div>
           <div class="modal-body">
-            <p>插件版本已过久，请下载新版本使用，<a target="_blank" href="http://192.168.10.68:13412/update/byp.crx">点击</a>下载</p>
+            <p>插件版本已过久，为应用最新特性，请下载新版本使用。<a target="_blank" href="http://192.168.10.68:13412/update/byp.crx">点击</a>下载，或在 \\192.168.10.242\public\DevTools\byp.crx 处获取。</p>
           </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
@@ -75,8 +75,12 @@
                 </select>
               </a>
               <br>
-              <button type="button" id="btn-build-default" class="btn btn-mini" class-toggle="btn-inverse">
+              <button type="button" id="btn-project-default" class="btn btn-mini" class-toggle="btn-inverse">
                 <a href="#" rel="tooltip" title="重置为服务器默认配置">Default</a>
+              </button>
+              <br>
+              <button type="button" id="btn-project-switch" class="btn btn-mini" class-toggle="btn-inverse">
+                <a href="#" rel="tooltip" title="所有当前配置项置反">Switch</a>
               </button>
             </td>
             <td id="ws-sln-select-base">
@@ -93,8 +97,13 @@
           <tr><!-- build options -->
             <td class="td-form-title" rowspan="3">
               <a href="#" class="tooltip-build-options" rel="tooltip" title="可选的打包配置">打包选项</a>
+              <br>
               <button type="button" id="btn-options-default" class="btn btn-mini">
                 <a href="#" rel="tooltip" title="重置为默认打包选项">Default</a>
+              </button>
+              <br>
+              <button type="button" id="btn-options-switch" class="btn btn-mini" class-toggle="btn-inverse">
+                <a href="#" rel="tooltip" title="所有当前配置项置反/关闭/切换到默认">Switch</a>
               </button>
             </td>
             <td id="ws-build-options-before">

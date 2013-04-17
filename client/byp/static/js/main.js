@@ -59,10 +59,14 @@ $(document).ready(function() {
 
     //定制默认按钮按下行为
     //$('.btn-group > .btn, .btn[data-toggle="button"]').bind('click',onInverseBtnClick);
-    //default build按钮按下行为
-    $("#btn-build-default").bind('click',onDefaultBuildBtnClick);
+    //default project按钮按下行为
+    $("#btn-project-default").bind('click',onDefaultBuildBtnClick);
     //default options按钮按下行为
     $("#btn-options-default").bind('click',onDefaultOptionsBtnClick);
+    //switch project按钮按下行为
+    $("#btn-project-switch").bind('click',onBtnProjectSwitchClick);
+    //switch options按钮按下行为
+    $("#btn-options-switch").bind('click',onBtnOptionsSwitchClick);
 
     //绑定默认project和worker选择事件
     $('#ws-project-select').bind('change',onProjectSelect);
@@ -518,4 +522,51 @@ function changeTooltipColorTo(color) {
     $('.tooltip.right .tooltip-arrow').css('border-right-color', color);
     $('.tooltip.left .tooltip-arrow').css('border-left-color', color);
     $('.tooltip.bottom .tooltip-arrow').css('border-bottom-color', color);
+}
+
+function onBtnProjectSwitchClick() {
+    $(".btn[id^='ws-btn-slnselect-']").each( function() {
+        $(this).click();
+    })
+}
+
+function onBtnOptionsSwitchClick() {
+
+    $(".btn[id^='ws-btn-option-']").each( function() {
+        if ($(this).children().attr('value') == undefined) {
+            $(this).click();
+        }
+    })
+    $("div[id^='ws-btn-option-']").each( function() {
+        if ($(this).attr("data-toggle") == 'buttons-radio') {
+            nodeDefault = null;
+            node0 = null;
+            var allNodes = $(this).children();
+            for (var i = 0; i < allNodes.length; i++) {
+                if (allNodes[i].attributes['default'] != undefined) {
+                    if (allNodes[i].attributes['default'].nodeValue == 'true') {
+                        nodeDefault = allNodes[i];
+                    }
+                }
+                var innerNode = allNodes[i].innerHTML;
+                if (innerNode.indexOf("value=\"0\"") != -1) {
+                    node0 = allNodes[i];
+                }
+            }
+            if (nodeDefault != null && node0 != null) {
+                bDefaultActive = false;
+                for (var i = 0; i < nodeDefault.classList.length; i++) {
+                    if (nodeDefault.classList[i] == 'active') {
+                        bDefaultActive = true;
+                    }
+                };
+                if (bDefaultActive) {
+                    node0.click();
+                }
+                else {
+                    nodeDefault.click();
+                }
+            }
+        }
+    })
 }
