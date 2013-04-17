@@ -94,7 +94,7 @@ function onBtnBuildClick() {
         return;
     }
 
-    var ctx = "";
+    ctx = "";
     var defaultProjChanged = false;
     var defaultOptionChanged = false;
     var defaultCbChanged = false;
@@ -147,10 +147,10 @@ function onBtnBuildClick() {
         }
     })
     ctx += String.format("cbdetail,{0}",document.getElementById("ws-cb-detail").value);
-    //alert(ctx);
     g_bFirst = true;
     $("#btn-build-confirm").bind('click',function() {
         if (g_bFirst) {
+            //alert(ctx);
             var msg = formatMessage("ws-btn-build",ctx);
             worker.postMessage(msg);
             g_bFirst = false;   
@@ -160,6 +160,7 @@ function onBtnBuildClick() {
         $("#defaultOptionChangedModal").modal();
     }
     else {
+        //alert(ctx);
         var msg = formatMessage("ws-btn-build",ctx);
         worker.postMessage(msg);
     }
