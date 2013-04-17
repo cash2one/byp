@@ -113,6 +113,19 @@ class Worker(threading.Thread):
             logging.error(e)
         
     def applyExtraOptions(self):
+        #user-email and reasion info
+        email = self.extraOptions['email']
+        reason = self.extraOptions['reason']
+        msg = '%s|%s' % (email,reason)
+        msg = msg.replace('\\','/')
+        msg = msg.replace('"',' ')
+        msg = msg.replace('\'',' ')
+        msg = msg.replace('\r',' ')
+        msg = msg.replace('\n',' ')
+        content = '{"msrc":"wk-user-info","content":"%s"}' % msg
+        logging.info('send message from worker, sid:%s, message:%s' % (self.id,content))
+        self.socket.send(content)
+        #code base info
         svnFile = './buildswitch/svn.xml'
         try:
             dom = xml.dom.minidom.parse(svnFile)
@@ -210,8 +223,11 @@ def report(msrc, msg, para):
         sid = para[1]
         ws = para[2]
         #整饰特殊字符
-        msg = msg.replace('"',' ')
         msg = msg.replace('\\','/')
+        msg = msg.replace('"',' ')
+        msg = msg.replace('\'',' ')
+        msg = msg.replace('\r',' ')
+        msg = msg.replace('\n',' ')
         content = '{"msrc":"%s","content":"%s"}' % (msrc, msg)
         logging.info('send message from worker, sid:%s, message:%s' % (sid,content))
         ws.send(content)
