@@ -254,6 +254,7 @@ def genPrebuildActions(product,value):
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\buildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\versionbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\SetupScript\\include\\buildline.nsi')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\setup\\*.exe')
             commands.append('del /Q ..\\output\\setup\\*.exe')
             commands.append('del /Q ..\\output\\err\\*.log')
@@ -261,6 +262,7 @@ def genPrebuildActions(product,value):
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvversionbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi')
+            commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\buildline.nsi')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\kvsetup\\*.exe')
             commands.append('del /Q ..\\output\\kvsetup\\*.exe')
             commands.append('del /Q ..\\output\\kverr\\*.log')
@@ -512,8 +514,8 @@ class Build(BuildStep):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.log_path + file)
                         if errLog != '':
-                            self.report('wk-build-log','------------------------------------------------------')
-                            self.report('wk-build-log',file)
+                            self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                            self.report('wk-build-log','<h5>' + file + '</h5>')
                             self.report('wk-build-log',errLog)
                 raise Exception(msg)
         BuildStep.act(self)
@@ -554,7 +556,7 @@ class KVBuild(BuildStep):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.kvlog_path + file)
                         if errLog != '':
-                            self.report('wk-build-log','------------------------------------------------------')
+                            self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
                             self.report('wk-build-log','<h5>' + file + '</h5>')
                             fp = open(conf.kvlog_path + file)
                             lines = fp.readlines()
