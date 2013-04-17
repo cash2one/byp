@@ -77,6 +77,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             #若这时还有worker，把删掉的worker的listener都转换为第一个worker的listener，不必通知client更新select了
             if len(BuildServerHandler.workers) > 0:
                 for client in self.listeners:
+                    client.notify('{"msrc":"ws-build-reset","content":""}')
                     BuildServerHandler.workers[0].append(client)
                     for content in worker[0].cachedBuildInfo:
                         client.notify(content)
@@ -89,7 +90,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
  
     def initCachedBuildInfo(self):
         self.cachedBuildInfo = []
-        content = '{"msrc":"ws-build-progress","content":"0"}'
+        content = '{"msrc":"ws-build-reset","content":""}'
         self.cachedBuildInfo.append(content)
     
     def on_message(self, message):
@@ -248,7 +249,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                     worker.status = 'running'
                     #通知这台worker的所有listener，清空log
                     for client in cWorker.listeners:
-                        client.notify('{"msrc":"ws-start-build","content":""}')
+                        client.notify('{"msrc":"ws-build-reset","content":""}')
                     #清空缓存队列
                     worker.initCachedBuildInfo()
                     #通知worker干活
@@ -270,7 +271,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                         break
                 if self not in cWorker.listeners:
                     cWorker.listeners.append(self)
-                self.notify('{"msrc":"ws-start-build","content":""}')
+                self.notify('{"msrc":"ws-build-reset","content":""}')
                 
         #收到worker状态切换，需要通知所有clients，非只有相关的listeners
         elif msg['msrc'] == 'wk-status-change':
