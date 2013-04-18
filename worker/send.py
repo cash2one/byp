@@ -1,6 +1,6 @@
 # coding=UTF-8
 """
-@author tomas
+@author thomas
 @date	2011-12-14
 @desc
 	send file tools for Ubrowser

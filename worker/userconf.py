@@ -1,6 +1,6 @@
 ﻿# coding=UTF-8
 """
-@author tomas
+@author thomas
 @date	2013-03-14
 @desc
 	user configuration

@@ -1,6 +1,6 @@
 # coding=UTF-8
 """
-@author    tomas
+@author    thomas
 @date    2013-03-13
 @desc
     auto generate BDMVersion.rc for each project

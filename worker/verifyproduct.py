@@ -1,6 +1,6 @@
 # coding=UTF-8
 """
-@author    tomas
+@author    thomas
 @date    2013-03-14
 @desc
     verify product(file_exist,file_version,driver_sign,kav_sign,baidu_sign)

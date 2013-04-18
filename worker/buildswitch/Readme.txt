@@ -1,4 +1,4 @@
-0.readme for xbuild by tomas
+0.readme for xbuild by thomas
 
 1.可能需要（视BuildStep.xml配置而定）svn版本管理系统，vcbuild构建系统和Python2.X支持（X>=5，可能需要安装pywin32扩展），请保证%PATH%中包含svn.exe、vcbuild.exe、python.exe
 

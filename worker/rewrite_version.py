@@ -1,6 +1,6 @@
 # coding=UTF-8
 """
-@author tomas
+@author thomas
 @date	2012-3-9
 @desc
 

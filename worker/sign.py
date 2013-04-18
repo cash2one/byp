@@ -1,6 +1,6 @@
 # coding=UTF-8
 """
-@author    tomas
+@author    thomas
 @date    2013-02-22
 @desc
     Sign pe files recursively in specific dir

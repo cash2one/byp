@@ -1,6 +1,6 @@
 # coding=UTF-8
 """
-@author    tomas
+@author    thomas
 @date    2013-02-20
 @desc
     Do file operation in dir recursively
