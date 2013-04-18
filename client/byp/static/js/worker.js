@@ -56,7 +56,7 @@ var updater = {
         updater.socket.onopen = function (event) {
             // handshaked, init ui
             //console.log('websocket server connected');
-            updater.send("{\"msrc\":\"ws-client-connect\",\"content\":\"5\"}");
+            updater.send("{\"msrc\":\"ws-client-connect\",\"content\":\"6\"}");
             updater.send("{\"msrc\":\"ws-project-select\",\"content\":\"\"}");
             updater.send("{\"msrc\":\"ws-worker-select\",\"content\":\"\"}");
             updater.send("{\"msrc\":\"ws-query-buildlog\",\"content\":\"\"}");

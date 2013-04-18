@@ -131,6 +131,14 @@ function onBtnBuildClick() {
                 ctx += String.format("{0},{1};",$(this).children().attr('name'),$(this).children().attr('value'));
             }
         }
+        else {
+            if ($(this).attr('default') == 'true') {
+                defaultOptionChanged = true;
+            }
+            if ($(this).children().attr('value') == undefined) {
+                ctx += String.format("{0},0;",$(this).children().attr('name'));
+            }
+        }
     })
     ctx = ctx.slice(0,-1);
     ctx += "|"
