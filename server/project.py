@@ -54,7 +54,7 @@ projects = {
 #选项名称，check还是radio，阶段，显示名称，tooltip名称，对应的值
 bdkv_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作','default'],
-	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1','default'),('完全清理','打包前清理所有生成文件','2')]],
+	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1'),('完全清理','打包前清理所有生成文件','2','default')]],
 
 	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
@@ -86,7 +86,7 @@ bdkv_options = {
 
 bdm_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作','default'],
-	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1','default'),('完全清理','打包前清理所有生成文件','2')]],
+	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1'),('完全清理','打包前清理所有生成文件','2','default')]],
 
 	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],

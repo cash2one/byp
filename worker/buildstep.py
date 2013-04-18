@@ -140,7 +140,10 @@ def getSvnCommands(product, value):
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "stable_proj")
     elif svnAction == 'checkout':
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
-        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
+        if codeDir.find('branches') != -1 or codeDir.find('tags') != -1 or revision != 'HEAD':
+            commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
+        else:
+            commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "stable_proj")
     commands = list(set(commands))
     return commands
 
@@ -391,6 +394,8 @@ class Svn(BuildStep):
                     if item.find('checkout') != -1:
                         subdir = item[item.find(conf.svn_url) + len(conf.svn_url):]
                         subdir = subdir[0:subdir.find('/')]
+                        if subdir.lower() == 'basic_proj':
+                            subdir = 'basic'
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
                         os.system(command)
@@ -421,6 +426,8 @@ class KVSvn(BuildStep):
                     if item.find('checkout') != -1:
                         subdir = item[item.find(conf.svn_url) + len(conf.svn_url):]
                         subdir = subdir[0:subdir.find('/')]
+                        if subdir.lower() == 'basic_proj':
+                            subdir = 'basic'
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
                         os.system(command)
