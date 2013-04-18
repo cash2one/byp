@@ -371,9 +371,9 @@ function updateUI(msg) {
     else if (jsonMsg['msrc'] == 'ws-user-info') {
         ctx = jsonMsg['content'].split('|');
         info = String.format("当前用户：{0} ; 打包原因：{1}",ctx[0],ctx[1]);
-        content = String.format('<a href=\"#\" rel=\"tooltip\" title=\"{0}\"><font color=\"yellow\">{1}</font></a>',info,info);
-        $("#ws-build-progress").empty();
-        $("#ws-build-progress").append(content);
+        content = String.format('<a href=\"#\" rel=\"tooltip\" title=\"{0}\"><font color=\"black\">{1}</font></a>',info,info);
+        $("#ws-user-info").empty();
+        $("#ws-user-info").append(content);
     }
 }
 

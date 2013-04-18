@@ -89,3 +89,14 @@ a {
 #ws-build-log h5 {
   color: red;
 }
+
+#ws-build-progress-container {
+  position: relative;
+  z-index: 1;
+}
+
+#ws-user-info {
+  position: relative;
+  top: 20px;
+  z-index: 2;
+}
