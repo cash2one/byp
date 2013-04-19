@@ -624,6 +624,9 @@ class Sign(BuildStep):
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])
+            command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'
+            self.report('wk-build-log',command)
+            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
         BuildStep.act(self)
     
 class KVSign(BuildStep):
@@ -651,6 +654,12 @@ class KVSign(BuildStep):
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
             self.update_step(14)
+
+            command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'
+            self.report('wk-build-log', command)
+            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
+            self.update_step(30)
+
         BuildStep.act(self)
     
 ##############################################
