@@ -203,46 +203,80 @@ def getBuildCommands(product,value):
             logging.error(e)
     return commands
     
-def makeBinplace(product,files):
+def makeBinplace(product,files,buildtype):
     if product == 'bdm':
-        return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\ -:DEST BDM ' + conf.sln_root + files
+        return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\Output\\Symbols\\' + buildtype + '\\Full -r ' + conf.sln_root + 'basic\\Output\\Symbols\\' + buildtype + '\\ -:DEST BDM ' + conf.sln_root + files
     elif product == 'bdkv':
-        return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Full -r ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\ -:DEST BDKV ' + conf.sln_root + files
+        return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\' + buildtype + '\\Full -r ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\' + buildtype + '\\ -:DEST BDKV ' + conf.sln_root + files
 
 def genSymbols(product):
     commands = []
     if product == 'bdm':
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\*.exe'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\FTSOManager\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\FTSWManager\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\bdkv\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmsomanagerplugins\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmswmanagerplugins\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmtrayplugins\\*.dll'))
-        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\wsplugins\\*.dll'))
+        #release
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\*.exe','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\FTSOManager\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\FTSWManager\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\bdkv\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmsomanagerplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmswmanagerplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\bdmtrayplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinRelease\\plugins\\wsplugins\\*.dll','Release'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
+        #debug
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\*.exe','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\FTSOManager\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\FTSWManager\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\bdkv\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\bdkvrtpplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\bdkvtrayplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\bdmhomepageplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\bdmmainframeplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\bdmsomanagerplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\bdmswmanagerplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\bdmtrayplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm',conf.sln_root + 'basic\\Output\\BinDebug\\plugins\\wsplugins\\*.dll','Debug'))
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Debug\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "BDM"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Debug\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "BDM"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "THIRD"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "THIRD"')
     elif product == 'bdkv':
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.exe'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.dll'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmantivirus\\*.dll'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmsysrepair\\*.dll'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\*.sys'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\*.dll'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkv\\*.dll'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll'))
+        #release
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.exe','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.dll','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmantivirus\\*.dll','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmsysrepair\\*.dll','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\*.sys','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkv\\*.dll','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll','Release'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Full\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDKV"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Stripped\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDKV"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
+        #debug
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\*.exe','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\*.dll','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\bdmantivirus\\*.dll','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\bdmsysrepair\\*.dll','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\drivers\\*.sys','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\bdkv\\*.dll','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\bdkvtrayplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\bdkvrtpplugins\\*.dll','Debug'))
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Debug\\Full\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "BDKV"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Debug\\Stripped\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "BDKV"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "THIRD"')
+        commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "THIRD"')
     return commands
 
 def genPrebuildActions(product,value):
@@ -948,7 +982,7 @@ class SymAdd(BuildStep):
             commands = genSymbols('bdm')
             for item in commands:
                 self.report('wk-build-log', item)
-                self.update_step(2)
+                self.update_step(1)
                 os.system(item)
         BuildStep.act(self)
     
@@ -966,7 +1000,7 @@ class KVSymAdd(BuildStep):
             commands = genSymbols('bdkv')
             for item in commands:
                 self.report('wk-build-log', item)
-                self.update_step(2)
+                self.update_step(1)
                 os.system(item)
         BuildStep.act(self)
     
