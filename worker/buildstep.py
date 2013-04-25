@@ -161,7 +161,7 @@ def getBuildCommands(product,value):
     if value == 3 or value == 4:
         vcbuildAction = '/rebuild'
     elif value == 1 or value == 2:
-        vcbuildAction = ''
+        vcbuildAction = '/rebuild'#always rebuild
     
     bForce = False
     if value == 1 or value == 3:

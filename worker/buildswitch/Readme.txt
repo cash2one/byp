@@ -15,7 +15,7 @@
 	prebuild				0-pass;1-simpleclean;2-fullclean
 	svn					0-pass;1-forceupdate;2-forcecheckout;3-optionalupdate;4-optionalcheckout
 	rewriteversion				0-pass;1-daily;2-version
-	build					0-pass;1-forcebuildrelease;2-optionalbuild;3-forcerebuildrelease;4-optionalrebuild
+	build					0-pass;1-forcebuildrelease;2-optionalbuild;3-forcerebuildrelease;4-optionalrebuild//always rebuild
 	pack					0-pass;1-packrelease
 	sign					0-pass;1-signrelease
 	verify					0-pass;1-doit
