@@ -1,7 +1,7 @@
 <?xml version="1.0" ?><conf>
 	<build nickname="kvfastrelease" product="bdkv" type="KVRelease|Win32">
 		<step name="prebuild" order="1" value="0" weight="20"/>
-		<step name="svn" order="2" value="0" weight="42"/>
+		<step name="svn" order="2" value="3" weight="42"/>
 		<step name="rewriteversion" order="3" value="1" weight="1"/>
 		<step name="build" order="4" value="0" weight="140"/>
 		<step name="pack" order="5" value="1" weight="3"/>
@@ -21,14 +21,14 @@
 		<step name="rewriteversion" order="3" value="0" weight="1"/>
 		<step name="build" order="4" value="2" weight="190"/>
 		<step name="pack" order="5" value="0" weight="3"/>
-		<step name="sign" order="6" value="0" weight="100"/>
+		<step name="sign" order="6" value="1" weight="100"/>
 		<step name="verify" order="7" value="0" weight="3"/>
-		<step name="install" order="8" value="1" weight="10"/>
+		<step name="install" order="8" value="0" weight="10"/>
 		<step name="signinstaller" order="9" value="0" weight="4"/>
 		<step name="verifyinstaller" order="10" value="0" weight="1"/>
 		<step name="send" order="11" value="0" weight="10"/>
-		<step name="symadd" order="12" value="0" weight="34"/>
-		<step name="commit" order="13" value="1" weight="10"/>
+		<step name="symadd" order="12" value="1" weight="34"/>
+		<step name="commit" order="13" value="0" weight="10"/>
 		<step name="postbuild" order="14" value="0" weight="1"/>
 	</build>
 </conf>
