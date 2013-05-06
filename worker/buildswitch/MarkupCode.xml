@@ -1,0 +1,5 @@
+<?xml version="1.0" ?><conf use="tag">
+    <item name="branch" value="rc5"/>
+    <item name="tag" value="rc4"/>
+    <item name="none" value=""/>
+</conf>

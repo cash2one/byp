@@ -136,6 +136,27 @@
 
         <!-- --------------------------------------------------------------------------------- -->
         
+        <!-- 是否打branch或者tag表格 -->
+        <table id="table-markup-code">
+          <tr>
+            <!-- branch or tag code -->
+            <td class="td-form-title" width="12%">
+              <a href="#" rel="tooltip" title="标记这次打包的代码版本">标记版本</a>
+            </td>
+            <td>
+              <div id="ws-markup-code" class="btn-group" data-toggle="buttons-radio">
+              </div>
+            </td>
+            <!-- markup detail -->
+            <td class="td-form-title">
+              <a href="#" rel="tooltip" title="版本标记细节信息 [必选 30字符以内] ">标记细节</a>
+            </td>
+            <td id="td-markup-detail"><input type="text" id="ws-markup-detail" data-provide="typeahead" data-items="4" data-source="" value="markup code details[optional]"></td>
+          </tr>
+        </table>
+
+        <!-- --------------------------------------------------------------------------------- -->
+        
         <!-- 打包原因及用户表格 -->
         <table id="table-build-info">
           <tr>

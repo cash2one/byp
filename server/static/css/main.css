@@ -43,11 +43,11 @@ a {
   font-weight: bold;
 }
 
-#table-build-log, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
+#table-markup-code, #table-build-log, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
   width: 600px;
 }
 
-#td-build-reason, #td-user-email, #td-cb-detail {
+#td-build-reason, #td-user-email, #td-cb-detail, #td-markup-detail {
   text-align: left;
   vertical-align: middle;
 }

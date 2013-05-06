@@ -49,7 +49,8 @@ function initUI() {
     var h3 = $("#table-build-depend").height();
     var h4 = $("#table-progress-info").height();
     var h5 = $("#table-status-info").height();
-    $("#ws-build-log").height(hTotal - h1 - h2 - h3 - h4 - h5 - 65);
+    var h6 = $("#table-markup-code").height();
+    $("#ws-build-log").height(hTotal - h1 - h2 - h3 - h4 - h5 - h6 - 65);
 
 }
 
@@ -72,7 +73,7 @@ $(document).ready(function() {
     $('#ws-project-select').bind('change',onProjectSelect);
     $('#ws-worker-select').bind('change',onWorkerSelect);
     //绑定input text默认事件
-    $('#ws-cb-detail,#ws-build-reason,#ws-user-email').bind('click',onInputClick);
+    $('#ws-cb-detail,#ws-build-reason,#ws-user-email,#ws-markup-detail').bind('click',onInputClick);
     //初始化typeahead
     $('#ws-cb-detail,#ws-build-reason,#ws-user-email').typeahead();
     //初始化build按钮
@@ -141,7 +142,18 @@ function onBtnBuildClick() {
         }
     })
     ctx = ctx.slice(0,-1);
-    ctx += "|"
+    ctx += "|";
+    //markup-code
+    $(".btn[id^='ws-btn-markup-code-']").each( function() {
+        if ($(this).hasClass("active")) {
+            if ($(this).attr('default') != 'true') {
+                defaultCbChanged = true;
+            }
+            ctx += String.format("markupcode,{0}|",$(this).attr('value'));
+        }
+    })
+    ctx += String.format("markupdetail,{0}",document.getElementById("ws-markup-detail").value);
+    ctx += "|";
     //build-reason and user-email
     var reason = document.getElementById("ws-build-reason").value;
     if (reason.length > 15) {
@@ -300,6 +312,24 @@ function updateUI(msg) {
             node = String.format("<button type=\"button\" id=\"{0}\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
         }
         $("#ws-code-base").append(node);
+        $("#"+btnId).bind('click',onInverseBtnClick);
+        $("#"+activeBtnId).click();
+    }
+    //更新标记代码radiobutton
+    else if (jsonMsg['msrc'] == 'ws-markup-code') {
+        var items = jsonMsg['content'].split("|");
+        var btnId = "ws-btn-markup-code-" + randomChar(32);
+        var activeBtnId = ''
+        var node = "";
+        node = String.format("<button type=\"button\" id=\"{0}\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
+        if (items.length == 4 && items[3] == 'default') {
+            node = String.format("<button type=\"button\" id=\"{0}\" default = \"true\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
+            activeBtnId = btnId;
+        }
+        else {
+            node = String.format("<button type=\"button\" id=\"{0}\" value=\"{1}\" class-toggle=\"btn-inverse\" class=\"btn btn-mini\"><a href=\"#\" rel=\"tooltip\" title=\"{2}\">{3}</a></button>",btnId,items[2],items[1],items[0]);
+        }
+        $("#ws-markup-code").append(node);
         $("#"+btnId).bind('click',onInverseBtnClick);
         $("#"+activeBtnId).click();
     }
@@ -490,6 +520,8 @@ function onProjectSelect() {
     
     //清空build-depends
     $("#ws-code-base").empty();
+    //清空markup-code
+    $("#ws-markup-code").empty();
 
     var currentSel = $("#ws-project-select option:selected").text();
     var msg = formatMessage("ws-sln-select",currentSel);
@@ -497,6 +529,8 @@ function onProjectSelect() {
     msg = formatMessage("ws-build-options",currentSel);
     worker.postMessage(msg);
     msg = formatMessage("ws-code-base",currentSel);
+    worker.postMessage(msg);
+    msg = formatMessage("ws-markup-code",currentSel);
     worker.postMessage(msg);
 }
 

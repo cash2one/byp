@@ -24,6 +24,7 @@ build_step_creator = {
                       'send':'Send',
                       'symadd':'SymAdd',
                       'commit':'Commit',
+                      'markupcode':'MarkupCode',
                       'postbuild':'PostBuild',
                       }
 kvbuild_step_creator = {
@@ -40,6 +41,7 @@ kvbuild_step_creator = {
                       'send':'KVSend',
                       'symadd':'KVSymAdd',
                       'commit':'KVCommit',
+                      'markupcode':'KVMarkupCode',
                       'postbuild':'KVPostBuild',
                       }
 
@@ -147,6 +149,85 @@ def getSvnCommands(product, value):
     commands = list(set(commands))
     return commands
 
+def getMarkupCodeCommands(product,value):
+    #codebase must be considered
+    codeDir = ''
+    revision = ''
+    try:
+        dom = xml.dom.minidom.parse(conf.svn_conf_file)
+        root = dom.documentElement
+        svnConfig = root.getAttribute('use')
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == svnConfig:
+                if name == 'branch':
+                    codeDir = '/branches/' + node.getAttribute('value')
+                    revision = 'HEAD'
+                elif name == 'tag':
+                    codeDir = '/tags/' + node.getAttribute('value')
+                    revision = 'HEAD'
+                elif name == 'trunk':
+                    codeDir = '/trunk'
+                    revision = 'HEAD'
+                elif name == 'revision':
+                    codeDir = '/trunk'
+                    revision = node.getAttribute('value')
+                break
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
+    
+    #markup info
+    markupType = ''
+    markupValue = ''
+    try:
+        dom = xml.dom.minidom.parse(conf.markup_conf_file)
+        root = dom.documentElement
+        markupType = root.getAttribute('use')
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == markupType:
+                markupValue = node.getAttribute('value')
+                break
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
+    
+    #svn commands
+    if markupType == '' or markupValue == '' or markupType == 'none':
+        return []
+    else:
+        if markupType == 'branch':
+            markupType = '/branches/'
+        elif markupType == 'tag':
+            markupType = '/tags/'
+        commands = []
+        msg = 'bypbuild copy %s' % datetime.datetime.now()
+        slns = getSlns(product)
+        for item in slns:
+            confFile = './BuildSwitch/'+item+'.xml'
+            try:
+                dom = xml.dom.minidom.parse(confFile)
+                root = dom.documentElement
+                dir = root.getAttribute('dir')
+                svnDir = root.getAttribute('svnDir')
+                if not svnDir:
+                    svnDir = dir + codeDir
+                    command = "svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
+                    commands.append(command)
+            except Exception,e:
+                logging.error("error occers when parsing xml or run command:")
+                logging.error(e)
+        #add basic and stable
+        commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+        commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
+        commands = list(set(commands))
+        return commands
+    
 def getBuildCommands(product,value):
     checklogFile = ''
     errDir = ''
@@ -1041,6 +1122,50 @@ class KVCommit(BuildStep):
             os.system(command)
         BuildStep.act(self)
     
+##############################################
+# 0,1,2
+class MarkupCode(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM markup code operations"
+    
+    def act(self):
+        if self.value == 0:
+            self.report('wk-build-log', 'Passed')
+        else:
+            commands = getMarkupCodeCommands('bdm',self.value)
+            if len(commands) == 0:
+                self.report('wk-build-log', 'No markup code commands')
+            else:
+                for item in commands:
+                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                    os.system(item)
+                    self.update_step(1)
+        BuildStep.act(self)
+    
+class KVMarkupCode(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV markup code operations"
+    
+    def act(self):
+        if self.value == 0:
+            self.report('wk-build-log', 'Passed')
+        else:
+            commands = getMarkupCodeCommands('bdkv',self.value)
+            if len(commands) == 0:
+                self.report('wk-build-log', 'No markup code commands')
+            else:
+                for item in commands:
+                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                    os.system(item)
+                    self.update_step(1)
+        BuildStep.act(self)
+
 ##############################################
 # 0,1
 

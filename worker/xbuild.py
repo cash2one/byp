@@ -103,6 +103,8 @@ class Worker(threading.Thread):
                         name = step.getAttribute('name')
                         if self.options.has_key(name):
                             step.setAttribute('value',self.options[name])
+                        elif self.extraOptions.has_key(name):
+                            step.setAttribute('value',self.extraOptions[name])
                         else:
                             step.setAttribute('value','0')
             writer = open(bsFile,'w')
@@ -159,6 +161,38 @@ class Worker(threading.Thread):
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
+        #markup code info
+        svnFile = './buildswitch/MarkupCode.xml'
+        try:
+            dom = xml.dom.minidom.parse(svnFile)
+            root = dom.documentElement
+            mkName = ''
+            mkVal = self.extraOptions['markupdetail']
+            if self.extraOptions['markupcode'] == '0':
+                mkName = 'none'
+            elif self.extraOptions['markupcode'] == '1':
+                mkName = 'branch'
+            elif self.extraOptions['markupcode'] == '2':
+                mkName = 'tag'
+            else:
+                mkName = 'none'
+            root.setAttribute('use',mkName)
+            for node in root.childNodes:
+                if node.nodeType != node.ELEMENT_NODE:
+                    continue
+                name = node.getAttribute('name')
+                if name != mkName:
+                    continue;
+                else:
+                    node.setAttribute('value',mkVal)
+                    break
+            writer = open(svnFile,'w')
+            dom.writexml(writer)
+            writer.close()
+        except Exception,e:
+            logging.error("error occers when parsing xml or run command:")
+            logging.error(e)
+        
         
     def applyBuildSettings(self):
         self.applySlnSettings()
