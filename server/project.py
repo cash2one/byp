@@ -128,7 +128,7 @@ build_depends = {
 }
 
 #支持的版本标记选项
-svn_markup_code = [('None','不标记此版本',0),('Branch','以此版本新建Branch',2),('Tag','以此版本新建Tag',3)]
+svn_markup_code = [('None','不标记此版本',0,'default'),('Branch','以此版本新建Branch',1),('Tag','以此版本新建Tag',2)]
 
 markup_options = {
 	'X光': svn_markup_code,
