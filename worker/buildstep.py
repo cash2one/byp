@@ -152,6 +152,7 @@ def getSvnCommands(product, value):
 def ExpendMarkupValue(product, str):
     #替换$revision、$version等
     command = 'svn info ' + conf.sln_root + 'basic > ' + conf.svn_info_file
+    os.system(command)
     f = open(conf.svn_info_file)
     svn_info_lines = f.readlines()
     f.close()
@@ -161,6 +162,7 @@ def ExpendMarkupValue(product, str):
         index = line.find(': ')
         if index != -1:
             secondPart = line[index+2:]
+            secondPart = secondPart.strip(' \r\n')
             bFit = True
             for i in secondPart:
                 if i < '0' or i > '9':
@@ -181,13 +183,13 @@ def ExpendMarkupValue(product, str):
         index = line.find('!define RELEASE_VERSION  ')
         if index != -1:
             secondPart = line[index+25:]
-            version = secondPart.strip('" ')
+            version = secondPart.strip('" \r\n')
             break
     if revision == '' or version == '':
         return str
     else:
-        str = str.replace('$revision', revision)
-        str = str.replace('$version', version)
+        str = str.replace('$revision', 'r'+revision)
+        str = str.replace('$version', 'v'+version)
         return str
 
 def getMarkupCodeCommands(product,value):
