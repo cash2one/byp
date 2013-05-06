@@ -149,6 +149,47 @@ def getSvnCommands(product, value):
     commands = list(set(commands))
     return commands
 
+def ExpendMarkupValue(product, str):
+    #替换$revision、$version等
+    command = 'svn info ' + conf.sln_root + 'basic > ' + conf.svn_info_file
+    f = open(conf.svn_info_file)
+    svn_info_lines = f.readlines()
+    f.close()
+    revision = ''
+    version = ''
+    for line in svn_info_lines:
+        index = line.find(': ')
+        if index != -1:
+            secondPart = line[index+2:]
+            bFit = True
+            for i in secondPart:
+                if i < '0' or i > '9':
+                    bFit = False
+                    break
+            if bFit:
+                revision = secondPart
+                break
+    version_file = ''
+    if product == 'bdm':
+        version_file = conf.bdm_nsifile_daily
+    elif product == 'bdkv':
+        version_file = conf.bdkv_nsifile_daily
+    f = open(version_file)
+    version_lines = f.readlines()
+    f.close()
+    for line in version_lines:
+        index = line.find('!define RELEASE_VERSION  ')
+        if index != -1:
+            secondPart = line[index+25:]
+            version = secondPart.strip('" ')
+            break
+    if revision == '' or version == '':
+        return str
+    else:
+        str = str.replace('$revision', revision)
+        str = str.replace('$version', version)
+        return str
+
 def getMarkupCodeCommands(product,value):
     #codebase must be considered
     codeDir = ''
@@ -201,6 +242,7 @@ def getMarkupCodeCommands(product,value):
     if markupType == '' or markupValue == '' or markupType == 'none':
         return []
     else:
+        markupValue = ExpendMarkupValue(product, markupValue)
         if markupType == 'branch':
             markupType = '/branches/'
         elif markupType == 'tag':

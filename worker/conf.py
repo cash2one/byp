@@ -99,6 +99,7 @@ ver_product_manager = 'Baidu Manager'
 ver_product_antivirus = u'百度杀毒'
 
 rclist_file = './AutoBuild/rcdef.xml'
+svn_info_file = '../output/svn.info'
 
 mgr_official_sign_excluded_dir = []
 
