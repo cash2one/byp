@@ -36,6 +36,8 @@
 #				 = "ws-query-buildlog"						client刚连上，询问当前打包状态
 #				 = "ws-build-reset"							编译机开始工作
 #				 = "ws-user-info"							通知客户端更新编译机使用者信息
+#				 = "ws-mark-code"							标记版本选项
+#				 = "ws-markup-detail"						标记版本细节
 ######################################################################################
 #				 server和worker通信用
 #				 = "wk-heart-beat"							判断worker是否在线

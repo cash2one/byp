@@ -203,6 +203,20 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                     self.notify(content)
             except KeyError,e:
                 logging.info('message error %s' % message)
+                
+        #手动切换项目combobox时发送；提供当前project支持的markup-code
+        elif msg['msrc'] == 'ws-markup-code':
+            projName = msg['content']
+            try:
+                markupcode = project.markup_options[projName]
+                for item in markupcode:
+                    if len(item) == 3:
+                        content = '{"msrc":"ws-markup-code","content":"%s|%s|%s"}' % (item[0],item[1],item[2])
+                    elif len(item) == 4:
+                        content = '{"msrc":"ws-markup-code","content":"%s|%s|%s|%s"}' % (item[0],item[1],item[2],item[3])
+                    self.notify(content)
+            except KeyError,e:
+                logging.info('message error %s' % message)
                     
         #手动切换worker时发送，这时已经绑定了worker，更改client绑定的worker
         elif msg['msrc'] == 'ws-worker-select':
@@ -320,7 +334,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             pass
             
         #如果对象是client，且是某些需要更新ui的消息类型，通知其重置ui
-        if self.type == 'client' and (msg['msrc'] == 'ws-sln-select' or msg['msrc'] == 'ws-build-options' or msg['msrc'] == 'ws-code-base'):
+        if self.type == 'client' and (msg['msrc'] == 'ws-sln-select' or msg['msrc'] == 'ws-build-options' or msg['msrc'] == 'ws-code-base' or msg['msrc'] == 'ws-markup-code'):
             content = '{"msrc":"ws-client-update","content":""}';
             self.notify(content)
         elif self.type == 'worker' and msg['msrc'] == 'wk-user-info':
