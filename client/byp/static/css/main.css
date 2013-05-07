@@ -96,6 +96,10 @@ a {
   color: red;
 }
 
+#ws-build-log2 h5 {
+  color: red;
+}
+
 #ws-build-progress-container {
   position: relative;
   z-index: 1;
