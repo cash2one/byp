@@ -208,8 +208,6 @@ function onInputClick() {
 }
 
 function updateUI(msg) {
-    //$("#ws-build-log").append(msg);
-    //$("#ws-build-log").append('<br>');
 
     var jsonMsg = JSON.parse(msg)
     //更新项目combobox
@@ -381,6 +379,9 @@ function updateUI(msg) {
         $("#ws-build-log").append(jsonMsg['content']);
         $("#ws-build-log").append('<br>');
         $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
+        $("#ws-build-log2").append(jsonMsg['content']);
+        $("#ws-build-log2").append('<br>');
+        $("#ws-build-log2").scrollTop(document.getElementById('ws-build-log2').scrollHeight)
     }
     //更新进度
     else if (jsonMsg['msrc'] == 'ws-build-progress') {
@@ -395,10 +396,17 @@ function updateUI(msg) {
         $("#ws-build-log").append("<font color='green'><h4>打包完成!!</h4></font>");
         $("#ws-build-log").append('<p>');
         $("#ws-build-log").scrollTop(document.getElementById('ws-build-log').scrollHeight)
+        $("#ws-build-log2").append('<p>');
+        $("#ws-build-log2").append("<font color='green'>------------------------------------------------------------------------------------------------------------</font>");
+        $("#ws-build-log2").append('<p>');
+        $("#ws-build-log2").append("<font color='green'><h4>打包完成!!</h4></font>");
+        $("#ws-build-log2").append('<p>');
+        $("#ws-build-log2").scrollTop(document.getElementById('ws-build-log2').scrollHeight)
     }
     //关注的编译机开始工作
     else if (jsonMsg['msrc'] == 'ws-build-reset') {
         $("#ws-build-log").empty();
+        $("#ws-build-log2").empty();
         $("#ws-build-progress").attr("style","width:0%;");
         $("#ws-build-progress-text").text("0%");
     }
@@ -576,6 +584,7 @@ function updateWorkerStatus() {
 function onWorkerSelect() {
     //清空日志输出区域
     $("#ws-build-log").empty();
+    $("#ws-build-log2").empty();
 
     updateWorkerStatus();
 }

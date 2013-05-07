@@ -43,7 +43,7 @@ a {
   font-weight: bold;
 }
 
-#table-markup-code, #table-build-log, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
+#table-markup-code, #table-build-log, #table-build-log2, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
   width: 600px;
 }
 
@@ -55,6 +55,12 @@ a {
 #ws-build-log {
   overflow: auto;
   height: 160px;
+  text-align: left;
+}
+
+#ws-build-log2 {
+  overflow: auto;
+  height: 530px;
   text-align: left;
 }
 
