@@ -78,6 +78,8 @@ $(document).ready(function() {
     $('#ws-cb-detail,#ws-build-reason,#ws-user-email').typeahead();
     //初始化build按钮
     $("#ws-btn-build").bind('click',onBtnBuildClick);
+    //初始化log-tab按下事件
+    $('a[data-toggle="tab"]').bind('shown', onLogTabClick)
 
     //start backend communication worker
     worker = new Worker("static/js/worker.js");
@@ -86,6 +88,12 @@ $(document).ready(function() {
     };
     
 });
+
+function onLogTabClick(e) {
+    if ($(e.target).attr('href') == '#tabLog') {
+        $("#ws-build-log2").scrollTop(document.getElementById('ws-build-log2').scrollHeight)
+    }
+}
 
 function onBtnBuildClick() {
     var idleWorker = $("#ws-worker-idle").text()
