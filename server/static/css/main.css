@@ -47,9 +47,13 @@ a {
   width: 600px;
 }
 
-#td-build-reason, #td-user-email, #td-cb-detail, #td-markup-detail {
+#td-build-reason, #td-user-email, #td-cb-detail, #td-markup-detail, #td-markup-revision {
   text-align: left;
   vertical-align: middle;
+}
+
+#ws-build-reason, #ws-user-email, #ws-cb-detail, #ws-markup-detail {
+  width: auto;
 }
 
 #ws-build-log {
