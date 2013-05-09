@@ -638,7 +638,7 @@ class Svn(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            command = 'svn info ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
+            command = 'svn info --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
             os.system(command)
             commands = getSvnCommands('bdm',self.value)
             if len(commands) == 0:
@@ -672,7 +672,7 @@ class KVSvn(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            command = 'svn info ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
+            command = 'svn info --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
             os.system(command)
             commands = getSvnCommands('bdkv',self.value)
             if len(commands) == 0:
