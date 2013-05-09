@@ -111,8 +111,8 @@ def genSvnLockActions(product, action, value):
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
-    #commands.append(conf.sln_root + 'basic')
-    #commands.append(conf.sln_root + 'stable_proj')
+    commands.append(conf.sln_root + 'basic')
+    commands.append(conf.sln_root + 'stable_proj')
     commands = list(set(commands))
     #already get all folders, now lock/unlock these folder
     cmd_details = []
