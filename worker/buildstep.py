@@ -241,7 +241,7 @@ def GetRemoteRevision():
 
 def ExpendMarkupValue(product, str):
     #替换$revision、$version等
-    f = open(conf.svn_local_info_file)
+    f = open(conf.svn_remote_info_file)
     svn_info_lines = f.readlines()
     f.close()
     revision = ''
@@ -753,9 +753,6 @@ class RewriteVersion(BuildStep):
             command = 'python rewrite_version.py bdm version'
             self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdm','version'])
-        #check commit revision
-        command = 'svn info ' + conf.sln_root + 'basic > ' + conf.svn_local_info_file
-        os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
 
     
@@ -777,9 +774,6 @@ class KVRewriteVersion(BuildStep):
             command = 'python rewrite_version.py bdkv version'
             self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdkv','version'])
-        #check commit revision
-        command = 'svn info ' + conf.sln_root + 'basic > ' + conf.svn_local_info_file
-        os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 ##############################################
