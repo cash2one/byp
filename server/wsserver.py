@@ -116,7 +116,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             BuildServerHandler.clients.append(self)
             if len(BuildServerHandler.workers) > 0:
                 if self not in BuildServerHandler.workers[0].listeners:
-                    BuildServerHandler.workers[0].listeners.append(self)
+                    BuildServerHandler.workers[0].listeners.append(self) 
             
         #worker连接时发送；增加idle worker
         elif msg['msrc'] == 'wk-worker-connect':
@@ -254,23 +254,33 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             bFind = False
             oldStatus = ''
             cWorker = None
+            settings = msg['content'].split('|')
+            wid = settings[0]
             for worker in BuildServerHandler.workers:
-                if worker.status == 'idle' or worker.status == 'error':
-                    #开始干活
+                if wid == worker.id and (worker.status == 'idle' or worker.status == 'error'):
                     cWorker = worker
-                    #更改本机状态
-                    oldStatus = worker.status
-                    worker.status = 'running'
-                    #通知这台worker的所有listener，清空log
-                    for client in cWorker.listeners:
-                        client.notify('{"msrc":"ws-build-reset","content":""}')
-                    #清空缓存队列
-                    worker.initCachedBuildInfo()
-                    #通知worker干活
-                    content = '{"msrc":"wk-start-build","content":"%s"}' % msg['content']
-                    worker.notify(content)
                     bFind = True
                     break
+            if cWorker == None:
+                for worker in BuildServerHandler.workers:
+                    if worker.status == 'idle' or worker.status == 'error':
+                        cWorker = worker
+                        bFind = True
+                        break
+            
+            #开始干活
+            #更改本机状态
+            oldStatus = cWorker.status
+            cWorker.status = 'running'
+            #通知这台worker的所有listener，清空log
+            for client in cWorker.listeners:
+                client.notify('{"msrc":"ws-build-reset","content":""}')
+            #清空缓存队列
+            cWorker.initCachedBuildInfo()
+            #通知worker干活
+            content = '{"msrc":"wk-start-build","content":"%s"}' % msg['content']
+            cWorker.notify(content)
+            
             if bFind:
                 #通知所有listeners，有台worker状态发生改变
                 content1 = '{"msrc":"ws-worker-%s","content":"-"}' % (oldStatus)

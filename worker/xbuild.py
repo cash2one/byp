@@ -23,23 +23,23 @@ class Worker(threading.Thread):
         ctx = msg['content']
         settings = ctx.split('|')
         self.projName = ''
-        if settings[0] == 'X光':
+        if settings[1] == 'X光':
             self.projName = 'bdkv'
-        elif settings[0] == '极光':
+        elif settings[1] == '极光':
             self.projName = 'bdm'
         self.slns = {}
-        for item in settings[1].split(';'):
+        for item in settings[2].split(';'):
             slnName = item[0:item.find(',')]
             slnBuild = item[item.find(',')+1:]
             self.slns[slnName] = slnBuild
         self.options = {}
-        for item in settings[2].split(';'):
+        for item in settings[3].split(';'):
             opName = item[0:item.find(',')]
             opVal = item[item.find(',')+1:]
             self.options[opName] = opVal
         self.extraOptions = {}
         iIndex = 0
-        for i in range(3,len(settings)):
+        for i in range(4,len(settings)):
             iIndex = settings[i].find(',')
             self.extraOptions[settings[i][0:iIndex]] = settings[i][iIndex+1:]
         
