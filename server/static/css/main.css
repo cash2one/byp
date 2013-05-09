@@ -59,12 +59,14 @@ a {
 #ws-build-log {
   overflow: auto;
   height: 160px;
+  width: 590px;
   text-align: left;
 }
 
 #ws-build-log2 {
   overflow: auto;
   height: 530px;
+  width: 590px;
   text-align: left;
 }
 
