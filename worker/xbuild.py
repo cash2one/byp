@@ -179,9 +179,13 @@ class Worker(threading.Thread):
             if self.extraOptions['markupcode'] == '0':
                 mkName = 'none'
             elif self.extraOptions['markupcode'] == '1':
-                mkName = 'branch'
+                mkName = '+branch'
             elif self.extraOptions['markupcode'] == '2':
-                mkName = 'tag'
+                mkName = '+tag'
+            elif self.extraOptions['markupcode'] == '3':
+                mkName = '-branch'
+            elif self.extraOptions['markupcode'] == '4':
+                mkName = '-tag'
             else:
                 mkName = 'none'
             root.setAttribute('use',mkName)

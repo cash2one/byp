@@ -330,13 +330,17 @@ def getMarkupCodeCommands(product,value):
     if markupType == '' or markupValue == '' or markupType == 'none':
         return []
     else:
+        actType = markupType
         (markupValue,revision) = ExpendMarkupValue(product, markupValue)
-        if markupType == 'branch':
+        if markupType == '+branch' or markupType == '-branch':
             markupType = '/branches/'
-        elif markupType == 'tag':
+        elif markupType == '+tag' or markupType == '-tag':
             markupType = '/tags/'
         commands = []
-        msg = 'bypbuild copy %s' % datetime.datetime.now()
+        if actType[0] == '+':
+            msg = 'bypbuild copy %s' % datetime.datetime.now()
+        elif actType[0] == '-':
+            msg = 'bypbuild delete %s' % datetime.datetime.now()
         slns = getSlns(product)
         for item in slns:
             confFile = './BuildSwitch/'+item+'.xml'
@@ -347,14 +351,21 @@ def getMarkupCodeCommands(product,value):
                 svnDir = root.getAttribute('svnDir')
                 if not svnDir:
                     svnDir = dir + codeDir
-                command = "svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
+                if actType[0] == '+':
+                    command = "svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
+                elif actType[0] == '-':
+                    command = "svn delete " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
                 commands.append(command)
             except Exception,e:
                 logging.error("error occers when parsing xml or run command:")
                 logging.error(e)
         #add basic and stable
-        commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
-        commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
+        if actType[0] == '+':
+            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
+        elif actType[0] == '-':
+            commands.append("svn delete " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            commands.append("svn delete " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
         commands = list(set(commands))
         return commands
     

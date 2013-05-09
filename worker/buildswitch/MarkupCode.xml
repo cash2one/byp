@@ -1,5 +1,7 @@
-<?xml version="1.0" ?><conf use="tag">
-    <item name="branch" value="$revision_$version"/>
-    <item name="tag" value="byp_$r_$v_$t"/>
+<?xml version="1.0" ?><conf use="none">
+    <item name="+branch" value="$revision_$version"/>
+    <item name="+tag" value="byp_$r_$v_$t"/>
+    <item name="-branch" value="$revision_$version"/>
+    <item name="-tag" value="byp_$r_$v_$t"/>
     <item name="none" value="byp_$r_$v_$t"/>
 </conf>
