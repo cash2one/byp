@@ -107,6 +107,9 @@ function onBtnBuildClick() {
     var defaultProjChanged = false;
     var defaultOptionChanged = false;
     var defaultCbChanged = false;
+    //worker id
+    ctx += $("#ws-worker-select option:selected").attr('id');
+    ctx += "|";
     //proj name
     ctx += $("#ws-project-select option:selected").text();
     ctx += "|";
