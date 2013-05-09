@@ -146,6 +146,14 @@ class Worker(threading.Thread):
             else:
                 cbName = 'trunk'
             root.setAttribute('use',cbName)
+            if self.options['lock'] == '1':
+                root.setAttribute('lock','true')
+            else:
+                root.setAttribute('lock','false')
+            if self.options['unlock'] == '1':
+                root.setAttribute('unlock','true')
+            else:
+                root.setAttribute('unlock','false')
             for node in root.childNodes:
                 if node.nodeType != node.ELEMENT_NODE:
                     continue

@@ -12,6 +12,7 @@ import logging,time
 
 build_step_creator = {
                       'prebuild':'PreBuild',
+                      'locksvn':'LockSvn',
                       'svn':'Svn',
                       'rewriteversion':'RewriteVersion',
                       'build':'Build',
@@ -25,10 +26,12 @@ build_step_creator = {
                       'symadd':'SymAdd',
                       'commit':'Commit',
                       'markupcode':'MarkupCode',
+                      'releasesvn':'UnlockSvn',
                       'postbuild':'PostBuild',
                       }
 kvbuild_step_creator = {
                       'prebuild':'KVPreBuild',
+                      'locksvn':'KVLockSvn',
                       'svn':'KVSvn',
                       'rewriteversion':'KVRewriteVersion',
                       'build':'KVBuild',
@@ -42,6 +45,7 @@ kvbuild_step_creator = {
                       'symadd':'KVSymAdd',
                       'commit':'KVCommit',
                       'markupcode':'KVMarkupCode',
+                      'releasesvn':'KVUnlockSvn',
                       'postbuild':'KVPostBuild',
                       }
 
@@ -67,6 +71,69 @@ def getSlns(product):
         logging.error(e)
     
     return slns
+    
+#得到svn锁定或解锁操作
+def genSvnLockActions(product, action, value):
+    #get svn lock/unlock settings
+    actValue = False
+    try:
+        dom = xml.dom.minidom.parse(conf.svn_conf_file)
+        root = dom.documentElement
+        value = root.getAttribute(action)
+        if value == 'true':
+            actValue = True
+        else:
+            actValue = False
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
+    #noaction then return
+    if not actValue:
+        return []
+    #gen lock/unlock actions for all compiled module and basic/stable
+    commands = []
+    slns = getSlns(product)
+    for item in slns:
+        confFile = './BuildSwitch/'+item+'.xml'
+        try:
+            dom = xml.dom.minidom.parse(confFile)
+            root = dom.documentElement
+            dir = root.getAttribute('dir')
+            for node in root.childNodes:
+                if node.nodeType != node.ELEMENT_NODE:
+                    continue
+                if node.getAttribute('build') != '1':#do not check force option
+                    continue
+                if node.getAttribute('product') != '' and node.getAttribute('product') != product:
+                    continue
+                commands.append(conf.sln_root + dir)
+                break
+        except Exception,e:
+            logging.error("error occers when parsing xml or run command:")
+            logging.error(e)
+    #commands.append(conf.sln_root + 'basic')
+    #commands.append(conf.sln_root + 'stable_proj')
+    commands = list(set(commands))
+    #already get all folders, now lock/unlock these folder
+    cmd_details = []
+    ecode = sys.getfilesystemencoding()
+    for item in commands:
+        infoFile = '..\\output\\svn\\' + item[item.rfind('\\')+1:] + '.info'
+        command = 'svn list --non-interactive --no-auth-cache --username buildbot --password 123456 -R ' + item + ' > ' + infoFile
+        os.system(command.encode(sys.getfilesystemencoding()))
+        fh = open(infoFile)
+        files = fh.readlines()
+        fh.close()
+        for f in files:
+            f = f.strip(' \r\n')
+            if f[-1] == '/' or f[-1] == '\\':
+                continue
+            if action == 'lock':
+                cmd_details.append('svn lock --non-interactive --no-auth-cache --username buildbot --password 123456 --force ' + item + '/' + f.decode(ecode).encode('utf-8'))
+            elif action == 'unlock':
+                cmd_details.append('svn unlock --non-interactive --no-auth-cache --username buildbot --password 123456 --force ' + item + '/' + f.decode(ecode).encode('utf-8'))
+    return cmd_details
+
     
 #得到svn操作
 def getSvnCommands(product, value):
@@ -109,7 +176,10 @@ def getSvnCommands(product, value):
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
-
+    
+    if revision == 'HEAD':
+        revision = GetRemoteRevision()
+    
     commands = []
     slns = getSlns(product)
     for item in slns:
@@ -131,29 +201,47 @@ def getSvnCommands(product, value):
                 if svnAction == 'checkout':
                     command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.sln_root + dir
                 elif svnAction == 'update':
-                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + dir
+                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " "  + conf.sln_root + dir
                 commands.append(command)
                 break
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
     if svnAction == 'update':
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "basic")
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "stable_proj")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " "  + conf.sln_root + "basic")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " "  + conf.sln_root + "stable_proj")
     elif svnAction == 'checkout':
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
-        if codeDir.find('branches') != -1 or codeDir.find('tags') != -1 or revision != 'HEAD':
-            commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
-        else:
-            commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD " + conf.sln_root + "stable_proj")
+        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
     commands = list(set(commands))
     return commands
 
+def GetRemoteRevision():
+    f = open(conf.svn_remote_info_file)
+    svn_info_lines = f.readlines()
+    f.close()
+    revision = ''
+    for line in svn_info_lines:
+        index = line.find(': ')
+        if index != -1:
+            secondPart = line[index+2:]
+            secondPart = secondPart.strip(' \r\n')
+            bFit = True
+            for i in secondPart:
+                if i < '0' or i > '9':
+                    bFit = False
+                    break
+            if bFit:
+                revision = secondPart
+                break
+    if revision == '':
+        return 'HEAD'
+    else:
+        return revision
+
 def ExpendMarkupValue(product, str):
     #替换$revision、$version等
-    command = 'svn info ' + conf.sln_root + 'basic > ' + conf.svn_info_file
-    os.system(command)
-    f = open(conf.svn_info_file)
+    f = open(conf.svn_local_info_file)
     svn_info_lines = f.readlines()
     f.close()
     revision = ''
@@ -186,11 +274,13 @@ def ExpendMarkupValue(product, str):
             version = secondPart.strip('" \r\n')
             break
     if revision == '' or version == '':
-        return str
+        return (str,revision)
     else:
-        str = str.replace('$revision', 'r'+revision)
-        str = str.replace('$version', 'v'+version)
-        return str
+        str = str.replace('$r', 'r'+revision)
+        str = str.replace('$v', 'v'+version)
+        tst = '%f' % time.time()
+        str = str.replace('$t', 't'+tst)
+        return (str,revision)
 
 def getMarkupCodeCommands(product,value):
     #codebase must be considered
@@ -207,16 +297,12 @@ def getMarkupCodeCommands(product,value):
             if name == svnConfig:
                 if name == 'branch':
                     codeDir = '/branches/' + node.getAttribute('value')
-                    revision = 'HEAD'
                 elif name == 'tag':
                     codeDir = '/tags/' + node.getAttribute('value')
-                    revision = 'HEAD'
                 elif name == 'trunk':
                     codeDir = '/trunk'
-                    revision = 'HEAD'
                 elif name == 'revision':
                     codeDir = '/trunk'
-                    revision = node.getAttribute('value')
                 break
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
@@ -244,7 +330,7 @@ def getMarkupCodeCommands(product,value):
     if markupType == '' or markupValue == '' or markupType == 'none':
         return []
     else:
-        markupValue = ExpendMarkupValue(product, markupValue)
+        (markupValue,revision) = ExpendMarkupValue(product, markupValue)
         if markupType == 'branch':
             markupType = '/branches/'
         elif markupType == 'tag':
@@ -261,14 +347,14 @@ def getMarkupCodeCommands(product,value):
                 svnDir = root.getAttribute('svnDir')
                 if not svnDir:
                     svnDir = dir + codeDir
-                    command = "svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
-                    commands.append(command)
+                command = "svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
+                commands.append(command)
             except Exception,e:
                 logging.error("error occers when parsing xml or run command:")
                 logging.error(e)
         #add basic and stable
         commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
-        commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
+        commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
         commands = list(set(commands))
         return commands
     
@@ -505,7 +591,7 @@ class PreBuild(BuildStep):
             commands = genPrebuildActions('bdm',self.value)
             for item in commands:
                 self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                os.system(item)
+                os.system(item.encode(sys.getfilesystemencoding()))
                 self.update_step(1)
         BuildStep.act(self)
     
@@ -523,11 +609,10 @@ class KVPreBuild(BuildStep):
             commands = genPrebuildActions('bdkv',self.value)
             for item in commands:
                 self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                os.system(item)
+                os.system(item.encode(sys.getfilesystemencoding()))
                 self.update_step(1)
         BuildStep.act(self)
             
-    
 ##############################################
 # 0,1,2,3,4
 
@@ -542,6 +627,8 @@ class Svn(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
+            command = 'svn info ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
+            os.system(command)
             commands = getSvnCommands('bdm',self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No svn commands')
@@ -554,12 +641,12 @@ class Svn(BuildStep):
                             subdir = 'basic'
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
-                        os.system(command)
+                        os.system(command.encode(sys.getfilesystemencoding()))
                         self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                        os.system(item)
+                        os.system(item.encode(sys.getfilesystemencoding()))
                     else:
                         self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                        os.system(item)
+                        os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(3)
         BuildStep.act(self)
     
@@ -574,6 +661,8 @@ class KVSvn(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
+            command = 'svn info ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
+            os.system(command)
             commands = getSvnCommands('bdkv',self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No svn commands')
@@ -586,13 +675,50 @@ class KVSvn(BuildStep):
                             subdir = 'basic'
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
-                        os.system(command)
+                        os.system(command.encode(sys.getfilesystemencoding()))
                         self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                        os.system(item)
+                        os.system(item.encode(sys.getfilesystemencoding()))
                     else:
                         self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                        os.system(item)
+                        os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(3)
+        BuildStep.act(self)
+    
+##############################################
+# 0,1
+
+class LockSvn(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM lock svn operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            commands = genSvnLockActions('bdm','lock',self.value)
+            for item in commands:
+                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                os.system(item.encode(sys.getfilesystemencoding()))
+        BuildStep.act(self)
+    
+class KVLockSvn(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV lock svn operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            commands = genSvnLockActions('bdkv','lock',self.value)
+            for item in commands:
+                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                os.system(item.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 ##############################################
@@ -616,6 +742,9 @@ class RewriteVersion(BuildStep):
             command = 'python rewrite_version.py bdm version'
             self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdm','version'])
+        #check commit revision
+        command = 'svn info ' + conf.sln_root + 'basic > ' + conf.svn_local_info_file
+        os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
 
     
@@ -637,6 +766,9 @@ class KVRewriteVersion(BuildStep):
             command = 'python rewrite_version.py bdkv version'
             self.report('wk-build-log', command)
             rewrite_version.main(3,['rewrite_version.py','bdkv','version'])
+        #check commit revision
+        command = 'svn info ' + conf.sln_root + 'basic > ' + conf.svn_local_info_file
+        os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 ##############################################
@@ -660,7 +792,7 @@ class Build(BuildStep):
                 for item in commands:
                     self.report('wk-build-log', item)
                     self.update_step(10)
-                    os.system(item)
+                    os.system(item.encode(sys.getfilesystemencoding()))
             BuildStep.act(self)
             bErr = False
             for file in os.listdir(conf.log_path):
@@ -702,7 +834,7 @@ class KVBuild(BuildStep):
                 for item in commands:
                     self.report('wk-build-log', item)
                     self.update_step(10)
-                    os.system(item)
+                    os.system(item.encode(sys.getfilesystemencoding()))
             BuildStep.act(self)
             bErr = False
             for file in os.listdir(conf.kvlog_path):
@@ -744,7 +876,7 @@ class Pack(BuildStep):
         elif self.value == 1:
             command = 'cscript pack.vbs bdm'
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 class KVPack(BuildStep):
@@ -760,7 +892,7 @@ class KVPack(BuildStep):
         elif self.value == 1:
             command = 'cscript pack.vbs bdkv'
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 ##############################################
@@ -832,7 +964,7 @@ class Verify(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            os.system('del /Q ' + conf.verify_log_file)
+            os.system('del /Q ' + conf.verify_log_file.encode(sys.getfilesystemencoding()))
             commands = []
             commands.append('python fileop.py verify_file_exist ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.*')
             commands.append('python fileop.py verify_file_version ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
@@ -855,7 +987,7 @@ class KVVerify(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            os.system('del /Q ' + conf.kvverify_log_file)
+            os.system('del /Q ' + conf.kvverify_log_file.encode(sys.getfilesystemencoding()))
             commands = []
             commands.append('python fileop.py kvverify_file_exist ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.*')
             commands.append('python fileop.py kvverify_file_version ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe,*.dll,*.sys')
@@ -887,7 +1019,7 @@ class Install(BuildStep):
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
             bOk = False
             for file in os.listdir(conf.original_setup_path):
                 if file[-3:] == 'exe':
@@ -900,7 +1032,7 @@ class Install(BuildStep):
                 raise Exception(msg)
             command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 class KVInstall(BuildStep):
@@ -916,7 +1048,7 @@ class KVInstall(BuildStep):
         elif self.value == 1:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):
                 if file[-3:] == 'exe':
@@ -929,7 +1061,7 @@ class KVInstall(BuildStep):
                 raise Exception(msg)
             command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 ##############################################
@@ -948,7 +1080,7 @@ class SignInstaller(BuildStep):
         elif self.value == 1:
             command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(1)
 
             command = 'python sign.py bdm ..\\output\\setup\\'
@@ -969,7 +1101,7 @@ class KVSignInstaller(BuildStep):
         elif self.value == 1:
             command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
-            os.system(command)
+            os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(1)
 
             command = 'python fileop.py sign ..\\output\\kvsetup\\ *.exe'
@@ -1108,7 +1240,7 @@ class SymAdd(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
                 self.update_step(1)
-                os.system(item)
+                os.system(item.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 class KVSymAdd(BuildStep):
@@ -1126,7 +1258,7 @@ class KVSymAdd(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
                 self.update_step(1)
-                os.system(item)
+                os.system(item.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 ##############################################
@@ -1143,10 +1275,14 @@ class Commit(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
+            os.system(command.encode(sys.getfilesystemencoding()))
+            self.update_step(5)
             msg = 'xbuild commit %s' % datetime.datetime.now()
-            command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            self.report('wk-build-log', command)
-            os.system(command)
+            command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
+            self.report('wk-build-log', command.replace('123456','XXXXXX'))
+            os.system(command.encode(sys.getfilesystemencoding()))
+            self.update_step(10)
         BuildStep.act(self)
     
 class KVCommit(BuildStep):
@@ -1160,10 +1296,15 @@ class KVCommit(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
+            self.report('wk-build-log', command.replace('123456','XXXXXX'))
+            os.system(command.encode(sys.getfilesystemencoding()))
+            self.update_step(5)
             msg = 'xbuild commit %s' % datetime.datetime.now()
-            command = 'svn commit ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            self.report('wk-build-log', command)
-            os.system(command)
+            command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
+            self.report('wk-build-log', command.replace('123456','XXXXXX'))
+            os.system(command.encode(sys.getfilesystemencoding()))
+            self.update_step(10)
         BuildStep.act(self)
     
 ##############################################
@@ -1185,7 +1326,7 @@ class MarkupCode(BuildStep):
             else:
                 for item in commands:
                     self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                    os.system(item)
+                    os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(1)
         BuildStep.act(self)
     
@@ -1206,10 +1347,47 @@ class KVMarkupCode(BuildStep):
             else:
                 for item in commands:
                     self.report('wk-build-log', item.replace('123456','XXXXXX'))
-                    os.system(item)
+                    os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(1)
         BuildStep.act(self)
 
+##############################################
+# 0,1
+
+class UnlockSvn(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM unlock svn operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            commands = genSvnLockActions('bdm','unlock',self.value)
+            for item in commands:
+                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                os.system(item.encode(sys.getfilesystemencoding()))
+        BuildStep.act(self)
+    
+class KVUnlockSvn(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV unlock svn operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            commands = genSvnLockActions('bdkv','unlock',self.value)
+            for item in commands:
+                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                os.system(item.encode(sys.getfilesystemencoding()))
+        BuildStep.act(self)
+        
 ##############################################
 # 0,1
 

@@ -81,13 +81,13 @@ def Show(file):
 def Sign(file):
     logging.info('Signning File: ' + file)
     command = conf.byp_bin_path + 'FileSign.exe /s ' + file
-    os.system(command)
+    os.system(command.encode(sys.getfilesystemencoding()))
     
 
 def SignKav(file):
     logging.info('Signning File With Kav: ' + file)
     command = conf.byp_bin_path + 'KavSign.exe /s"' + file + '" /u"keys\\PrivateKey.sgn"'
-    os.system(command)
+    os.system(command.encode(sys.getfilesystemencoding()))
 
 def GenRC(file,writer):
     lfile = file.lower()
@@ -184,7 +184,7 @@ def SignBaidu(file,para):
         urllib.urlretrieve('http://' + conf.cerf_addr + '/OutPut/' + file_name, file + '.sign')
         
         command = conf.byp_bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
-        ret = os.system(command)
+        ret = os.system(command.encode(sys.getfilesystemencoding()))
         if ret == 0:
             shutil.move(file+'.sign', file)
             break;
@@ -425,7 +425,7 @@ def VerifyFileVersion(path,ftype,product,logfile = ''):
 def DriverSignVerify(file,writer):
     log = ''
     command = conf.byp_bin_path + 'FileSign.exe /v ' + file
-    ret = os.system(command)
+    ret = os.system(command.encode(sys.getfilesystemencoding()))
     if ret == 0:
         log = 'Verifing driver sign: %s --- SIGNED\n' % file
     else:
@@ -455,7 +455,7 @@ def VerifyDriverSign(path,ftype,product,logfile = ''):
 def KavSignVerify(file,writer):
     log = ''
     command = conf.byp_bin_path + 'ChkKavSign.exe ' + file
-    ret = os.system(command)
+    ret = os.system(command.encode(sys.getfilesystemencoding()))
     if ret == 0:
         log = 'Verifing kav sign: %s --- SIGNED\n' % file
     else:
@@ -486,7 +486,7 @@ def BaiduVerify(file,para):
     digitalSign = para[0]
     writer = para[1]
     command = conf.byp_bin_path + 'SignVerify.exe ' + file + ' ' + digitalSign
-    ret = os.system(command)
+    ret = os.system(command.encode(sys.getfilesystemencoding()))
     if ret == 0:
         log = 'Verifing baidu sign: %s --- SIGNED\n' % file
     else:
