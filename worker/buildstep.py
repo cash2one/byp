@@ -239,32 +239,52 @@ def GetRemoteRevision():
     else:
         return revision
 
-def ExpendMarkupValue(product, str):
+def ExpendMarkupValue(product, str, code_revision):
     #替换$revision、$version等
     f = open(conf.svn_remote_info_file)
     svn_info_lines = f.readlines()
     f.close()
     revision = ''
     version = ''
-    for line in svn_info_lines:
-        index = line.find(': ')
-        if index != -1:
-            secondPart = line[index+2:]
-            secondPart = secondPart.strip(' \r\n')
-            bFit = True
-            for i in secondPart:
-                if i < '0' or i > '9':
-                    bFit = False
+    if code_revision == '':
+        for line in svn_info_lines:
+            index = line.find(': ')
+            if index != -1:
+                secondPart = line[index+2:]
+                secondPart = secondPart.strip(' \r\n')
+                bFit = True
+                for i in secondPart:
+                    if i < '0' or i > '9':
+                        bFit = False
+                        break
+                if bFit:
+                    revision = secondPart
                     break
-            if bFit:
-                revision = secondPart
-                break
-    version_file = ''
-    if product == 'bdm':
-        version_file = conf.bdm_nsifile_daily
-    elif product == 'bdkv':
-        version_file = conf.bdkv_nsifile_daily
-    f = open(version_file)
+    else:
+        revision = code_revision
+    local_version_file = ''
+    if code_revision == '':
+        if product == 'bdm':
+            local_version_file = conf.bdm_nsifile_daily
+        elif product == 'bdkv':
+            local_version_file = conf.bdkv_nsifile_daily
+    else:
+        remote_version_folder = ''
+        local_version_folder = ''
+        local_version_file = '../output/svn/product_version.info'
+        if product == 'bdm':
+            remote_version_folder = conf.svn_url + 'basic_proj/trunk/Tools/SetupScript'
+            local_version_folder = '..\\output\\svn\\SetupScript'
+            local_version_file = '../output/svn/SetupScript/BDM_setup.nsi'
+        elif product == 'bdkv':
+            remote_version_folder = conf.svn_url + 'basic_proj/trunk/Tools/KVSetupScript'
+            local_version_folder = '..\\output\\svn\\KVSetupScript'
+            local_version_file = '../output/svn/KVSetupScript/BDKV_setup.nsi'
+        command = 'rd /Q /S ' + local_version_folder
+        os.system(command)
+        command = 'svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision ' + code_revision + ' ' + remote_version_folder + ' ' + local_version_folder
+        os.system(command)
+    f = open(local_version_file)
     version_lines = f.readlines()
     f.close()
     for line in version_lines:
@@ -272,6 +292,11 @@ def ExpendMarkupValue(product, str):
         if index != -1:
             secondPart = line[index+25:]
             version = secondPart.strip('" \r\n')
+            if code_revision != '':
+                try:
+                    version = '%d' % (int(version) + 1)
+                except Exception,e:
+                    print e
             break
     if revision == '' or version == '':
         return (str,revision)
@@ -286,6 +311,7 @@ def getMarkupCodeCommands(product,value):
     #codebase must be considered
     codeDir = ''
     revision = ''
+    code_revision = ''
     try:
         dom = xml.dom.minidom.parse(conf.svn_conf_file)
         root = dom.documentElement
@@ -303,6 +329,7 @@ def getMarkupCodeCommands(product,value):
                     codeDir = '/trunk'
                 elif name == 'revision':
                     codeDir = '/trunk'
+                    code_revision = node.getAttribute('value')
                 break
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
@@ -331,7 +358,7 @@ def getMarkupCodeCommands(product,value):
         return []
     else:
         actType = markupType
-        (markupValue,revision) = ExpendMarkupValue(product, markupValue)
+        (markupValue,revision) = ExpendMarkupValue(product, markupValue, code_revision)
         if markupType == '+branch' or markupType == '-branch':
             markupType = '/branches/'
         elif markupType == '+tag' or markupType == '-tag':

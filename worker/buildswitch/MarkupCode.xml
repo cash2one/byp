@@ -1,7 +1,7 @@
-<?xml version="1.0" ?><conf use="none">
-    <item name="+branch" value="$revision_$version"/>
+<?xml version="1.0" ?><conf use="+branch">
+    <item name="+branch" value="beta2_perftest_$r_$v"/>
     <item name="+tag" value="byp_$r_$v_$t"/>
-    <item name="-branch" value="beta2_r14114_v262_t1368101038.468000"/>
+    <item name="-branch" value="beta2_perftest_r14323_v263"/>
     <item name="-tag" value="beta2_r14114_v262_t1368101038.468000"/>
     <item name="none" value="byp_$r_$v_$t"/>
 </conf>

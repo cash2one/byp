@@ -146,11 +146,11 @@ class Worker(threading.Thread):
             else:
                 cbName = 'trunk'
             root.setAttribute('use',cbName)
-            if self.options['lock'] == '1':
+            if self.options['locksvn'] == '1':
                 root.setAttribute('lock','true')
             else:
                 root.setAttribute('lock','false')
-            if self.options['unlock'] == '1':
+            if self.options['releasesvn'] == '1':
                 root.setAttribute('unlock','true')
             else:
                 root.setAttribute('unlock','false')
