@@ -288,14 +288,6 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 for client in BuildServerHandler.clients:
                     client.notify(content1)
                     client.notify(content2)
-                #让当前发起打包操作的client强制切换到刚开始打包的worker
-                for worker in BuildServerHandler.workers:
-                    if self in worker.listeners:
-                        worker.listeners.remove(self)
-                        break
-                if self not in cWorker.listeners:
-                    cWorker.listeners.append(self)
-                self.notify('{"msrc":"ws-build-reset","content":""}')
                 
         #收到worker状态切换，需要通知所有clients，非只有相关的listeners
         elif msg['msrc'] == 'wk-status-change':
