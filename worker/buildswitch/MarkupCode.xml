@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf use="+tag">
     <item name="+branch" value="$revision_$version"/>
-    <item name="+tag" value="beta2_$r_$v_$t"/>
+    <item name="+tag" value="byp_$r_$v_$t"/>
     <item name="-branch" value="beta2_r14114_v262_t1368101038.468000"/>
     <item name="-tag" value="beta2_r14114_v262_t1368101038.468000"/>
     <item name="none" value="byp_$r_$v_$t"/>

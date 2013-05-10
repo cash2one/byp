@@ -204,6 +204,27 @@ class Worker(threading.Thread):
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
+        #misc info
+        miscFile = './buildswitch/Misc.xml'
+        try:
+            dom = xml.dom.minidom.parse(miscFile)
+            root = dom.documentElement
+            for node in root.childNodes:
+                if node.nodeType != node.ELEMENT_NODE:
+                    continue
+                name = node.getAttribute('name')
+                if self.options.has_key(name):
+                    node.setAttribute('value',self.options[name])
+                elif self.extraOptions.has_key(name):
+                    node.setAttribute('value',self.extraOptions[name])
+                else:
+                    node.setAttribute('value','0')
+            writer = open(miscFile,'w')
+            dom.writexml(writer)
+            writer.close()
+        except Exception,e:
+            logging.error("error occers when parsing xml or run command:")
+            logging.error(e)
         
         
     def applyBuildSettings(self):

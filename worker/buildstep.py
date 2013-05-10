@@ -803,23 +803,59 @@ class Build(BuildStep):
             for file in os.listdir(conf.log_path):
                 if file[-3:] == 'log':
                     errLog = comm.getMsg(conf.log_path + file)
+                    if errLog != '' and errLog.find('error PRJ0002') != -1 and errLog.find('Error result 31 returned from') != -1 and errLog.find('mt.exe') != -1:#just be careful
+                        self.report('wk-build-log','<h5>PRJ0002 error found, try rebuilding specific solution<h5>')
+                        self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                        bReCompiler = False
+                        for item in commands:
+                            if item.find(conf.log_path + file) != -1:
+                                bRecompiler = True
+                                self.report('wk-build-log', item)
+                                os.system(item.encode(sys.getfilesystemencoding()))
+                                break
+                        if not bReCompiler:
+                            os.system('del /Q ' + conf.log_path + file)
                     if errLog != '':
                         bErr = True
                         break
             if bErr:
-                msg = 'Build error(s) found, xbuild quit, please handler these error(s) below : '
-                self.report('wk-status-change', 'error')
-                self.report('wk-build-log',msg)
+                #check whether compiler error is ignored
+                bIgnoreFault = False
+                miscFile = './buildswitch/Misc.xml'
+                try:
+                    dom = xml.dom.minidom.parse(miscFile)
+                    root = dom.documentElement
+                    for node in root.childNodes:
+                        if node.nodeType != node.ELEMENT_NODE:
+                            continue
+                        name = node.getAttribute('name')
+                        if name == 'ignorefault' and node.getAttribute('value') == '1':
+                            bIgnoreFault = True
+                            break
+                except Exception,e:
+                    logging.error("error occers when parsing xml or run command:")
+                    logging.error(e)
+                if bIgnoreFault:
+                    msg = '<h5>Build error(s) found, xbuild continues, please handler these error(s) below later : </h5>'
+                    self.report('wk-build-log',msg)
+                else:
+                    msg = '<h5>Build error(s) found, xbuild quit, please handler these error(s) below : </h5>'
+                    self.report('wk-status-change', 'error')
+                    self.report('wk-build-log',msg)
                 for file in os.listdir(conf.log_path):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.log_path + file)
                         if errLog != '':
                             self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
                             self.report('wk-build-log','<h5>' + file + '</h5>')
-                            self.report('wk-build-log',errLog)
-                raise Exception(msg)
+                            fp = open(conf.log_path + file)
+                            lines = fp.readlines()
+                            for line in lines:
+                                self.report('wk-build-log',line)
+                self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                if not bIgnoreFault:
+                    raise Exception(msg)
         BuildStep.act(self)
-            
     
 class KVBuild(BuildStep):
     def __init__(self, n, v, o, w, p):
@@ -845,13 +881,45 @@ class KVBuild(BuildStep):
             for file in os.listdir(conf.kvlog_path):
                 if file[-3:] == 'log':
                     errLog = comm.getMsg(conf.kvlog_path + file)
+                    if errLog != '' and errLog.find('error PRJ0002') != -1 and errLog.find('Error result 31 returned from') != -1 and errLog.find('mt.exe') != -1:#just be careful
+                        self.report('wk-build-log','<h5>PRJ0002 error found, try rebuilding specific solution<h5>')
+                        self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                        bReCompiler = False
+                        for item in commands:
+                            if item.find(conf.kvlog_path + file) != -1:
+                                bReCompiler = True
+                                self.report('wk-build-log', item)
+                                os.system(item.encode(sys.getfilesystemencoding()))
+                                break
+                        if not bReCompiler:
+                            os.system('del /Q ' + conf.log_path + file)
                     if errLog != '':
                         bErr = True
                         break
             if bErr:
-                msg = 'Build error(s) found, xbuild quit, please handler these error(s) below : '
-                self.report('wk-status-change', 'error')
-                self.report('wk-build-log',msg)
+                #check whether compiler error is ignored
+                bIgnoreFault = False
+                miscFile = './buildswitch/Misc.xml'
+                try:
+                    dom = xml.dom.minidom.parse(miscFile)
+                    root = dom.documentElement
+                    for node in root.childNodes:
+                        if node.nodeType != node.ELEMENT_NODE:
+                            continue
+                        name = node.getAttribute('name')
+                        if name == 'ignorefault' and node.getAttribute('value') == '1':
+                            bIgnoreFault = True
+                            break
+                except Exception,e:
+                    logging.error("error occers when parsing xml or run command:")
+                    logging.error(e)
+                if bIgnoreFault:
+                    msg = '<h5>Build error(s) found, xbuild continues, please handler these error(s) below later : </h5>'
+                    self.report('wk-build-log',msg)
+                else:
+                    msg = '<h5>Build error(s) found, xbuild quit, please handler these error(s) below : </h5>'
+                    self.report('wk-status-change', 'error')
+                    self.report('wk-build-log',msg)
                 for file in os.listdir(conf.kvlog_path):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.kvlog_path + file)
@@ -862,7 +930,9 @@ class KVBuild(BuildStep):
                             lines = fp.readlines()
                             for line in lines:
                                 self.report('wk-build-log',line)
-                raise Exception(msg)
+                self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                if not bIgnoreFault:
+                    raise Exception(msg)
         BuildStep.act(self)
     
 ##############################################
@@ -1274,7 +1344,7 @@ class Commit(BuildStep):
         BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
-        return "BDM Committing files"
+        return "BDM committing files"
     
     def act(self):
         if self.value == 0:
@@ -1295,7 +1365,7 @@ class KVCommit(BuildStep):
         BuildStep.__init__(self, n, v, o, w, p)
     
     def __str__(self):
-        return "BDKV Committing files"
+        return "BDKV committing files"
     
     def act(self):
         if self.value == 0:

@@ -69,6 +69,8 @@ bdkv_options = {
 
 	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2','default'),('all','全部进行编译','3')]],
 
+	'ignorefault':['check','build','无视编译错误','不提示编译错误，并且使用最新二进制文件打包，用于按需或无人值守时'],
+
 	'pack':['check','build','打包资源','重新打包资源','default'],
 	#'signdriver':['check','build','驱动签名','更新驱动签名','default'],
 	#'signkav':['check','build','卡巴签名','更新卡巴签名','default'],
@@ -104,7 +106,9 @@ bdm_options = {
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
 
-	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2','default'),('all','全部进行编译','3')]],
+	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2'),('all','全部进行编译','3','default')]],
+	
+	'ignorefault':['check','build','无视编译错误','不提示编译错误，并且使用最新二进制文件打包，用于按需或无人值守时'],
 	
 	'pack':['check','build','打包资源','重新打包资源','default'],
 	#'sign':['check','build','百度签名','更新百度签名','default'],
