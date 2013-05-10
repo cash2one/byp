@@ -44,6 +44,8 @@ bdm_slns = [
 	#['soshortcutplugin','软件优化快捷插件','张凯','module',1,[]],
 	['swmanager','软件管理模块','张凯','module',1,[]],
 	['main','极光主程序','杨彦召','module',1,[]],
+    ['trojanscan','木马扫描','易善鸿','module',1,[]],
+    ['antivirusGJ','杀毒模块','赵欣','module',1,[]],
 ]
 
 projects = {

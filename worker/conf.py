@@ -159,6 +159,8 @@ bdm_conf_files = {
 	'homepageplugins':'BDMHomePagePlugins',
 	'mainframeplugins':'BDMMainFramePlugins',
 	'main':'BDMMain',
+    'trojanscan':'BDMTrojanScan',
+    'antivirusGJ':'BDMAntiVirus_GJ',
 }
 
 build_conf_files = {
