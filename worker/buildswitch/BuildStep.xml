@@ -1,21 +1,21 @@
 <?xml version="1.0" ?><conf>
 	<build nickname="kvfastrelease" product="bdkv" type="KVRelease|Win32">
         <step name="prebuild" order="1" value="0" weight="20"/> 
-        <step name="svn" order="2" value="0" weight="42"/>
+        <step name="svn" order="2" value="3" weight="42"/>
         <step name="locksvn" order="3" value="0" weight="22"/>
         <step name="rewriteversion" order="4" value="0" weight="1"/>
-        <step name="build" order="5" value="0" weight="140"/>
+        <step name="build" order="5" value="2" weight="140"/>
         <step name="pack" order="6" value="0" weight="3"/>
-        <step name="sign" order="7" value="0" weight="72"/>
+        <step name="sign" order="7" value="1" weight="72"/>
         <step name="verify" order="8" value="0" weight="3"/>
         <step name="install" order="9" value="0" weight="10"/>
         <step name="signinstaller" order="10" value="0" weight="4"/>
         <step name="verifyinstaller" order="11" value="0" weight="1"/>
         <step name="send" order="12" value="0" weight="10"/>
-        <step name="markupcode" order="13" value="1" weight="11"/>
-        <step name="commit" order="14" value="0" weight="10"/>
+        <step name="markupcode" order="13" value="0" weight="11"/>
+        <step name="commit" order="14" value="1" weight="10"/>
         <step name="releasesvn" order="15" value="0" weight="22"/>
-        <step name="symadd" order="16" value="0" weight="32"/>
+        <step name="symadd" order="16" value="1" weight="32"/>
         <step name="postbuild" order="17" value="0" weight="1"/>
 	</build>
 	<build nickname="mgrfastrelease" product="bdm" type="Release|Win32">
@@ -24,17 +24,17 @@
         <step name="locksvn" order="3" value="0" weight="22"/>
         <step name="rewriteversion" order="4" value="0" weight="1"/>
         <step name="build" order="5" value="0" weight="190"/>
-        <step name="pack" order="6" value="0" weight="3"/>
+        <step name="pack" order="6" value="1" weight="3"/>
         <step name="sign" order="7" value="1" weight="100"/>
         <step name="verify" order="8" value="0" weight="3"/>
-        <step name="install" order="9" value="0" weight="10"/>
-        <step name="signinstaller" order="10" value="0" weight="4"/>
+        <step name="install" order="9" value="1" weight="10"/>
+        <step name="signinstaller" order="10" value="1" weight="4"/>
         <step name="verifyinstaller" order="11" value="0" weight="1"/>
-        <step name="send" order="12" value="0" weight="10"/>
+        <step name="send" order="12" value="1" weight="10"/>
         <step name="markupcode" order="13" value="0" weight="9"/>
-        <step name="commit" order="14" value="0" weight="10"/>
+        <step name="commit" order="14" value="1" weight="10"/>
         <step name="releasesvn" order="15" value="0" weight="22"/>
-        <step name="symadd" order="16" value="0" weight="34"/>
+        <step name="symadd" order="16" value="1" weight="34"/>
         <step name="postbuild" order="17" value="0" weight="1"/>
 	</build>
 </conf>
