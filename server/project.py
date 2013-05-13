@@ -46,6 +46,9 @@ bdm_slns = [
 	['main','极光主程序','杨彦召','module',1,[]],
     ['trojanscan','木马扫描','易善鸿','module',1,[]],
     ['antivirusGJ','极光查杀合入模块','赵欣','module',1,[]],
+    ['drivermanager','驱动管理模块','曹杨','module',1,[]],
+    ['avhips','主动防御模块','曹杨','module',1,[]],
+    ['bd0001','驱动模块','曹杨','module',1,[]],
 ]
 
 projects = {

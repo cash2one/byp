@@ -161,6 +161,9 @@ bdm_conf_files = {
 	'main':'BDMMain',
     'trojanscan':'BDMTrojanScan',
     'antivirusGJ':'BDMAntiVirus_GJ',
+    'drivermanager':'DriverManager',
+    'avhips':'AVHips',
+    'bd0001':'BD0001',
 }
 
 build_conf_files = {

@@ -1,4 +1,4 @@
 <?xml version="1.0" ?><conf dir="syscleaner_proj">
-	<item build="0" type="Debug|Win32"/>
-	<item build="0" type="Release|Win32"/>
+	<item build="1" type="Debug|Win32"/>
+	<item build="1" type="Release|Win32"/>
 </conf>
