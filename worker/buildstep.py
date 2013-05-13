@@ -467,14 +467,13 @@ def genSymbols(product):
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\FTSOManager\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\FTSWManager\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\bdkv\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmkvscanplugin\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmsomanagerplugins\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmswmanagerplugins\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmtrayplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\wsplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\rtpplugins\\*.dll','Release'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
@@ -485,14 +484,13 @@ def genSymbols(product):
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\FTSOManager\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\FTSWManager\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\bdkv\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdkvrtpplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdkvtrayplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmkvscanplugin\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmhomepageplugins\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmmainframeplugins\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmsomanagerplugins\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmswmanagerplugins\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmtrayplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\wsplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\rtpplugins\\*.dll','Debug'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Debug\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Debug\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "THIRD"')
@@ -1011,6 +1009,20 @@ class Sign(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\Output\\BinDebug\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\Output\\BinDebug\\','*.exe'])
+            command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
+
+            command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\Output\\BinDebug\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\Output\\BinDebug\\','*.exe'])
+            command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
+
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])
