@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf dir="avdriver_proj">
-    <item build="0" type="KVDebug|Win32"/>
-    <item build="0" type="KVRelease|Win32"/>
-    <item build="0" type="Debug|Win32"/>
-    <item build="0" type="Release|Win32"/>
+    <item build="0" product="bdkv" type="KVDebug|Win32"/>
+    <item build="0" product="bdkv" type="KVRelease|Win32"/>
+    <item build="0" product="bdm" type="Debug|Win32"/>
+    <item build="0" product="bdm" type="Release|Win32"/>
 </conf>

@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><conf use="+branch">
+<?xml version="1.0" ?><conf use="none">
     <item name="+branch" value="beta2_patch1_$r_$v"/>
     <item name="+tag" value="byp_$r_$v_$t"/>
     <item name="-branch" value="beta2_perftest_r14323_v263"/>
