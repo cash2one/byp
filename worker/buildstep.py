@@ -1009,6 +1009,20 @@ class Sign(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\Output\\BinDebug\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\Output\\BinDebug\\','*.exe'])
+            command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
+
+            command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\Output\\BinDebug\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\Output\\BinDebug\\','*.exe'])
+            command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
+
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])

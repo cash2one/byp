@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf dir="avdriver_proj">
-    <item build="1" type="KVDebug|Win32"/>
-    <item build="1" type="KVRelease|Win32"/>
-    <item build="1" type="Debug|Win32"/>
-    <item build="1" type="Release|Win32"/>
+    <item build="0" type="KVDebug|Win32"/>
+    <item build="0" type="KVRelease|Win32"/>
+    <item build="0" type="Debug|Win32"/>
+    <item build="0" type="Release|Win32"/>
 </conf>
