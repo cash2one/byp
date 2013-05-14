@@ -441,7 +441,7 @@ def getBuildCommands(product,value):
                     logName = 'Debug'
                 else:
                     continue
-                command = "vcbuild " + vcbuildAction + " /time /M16 /errfile:" + errDir + item + logName + ".log " + conf.sln_root \
+                command = "vcbuild " + vcbuildAction + " /time /M1 /errfile:" + errDir + item + logName + ".log " + conf.sln_root \
                  + dir + "\\Projects\\" + item + ".sln \"" + type + "\""
                 commands.append(command)
             writer = open(confFile,'w')
