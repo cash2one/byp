@@ -14,6 +14,7 @@
 3.关于BuildStep.xml，各步骤键值对含义：
 	prebuild				0-pass;1-simpleclean;2-fullclean
 	svn					0-pass;1-forceupdate;2-forcecheckout;3-optionalupdate;4-optionalcheckout
+    	locksvn             			0-pass;1-lock
 	rewriteversion				0-pass;1-daily;2-version
 	build					0-pass;1-forcebuildrelease;2-optionalbuild;3-forcerebuildrelease;4-optionalrebuild//always rebuild
 	pack					0-pass;1-packrelease
@@ -23,8 +24,10 @@
 	signinstaller				0-pass;1-doit
 	verifyinstaller  			0-pass;1-doit
 	send					0-pass;1-daily;2-version
-	symadd					0-pass;1-addrelease
+	markupcode				0-pass;1-addbranch;2-addtag;3-removebranch;4-removetag
 	commit					0-pass;1-doit
+	releasesvn				0-pass;1-doit
+	symadd					0-pass;1-add
 	postbuild				0-pass
 
 4.使用前请检查BuildStep.xml中的配置是否满足您的build需求
