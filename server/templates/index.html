@@ -302,13 +302,13 @@
         <p>支持极光和X光两个项目的各种打包需求。未来可以很容易的扩展，比如增加其他项目、更改操作系统平台、版本构建工具和版本控制方式等。</p>
         </li>
         <li>
-        <p>client端基于<a target="_blank" href="https://en.wikipedia.org/wiki/Real-time_web">realtime web</a>，可实时同步编译机状态，用户界面UI基于<a target="_blank" href="http://twitter.github.io/bootstrap/">bootstrap</a>和<a target="_blank" href="http://jquery.com/">jquery</a>。支持chrome、safari等严格实现标准的浏览器（内网访问<a target="_blank" href="http://192.168.10.68:13412/">http://192.168.10.68:13412/</a>），支持firefox开发版、ios safari，推荐用chrome浏览，或以chrome插件形式使用。</p>
+        <p>client端基于<a target="_blank" href="https://en.wikipedia.org/wiki/Real-time_web">realtime web</a>，可实时同步编译机状态，用户界面UI基于<a target="_blank" href="http://twitter.github.io/bootstrap/">bootstrap</a>和<a target="_blank" href="http://jquery.com/">jquery</a>。支持chrome、safari等严格实现标准的浏览器（内网访问<a target="_blank" href="http://172.17.180.61:13412/">http://172.17.180.61:13412/</a>），支持firefox开发版、ios safari，推荐用chrome浏览，或以chrome插件形式使用。</p>
         </li>
         <li>
         <p>server端基于<a target="_blank" href="http://www.tornadoweb.org/">python tornado</a>框架，异步高并发，支持多用户，多台编译机同时部署。</p>
         </li>
         <li>
-        <p>worker端支持单机多份和多机方式部署，纯python编写，同时支持offline模式下的手动命令行方式工作。由于SVN集中式代码提交的局限性，目前仅提供一个worker。</p>
+        <p>worker端支持单机多份和多机方式部署，纯python编写，同时支持offline模式下的手动命令行方式工作，目前会针对项目和版本线进行多机多份部署。</p>
         </li>
         <li>
         <p>client端chrome插件提供更新机制，server端支持热更新，server和worker端都支持挂起自动重连，理论上可保持7X24小时不当机。</p>
