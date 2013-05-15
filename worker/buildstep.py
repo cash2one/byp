@@ -464,9 +464,9 @@ def genSymbols(product):
         #release
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\*.exe','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\*.dll','Release'))
+        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\bdmantivirus\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\FTSOManager\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\FTSWManager\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\bdkv\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmkvscanplugin\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll','Release'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll','Release'))
@@ -481,9 +481,9 @@ def genSymbols(product):
         #debug
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\*.exe','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\bdmantivirus\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\FTSOManager\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\FTSWManager\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\bdkv\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmkvscanplugin\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmhomepageplugins\\*.dll','Debug'))
         commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmmainframeplugins\\*.dll','Debug'))
