@@ -239,7 +239,7 @@ def GetRemoteRevision():
     else:
         return revision
 
-def ExpendMarkupValue(product, str, code_revision):
+def ExpendMarkupValue(product, str, code_revision, codeDir):
     #替换$revision、$version等
     f = open(conf.svn_remote_info_file)
     svn_info_lines = f.readlines()
@@ -262,27 +262,29 @@ def ExpendMarkupValue(product, str, code_revision):
                     break
     else:
         revision = code_revision
+    
     local_version_file = ''
+    
     if code_revision == '':
         if product == 'bdm':
             local_version_file = conf.bdm_nsifile_daily
         elif product == 'bdkv':
             local_version_file = conf.bdkv_nsifile_daily
-    else:
+    if code_revision != '' or (not os.path.exists(local_version_file)):
         remote_version_folder = ''
         local_version_folder = ''
         local_version_file = '../output/svn/product_version.info'
         if product == 'bdm':
-            remote_version_folder = conf.svn_url + 'basic_proj/trunk/Tools/SetupScript'
+            remote_version_folder = conf.svn_url + 'basic_proj' + codeDir + '/Tools/SetupScript'
             local_version_folder = '..\\output\\svn\\SetupScript'
             local_version_file = '../output/svn/SetupScript/BDM_setup.nsi'
         elif product == 'bdkv':
-            remote_version_folder = conf.svn_url + 'basic_proj/trunk/Tools/KVSetupScript'
+            remote_version_folder = conf.svn_url + 'basic_proj' + codeDir + '/Tools/KVSetupScript'
             local_version_folder = '..\\output\\svn\\KVSetupScript'
             local_version_file = '../output/svn/KVSetupScript/BDKV_setup.nsi'
         command = 'rd /Q /S ' + local_version_folder
         os.system(command)
-        command = 'svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision ' + code_revision + ' ' + remote_version_folder + ' ' + local_version_folder
+        command = 'svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision ' + revision + ' ' + remote_version_folder + ' ' + local_version_folder
         os.system(command)
     f = open(local_version_file)
     version_lines = f.readlines()
@@ -358,7 +360,7 @@ def getMarkupCodeCommands(product,value):
         return []
     else:
         actType = markupType
-        (markupValue,revision) = ExpendMarkupValue(product, markupValue, code_revision)
+        (markupValue,revision) = ExpendMarkupValue(product, markupValue, code_revision, codeDir)
         if markupType == '+branch' or markupType == '-branch':
             markupType = '/branches/'
         elif markupType == '+tag' or markupType == '-tag':
