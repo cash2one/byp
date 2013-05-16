@@ -84,8 +84,8 @@ bdkv_options = {
 	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
 	'install':['check','build','生成安装包','生成安装包','default'],
 	
-	'install_full':['check','build','生成全量包','同时生成带全量病毒库的安装包','default'],
-	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包','default'],
+	'install_full':['check','build','生成全量包','同时生成带全量病毒库的安装包'],
+	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包'],
 
 	'send':['radio','after',[('不归档安装包','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
@@ -124,7 +124,7 @@ bdm_options = {
 	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
 	'install':['check','build','生成安装包','生成安装包','default'],
 	
-	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包','default'],
+	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包'],
 
 	'send':['radio','after',[('不归档安装包','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
