@@ -454,6 +454,100 @@ def getBuildCommands(product,value):
             logging.error(e)
     return commands
     
+    
+def getInstallOptions():
+    pkgFile = './BuildSwitch/Package.xml'
+    try:
+        dom = xml.dom.minidom.parse(pkgFile)
+        root = dom.documentElement
+        bInstall = False if root.getAttribute('install') == '0' else True
+        bInstallFull = False if root.getAttribute('install_full') == '0' else True
+        bInstallUpdate = False if root.getAttribute('install_update') == '0' else True
+        return (bInstall,bInstallFull,bInstallUpdate)
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
+        
+def getViruslibVersion():
+    vlibVersionFile = conf.sln_root + 'basic\\KVOutput\\binrelease\\kav\\bases\\u0607g.xml'
+    try:
+        dom = xml.dom.minidom.parse(vlibVersionFile)
+        root = dom.documentElement
+        vStr = root.getAttribute('UpdateDate')
+        try:
+            vRet = vStr[4:8] + vStr[2:4] + vStr[0:2] + vStr[8:]
+            return vRet
+        except:
+            return ''
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
+
+def installKvFullPackage():
+    #prepare
+    command = 'xcopy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+    os.system(command.encode(sys.getfilesystemencoding()))
+    setupFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsh'
+    file_r = open(setupFile)
+    lines = file_r.readlines()
+    for index in range(len(lines)):
+        if lines[index].find('OutFile')!= -1:
+            lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}.exe"'
+    file_w  = open(setupFile,"w")
+    file_w .writelines(lines)
+    file_w .close()
+    
+    command = 'xcopy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh ..\\byp\\output\\backup\\KV_Language.nsh'
+    os.system(command.encode(sys.getfilesystemencoding()))
+    vlibVersion = getViruslibVersion()
+    if vlibVersion != '':
+        vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
+        file_r = open(vInstallFile)
+        lines = file_r.readlines()
+        for index in range(len(lines)):
+            if lines[index].find('MACRO_ANTIVIRUS_UPDATETIME')!= -1:
+                lines[index] = '!define MACRO_ANTIVIRUS_UPDATETIME      "%s"' % vlibVersion
+        file_w  = open(vInstallFile,"w")
+        file_w .writelines(lines)
+        file_w .close()
+    
+    command = 'xcopy /Y ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases ..\output\\backup\\'
+    os.system(command)
+    command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
+    os.system(command)
+    command = 'xcopy /Y ' + conf.sln_root + 'basic\\kvoutput\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\'
+    os.system(command)
+    
+    #install
+    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+    self.report('wk-build-log', command)
+    os.system(command.encode(sys.getfilesystemencoding()))
+    #clean
+    command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+    os.system(command)
+    command = 'xcopy /Y ..\\byp\\output\\backup\\KV_Language.nsh ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
+    os.system(command)
+    command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
+    os.system(command)
+    command = 'xcopy /Y ..\output\\backup\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\'
+    os.system(command)
+
+def updatePackage(product):
+    buildlineFile = ''
+    buildline = 0
+    buildType = 'daily'
+    if product == 'bdm':
+        buildlineFile = conf.sln_root + 'basic\\Tools\\SetupScript\\include\\buildline.nsi'
+    elif product == 'bdkv':
+        buildlineFile = conf.sln_root + 'basic\\Tools\\KVSetupScript\\include\\buildline.nsi'
+    ctx = comm.getMsg(buildlineFile)
+    if ctx.find('0') != -1:
+        buildType = 'daily'
+    elif ctx.find('1') != -1:
+        builtType = 'version'
+    rewrite_version.main(3,['rewrite_version.py',product,buildType])
+    
+
 def makeBinplace(product,files,buildtype):
     if product == 'bdm':
         return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\Output\\Symbols\\' + buildtype + '\\Full -r ' + conf.sln_root + 'basic\\Output\\Symbols\\' + buildtype + '\\ -:DEST BDM ' + conf.sln_root + files
@@ -839,9 +933,11 @@ class Build(BuildStep):
                                 bRecompiler = True
                                 self.report('wk-build-log', item)
                                 os.system(item.encode(sys.getfilesystemencoding()))
+                                errLog = comm.getMsg(conf.log_path + file)
                                 break
                         if not bReCompiler:
                             os.system('del /Q ' + conf.log_path + file)
+                            errLog = ''
                     if errLog != '':
                         bErr = True
                         break
@@ -917,9 +1013,11 @@ class KVBuild(BuildStep):
                                 bReCompiler = True
                                 self.report('wk-build-log', item)
                                 os.system(item.encode(sys.getfilesystemencoding()))
+                                errLog = comm.getMsg(conf.kvlog_path + file)
                                 break
                         if not bReCompiler:
-                            os.system('del /Q ' + conf.log_path + file)
+                            os.system('del /Q ' + conf.kvlog_path + file)
+                            errLog = ''
                     if errLog != '':
                         bErr = True
                         break
@@ -1133,9 +1231,17 @@ class Install(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
-            self.report('wk-build-log', command)
-            os.system(command.encode(sys.getfilesystemencoding()))
+            (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
+            if bInstall:
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+                self.report('wk-build-log', command)
+                os.system(command.encode(sys.getfilesystemencoding()))
+            if bInstall and bInstallUpdate:
+                updatePackage('bdm')
+                if bInstall:
+                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+                    self.report('wk-build-log', command)
+                    os.system(command.encode(sys.getfilesystemencoding()))
             bOk = False
             for file in os.listdir(conf.original_setup_path):
                 if file[-3:] == 'exe':
@@ -1162,9 +1268,22 @@ class KVInstall(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
-            self.report('wk-build-log', command)
-            os.system(command.encode(sys.getfilesystemencoding()))
+            (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
+            if bInstall:
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+                self.report('wk-build-log', command)
+                os.system(command.encode(sys.getfilesystemencoding()))
+            if bInstallFull:
+                installKvFullPackage()
+            if (bInstall or bInstallFull) and bInstallUpdate:
+                updatePackage('bdkv')
+                if bInstall:
+                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+                    self.report('wk-build-log', command)
+                    os.system(command.encode(sys.getfilesystemencoding()))
+                if bInstallFull:
+                    installKvFullPackage()
+            #check exe
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):
                 if file[-3:] == 'exe':
@@ -1175,6 +1294,8 @@ class KVInstall(BuildStep):
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
                 raise Exception(msg)
+            
+            #copy exe
             command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))

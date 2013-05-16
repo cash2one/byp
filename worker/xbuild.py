@@ -225,6 +225,29 @@ class Worker(threading.Thread):
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
+        #package info
+        pkgFile = './buildswitch/Package.xml'
+        try:
+            dom = xml.dom.minidom.parse(pkgFile)
+            root = dom.documentElement
+            if self.options.has_key('install'):
+                root.setAttribute('install',self.options['install'])
+            else:
+                root.setAttribute('install','0')
+            if self.options.has_key('install_full'):
+                root.setAttribute('install_full',self.options['install_full'])
+            else:
+                root.setAttribute('install_full','0')
+            if self.options.has_key('install_update'):
+                root.setAttribute('install_update',self.options['install_update'])
+            else:
+                root.setAttribute('install_update','0')
+            writer = open(pkgFile)
+            dom.writexml(writer)
+            writer.close()
+        except Exception,e:
+            logging.error("error occers when parsing xml or run command:")
+            logging.error(e)
         
         
     def applyBuildSettings(self):

@@ -67,7 +67,7 @@ bdkv_options = {
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 	'rewriteversion':['radio','before',[('不更新版本','此次打包不更新版本','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
     
-    'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
+    #'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
 
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
@@ -83,6 +83,9 @@ bdkv_options = {
 	
 	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
 	'install':['check','build','生成安装包','生成安装包','default'],
+	
+	'install_full':['check','build','生成全量包','同时生成带全量病毒库的安装包','default'],
+	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包','default'],
 
 	'send':['radio','after',[('不归档安装包','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
@@ -91,7 +94,7 @@ bdkv_options = {
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
     
-    'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
+    #'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
 	
     #'postbuild':['check','after','清理','打包后的清理工作','default'],
 }
@@ -106,7 +109,7 @@ bdm_options = {
 	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 	'rewriteversion':['radio','before',[('不更新版本','此次打包不更新版本','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
 
-    'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
+    #'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
 
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
@@ -120,6 +123,8 @@ bdm_options = {
 	
 	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
 	'install':['check','build','生成安装包','生成安装包','default'],
+	
+	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包','default'],
 
 	'send':['radio','after',[('不归档安装包','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
@@ -128,7 +133,7 @@ bdm_options = {
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
 
-    'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
+    #'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
 
 	#'postbuild':['check','after','清理','打包后的清理工作','default'],
 }
