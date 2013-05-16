@@ -242,7 +242,7 @@ class Worker(threading.Thread):
                 root.setAttribute('install_update',self.options['install_update'])
             else:
                 root.setAttribute('install_update','0')
-            writer = open(pkgFile)
+            writer = open(pkgFile,'w')
             dom.writexml(writer)
             writer.close()
         except Exception,e:

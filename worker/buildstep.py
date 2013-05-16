@@ -471,9 +471,13 @@ def getInstallOptions():
 def getViruslibVersion():
     vlibVersionFile = conf.sln_root + 'basic\\KVOutput\\binrelease\\kav\\bases\\u0607g.xml'
     try:
-        dom = xml.dom.minidom.parse(vlibVersionFile)
-        root = dom.documentElement
-        vStr = root.getAttribute('UpdateDate')
+        f = open(vlibVersionFile)
+        buf = f.read()
+        f.close()
+        iIndex = buf.find('UpdateDate')
+        if iIndex == -1:
+            return ''
+        vStr = buf[iIndex + 12:iIndex + 25]
         try:
             vRet = vStr[4:8] + vStr[2:4] + vStr[0:2] + vStr[8:]
             return vRet
@@ -485,11 +489,12 @@ def getViruslibVersion():
 
 def installKvFullPackage():
     #prepare
-    command = 'xcopy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+    command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
-    setupFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsh'
+    setupFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     file_r = open(setupFile)
     lines = file_r.readlines()
+    file_r.close()
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
             lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}.exe"'
@@ -497,13 +502,23 @@ def installKvFullPackage():
     file_w .writelines(lines)
     file_w .close()
     
-    command = 'xcopy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh ..\\byp\\output\\backup\\KV_Language.nsh'
+    command = 'rd /Q /S ..\\output\\backup\\bases\\'
+    os.system(command)
+    command = 'xcopy /Y /E /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases ..\output\\backup\\bases\\'
+    os.system(command)
+    command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
+    os.system(command)
+    command = 'xcopy /Y /E /S ' + conf.sln_root + 'basic\\kvoutput\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases\\'
+    os.system(command)
+    
+    command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh ..\\output\\backup\\KV_Language.nsh'
     os.system(command.encode(sys.getfilesystemencoding()))
     vlibVersion = getViruslibVersion()
     if vlibVersion != '':
         vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
         file_r = open(vInstallFile)
         lines = file_r.readlines()
+        file_r.close()
         for index in range(len(lines)):
             if lines[index].find('MACRO_ANTIVIRUS_UPDATETIME')!= -1:
                 lines[index] = '!define MACRO_ANTIVIRUS_UPDATETIME      "%s"' % vlibVersion
@@ -511,25 +526,17 @@ def installKvFullPackage():
         file_w .writelines(lines)
         file_w .close()
     
-    command = 'xcopy /Y ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases ..\output\\backup\\'
-    os.system(command)
-    command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
-    os.system(command)
-    command = 'xcopy /Y ' + conf.sln_root + 'basic\\kvoutput\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\'
-    os.system(command)
-    
     #install
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
-    self.report('wk-build-log', command)
     os.system(command.encode(sys.getfilesystemencoding()))
     #clean
     command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command)
-    command = 'xcopy /Y ..\\byp\\output\\backup\\KV_Language.nsh ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
+    command = 'copy /Y ..\\byp\\output\\backup\\KV_Language.nsh ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
     os.system(command)
     command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
     os.system(command)
-    command = 'xcopy /Y ..\output\\backup\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\'
+    command = 'xcopy /Y /E /S ..\output\\backup\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\'
     os.system(command)
 
 def updatePackage(product):
@@ -973,6 +980,7 @@ class Build(BuildStep):
                             self.report('wk-build-log','<h5>' + file + '</h5>')
                             fp = open(conf.log_path + file)
                             lines = fp.readlines()
+                            fp.close()
                             for line in lines:
                                 self.report('wk-build-log',line)
                 self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
@@ -1053,6 +1061,7 @@ class KVBuild(BuildStep):
                             self.report('wk-build-log','<h5>' + file + '</h5>')
                             fp = open(conf.kvlog_path + file)
                             lines = fp.readlines()
+                            fp.close()
                             for line in lines:
                                 self.report('wk-build-log',line)
                 self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
