@@ -497,7 +497,7 @@ def installKvFullPackage():
     file_r.close()
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
-            lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}.exe"'
+            lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}.exe"\r\n'
     file_w  = open(setupFile,"w")
     file_w .writelines(lines)
     file_w .close()
@@ -521,7 +521,7 @@ def installKvFullPackage():
         file_r.close()
         for index in range(len(lines)):
             if lines[index].find('MACRO_ANTIVIRUS_UPDATETIME')!= -1:
-                lines[index] = '!define MACRO_ANTIVIRUS_UPDATETIME      "%s"' % vlibVersion
+                lines[index] = '!define MACRO_ANTIVIRUS_UPDATETIME      "%s"\r\n' % vlibVersion
         file_w  = open(vInstallFile,"w")
         file_w .writelines(lines)
         file_w .close()
@@ -532,11 +532,15 @@ def installKvFullPackage():
     #clean
     command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command)
-    command = 'copy /Y ..\\byp\\output\\backup\\KV_Language.nsh ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
+    command = 'copy /Y ..\\output\\backup\\KV_Language.nsh ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
+    os.system(command)
+    command = 'del /Q /S ..\\output\\backup\\KV_Language.nsh'
     os.system(command)
     command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
     os.system(command)
-    command = 'xcopy /Y /E /S ..\output\\backup\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\'
+    command = 'xcopy /Y /E /S ..\\output\\backup\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases\\'
+    os.system(command)
+    command = 'rd /Q /S ..\\output\\backup\\bases'
     os.system(command)
 
 def updatePackage(product):
