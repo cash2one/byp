@@ -527,7 +527,7 @@ def installKvFullPackage():
         file_w .close()
     
     #install
-    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
     #clean
     command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
@@ -1246,13 +1246,13 @@ class Install(BuildStep):
         elif self.value == 1:
             (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
-                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
                 self.report('wk-build-log', command)
                 os.system(command.encode(sys.getfilesystemencoding()))
             if bInstall and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
-                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
                     self.report('wk-build-log', command)
                     os.system(command.encode(sys.getfilesystemencoding()))
             bOk = False
@@ -1283,7 +1283,7 @@ class KVInstall(BuildStep):
         elif self.value == 1:
             (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
-                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
                 self.report('wk-build-log', command)
                 os.system(command.encode(sys.getfilesystemencoding()))
             if bInstallFull:
@@ -1291,7 +1291,7 @@ class KVInstall(BuildStep):
             if (bInstall or bInstallFull) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
-                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
                     self.report('wk-build-log', command)
                     os.system(command.encode(sys.getfilesystemencoding()))
                 if bInstallFull:
