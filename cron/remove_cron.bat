@@ -1,1 +1,1 @@
-at /delete
+at /delete /yes

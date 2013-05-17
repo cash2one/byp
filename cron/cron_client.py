@@ -1,8 +1,9 @@
-import os,sys
+# coding=UTF-8
+import os,sys,logging,time,websocketclt,socket
 
 cron_tasks = {
-             mgr_full_without_tag : "{\"msrc\":\"ws-btn-build\",\"content\":\"d160ad29-80d3-4b22-95a1-61535d14e8ac|极光|commonlib,1;commondll,1;skin,1;logicmisc,1;logicutils,1;client,1;syscleaner,1;soacceleratorplugin,1;swmanager,1;main,1;trojanscan,1;antivirusGJ,1;drivermanager,1;avhips,1;bd0001,1|svn,3;prebuild,2;locksvn,0;rewriteversion,1;buildtype,3;sign,1;ignorefault,1;build,2;install,1;pack,1;symadd,1;signinstaller,1;send,1;releasesvn,0;commit,1|markupcode,0|markupdetail,byp_$r_$v_$t|reason,daily build|email,sw@baidu.com|codebase,3|cbdetail,code base[optional]\"}",
-             mgr_full_with_tag : "{\"msrc\":\"ws-btn-build\",\"content\":\"d160ad29-80d3-4b22-95a1-61535d14e8ac|极光|commonlib,1;commondll,1;skin,1;logicmisc,1;logicutils,1;client,1;syscleaner,1;soacceleratorplugin,1;swmanager,1;main,1;trojanscan,1;antivirusGJ,1;drivermanager,1;avhips,1;bd0001,1|svn,3;prebuild,2;locksvn,0;rewriteversion,1;buildtype,3;sign,1;ignorefault,1;build,2;install,1;pack,1;symadd,1;signinstaller,1;send,1;releasesvn,0;commit,1|markupcode,2|markupdetail,byp_$r_$v_$t|reason,daily build|email,sw@baidu.com|codebase,3|cbdetail,code base[optional]\"}",
+             'mgr_full_without_tag' : "{\"msrc\":\"ws-btn-build\",\"content\":\"d160ad29-80d3-4b22-95a1-61535d14e8ac|极光|commonlib,1;commondll,1;skin,1;logicmisc,1;logicutils,1;client,1;syscleaner,1;soacceleratorplugin,1;swmanager,1;main,1;trojanscan,1;antivirusGJ,1;drivermanager,1;avhips,1;bd0001,1|svn,3;prebuild,2;locksvn,0;rewriteversion,1;buildtype,3;sign,1;ignorefault,1;build,2;install,1;pack,1;symadd,1;signinstaller,1;send,1;releasesvn,0;commit,1|markupcode,0|markupdetail,byp_$r_$v_$t|reason,daily build|email,sw@baidu.com|codebase,3|cbdetail,code base[optional]\"}",
+             'mgr_full_with_tag' : "{\"msrc\":\"ws-btn-build\",\"content\":\"d160ad29-80d3-4b22-95a1-61535d14e8ac|极光|commonlib,1;commondll,1;skin,1;logicmisc,1;logicutils,1;client,1;syscleaner,1;soacceleratorplugin,1;swmanager,1;main,1;trojanscan,1;antivirusGJ,1;drivermanager,1;avhips,1;bd0001,1|svn,3;prebuild,2;locksvn,0;rewriteversion,1;buildtype,3;sign,1;ignorefault,1;build,2;install,1;pack,1;symadd,1;signinstaller,1;send,1;releasesvn,0;commit,1|markupcode,2|markupdetail,byp_$r_$v_$t|reason,daily build|email,sw@baidu.com|codebase,3|cbdetail,code base[optional]\"}",
              
              }
 
@@ -13,6 +14,9 @@ def main(argc, argv):
     
     #init logging system, it's told logging is threadsafe, so do NOT need to sync
     logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
+
+    timeout_buildserver = 0
+    opts = list()
     
     while True:
         ws_service = None
@@ -25,7 +29,7 @@ def main(argc, argv):
                                 header = opts)
             logging.info('cron-client connected')
         
-            ws_service.send('{"msrc":"ws-client-connect","content":""}')
+            #ws_service.send('{"msrc":"ws-client-connect","content":""}')
             
             logging.info('build nickname : %s' % argv[1])
             if cron_tasks.has_key(argv[1]):

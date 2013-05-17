@@ -49,7 +49,6 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
     clients = []
     workers = []
     
-    
     #发送消息
     def notify(self, content):
         logging.info('send message %s' % content)
@@ -60,6 +59,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         return True
     
     def open(self):
+        self.type = ''
         pass
 
     def on_close(self):
@@ -269,6 +269,8 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                         break
             
             #开始干活
+            if cWorker == None:
+                return
             #更改本机状态
             oldStatus = cWorker.status
             cWorker.status = 'running'
