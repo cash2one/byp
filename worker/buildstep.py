@@ -1333,6 +1333,16 @@ class SignInstaller(BuildStep):
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(1)
 
+            command = 'python fileop.py sign ..\\output\\setup\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign','..\\output\\setup\\','*.exe'])
+            self.update_step(1)
+            
+            command = 'python fileop.py kvsign_kav ..\\output\\setup\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(4,['fileop.py','kvsign_kav','..\\output\\setup\\','*.exe'])
+            self.update_step(1)
+
             command = 'python sign.py bdm ..\\output\\setup\\'
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
@@ -1359,9 +1369,9 @@ class KVSignInstaller(BuildStep):
             fileop.main(4,['fileop.py','kvsign','..\\output\\kvsetup\\','*.exe'])
             self.update_step(1)
             
-            command = 'python fileop.py sign_kav ..\\output\\kvsetup\\ *.exe'
+            command = 'python fileop.py kvsign_kav ..\\output\\kvsetup\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','sign_kav','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvsign_kav','..\\output\\kvsetup\\','*.exe'])
             self.update_step(1)
             
             command = 'python sign.py bdkv ..\\output\\kvsetup\\'
