@@ -54,7 +54,7 @@ def main(argc, argv):
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '%s' % uuid.uuid4()
+	workerId = 'a11e840d-6f93-44c4-8786-6a4ba43ac06c'
 	nickname = 'KVBeta3'
 	
 	while True:

@@ -27,6 +27,7 @@ build_step_creator = {
                       'commit':'Commit',
                       'markupcode':'MarkupCode',
                       'releasesvn':'UnlockSvn',
+                      'sendmail':'SendMail',
                       'postbuild':'PostBuild',
                       }
 kvbuild_step_creator = {
@@ -46,6 +47,7 @@ kvbuild_step_creator = {
                       'commit':'KVCommit',
                       'markupcode':'KVMarkupCode',
                       'releasesvn':'KVUnlockSvn',
+                      'sendmail':'KVSendMail',
                       'postbuild':'KVPostBuild',
                       }
 
@@ -1646,6 +1648,37 @@ class KVUnlockSvn(BuildStep):
             for item in commands:
                 #self.report('wk-build-log', item.replace('123456','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
+        BuildStep.act(self)
+        
+##############################################
+# 0,1
+
+class SendMail(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM send notification mail"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            pass
+        BuildStep.act(self)
+    
+class KVSendMail(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV send notification mail"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            pass
         BuildStep.act(self)
         
 ##############################################
