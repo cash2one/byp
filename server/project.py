@@ -74,7 +74,7 @@ bdkv_options = {
 
 	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2','default'),('all','全部进行编译','3')]],
 
-	'ignorefault':['check','build','无视编译错误','不提示编译错误，并且使用最新二进制文件打包，用于按需或无人值守时'],
+	'ignorefault':['check','build','无人值守','不提示编译和打包错误，但仍然完成整个编译流程'],
 
 	'pack':['check','build','打包资源','重新打包资源','default'],
 	#'signdriver':['check','build','驱动签名','更新驱动签名','default'],
@@ -95,6 +95,8 @@ bdkv_options = {
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
     
     'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
+
+    'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守或无错误时'],
 	
     #'postbuild':['check','after','清理','打包后的清理工作','default'],
 }
@@ -116,7 +118,7 @@ bdm_options = {
 
 	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2'),('all','全部进行编译','3','default')]],
 	
-	'ignorefault':['check','build','无视编译错误','不提示编译错误，并且使用最新二进制文件打包，用于按需或无人值守时'],
+	'ignorefault':['check','build','无人值守','不提示编译和打包错误，但仍然完成整个编译流程'],
 	
 	'pack':['check','build','打包资源','重新打包资源','default'],
 	#'sign':['check','build','百度签名','更新百度签名','default'],
@@ -134,6 +136,8 @@ bdm_options = {
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
 
     'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
+
+    'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守或无错误时'],
 
 	#'postbuild':['check','after','清理','打包后的清理工作','default'],
 }
