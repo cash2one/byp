@@ -13,6 +13,9 @@ svn_url = 'http://192.168.10.242:8000/client/'
 svn_conf_file = './buildswitch/SVN.xml'
 markup_conf_file = './buildswitch/MarkupCode.xml'
 
+bdm_mail_file = '../output/mail/mail.txt'
+bdkv_mail_file = '../output/mail/kvmail.txt'
+
 buildver_headerfile = "../../basic/include/CommonInclude/BuildVer.h"
 buildver_definefile = "../../basic/include/CommonInclude/BDMVersion.h"
 

@@ -560,6 +560,22 @@ def updatePackage(product):
         builtType = 'version'
     rewrite_version.main(3,['rewrite_version.py',product,buildType])
     
+def genMailMsg(product):
+    mailFile = ''
+    if product == 'bdm':
+        mailFile = conf.bdm_mail_file
+    elif product == 'bdkv':
+        mailFile = conf.bdkv_mail_file
+    fp = open(mailFile,'w')
+    for file in os.listdir(conf.kvlog_path):
+        if file[-3:] == 'log':
+            errLog = comm.getMsg(conf.kvlog_path + file)
+            fp.write(conf.kvlog_path + file + '\r\n')
+            if errLog != '':
+                fp.write(errLog + '\r\n')
+            else:
+                fp.write('ok\r\n')
+    fp.close()
 
 def makeBinplace(product,files,buildtype):
     if product == 'bdm':
@@ -648,6 +664,7 @@ def genPrebuildActions(product,value):
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\setup\\*.exe')
             commands.append('del /Q ..\\output\\setup\\*.exe')
             commands.append('del /Q ..\\output\\err\\*.log')
+            commands.append('del /Q ' + conf.bdm_mail_file)
         elif product == 'bdkv':
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvversionbuildid.txt')
@@ -656,6 +673,7 @@ def genPrebuildActions(product,value):
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\kvsetup\\*.exe')
             commands.append('del /Q ..\\output\\kvsetup\\*.exe')
             commands.append('del /Q ..\\output\\kverr\\*.log')
+            commands.append('del /Q ' + conf.bdkv_mail_file)
     if value == 2:
         commands.append('del /Q /S ' + conf.sln_root + 'basic\\lib')
         if product == 'bdm':
@@ -1664,7 +1682,11 @@ class SendMail(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            pass
+            genMailMsg('bdm')
+            command = '../bin/blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
+            os.system(command)
+            command = '../bin/blat.exe ' + conf.bdm_mail_file + ' -to liuheng@baidu.com -subject [项目流程][每日编译][极光项目][%date%]'
+            os.system(command)
         BuildStep.act(self)
     
 class KVSendMail(BuildStep):
@@ -1678,7 +1700,11 @@ class KVSendMail(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            pass
+            genMailMsg('bdkv')
+            command = '../bin/blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
+            os.system(command)
+            command = '../bin/blat.exe ' + conf.bdkv_mail_file + ' -to mengqiyuan@baidu.com,caoyang@baidu.com,wuguangzhu@baidu.com,zhoujiwen@baidu.com,zhaoxin05@baidu.com,wumengqing@baidu.com,tongyang@baidu.com,gaoguanghai@baidu.com,xulin01@baidu.com,lianlian@baidu.com,liuheng@baidu.com -subject [项目流程][每日编译][杀毒项目][%date%]'
+            os.system(command)
         BuildStep.act(self)
         
 ##############################################
