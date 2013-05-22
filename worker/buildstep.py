@@ -567,10 +567,11 @@ def genMailMsg(product):
     elif product == 'bdkv':
         mailFile = conf.bdkv_mail_file
     fp = open(mailFile,'w')
+    fp.write('Dailybuild notification mail\r\n--------------------------------------------\r\n')
     for file in os.listdir(conf.kvlog_path):
         if file[-3:] == 'log':
             errLog = comm.getMsg(conf.kvlog_path + file)
-            fp.write(conf.kvlog_path + file + '\r\n')
+            fp.write(file + '\r\n')
             if errLog != '':
                 fp.write(errLog + '\r\n')
             else:
@@ -1264,6 +1265,26 @@ class Install(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            bIgnoreFault = False
+            miscFile = './buildswitch/Misc.xml'
+            try:
+                dom = xml.dom.minidom.parse(miscFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    name = node.getAttribute('name')
+                    if name == 'ignorefault' and node.getAttribute('value') == '1':
+                        bIgnoreFault = True
+                        break
+            except Exception,e:
+                logging.error("error occers when parsing xml or run command:")
+                logging.error(e)
+            #first update all files in basic and accept mine if ignorefault
+            if bIgnoreFault:
+                command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
+                os.system(command.encode(sys.getfilesystemencoding()))
+            #install
             (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
@@ -1281,10 +1302,15 @@ class Install(BuildStep):
                     bOk = True
                     break
             if not bOk:
-                msg = 'failed to build installer, please check nsis script files'
+                msg = ''
+                if bIgnoreFault:
+                    msg = 'failed to build installer, xbuild continues, please check nsis script files later'
+                else:
+                    msg = 'failed to build installer, please check nsis script files'
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
-                raise Exception(msg)
+                if not bIngoreFault:
+                    raise Exception(msg)
             command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
@@ -1301,6 +1327,26 @@ class KVInstall(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            bIgnoreFault = False
+            miscFile = './buildswitch/Misc.xml'
+            try:
+                dom = xml.dom.minidom.parse(miscFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    name = node.getAttribute('name')
+                    if name == 'ignorefault' and node.getAttribute('value') == '1':
+                        bIgnoreFault = True
+                        break
+            except Exception,e:
+                logging.error("error occers when parsing xml or run command:")
+                logging.error(e)
+            #first update all files in basic and accept mine if ignore fault
+            if bIgnoreFault:
+                command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
+                os.system(command.encode(sys.getfilesystemencoding()))
+            #install
             (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
@@ -1323,11 +1369,15 @@ class KVInstall(BuildStep):
                     bOk = True
                     break
             if not bOk:
-                msg = 'failed to build installer, please check nsis script files'
+                msg = ''
+                if bIgnoreFault:
+                    msg = 'failed to build installer, xbuild continues, please check nsis script files later'
+                else:
+                    msg = 'failed to build installer, please check nsis script files'
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
-                raise Exception(msg)
-            
+                if not bIngoreFault:
+                    raise Exception(msg)
             #copy exe
             command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
             self.report('wk-build-log', command)
@@ -1683,10 +1733,12 @@ class SendMail(BuildStep):
              self.report('wk-build-log', 'Passed')
         else:
             genMailMsg('bdm')
-            command = '../bin/blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
-            os.system(command)
-            command = '../bin/blat.exe ' + conf.bdm_mail_file + ' -to liuheng@baidu.com -subject [项目流程][每日编译][极光项目][%date%]'
-            os.system(command)
+            command = '..\\bin\\blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+            command = '..\\bin\\blat.exe "' + conf.bdm_mail_file + '" -to liuheng@baidu.com -subject "[项目流程][每日编译][极光项目][%date%]"'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
 class KVSendMail(BuildStep):
@@ -1701,10 +1753,12 @@ class KVSendMail(BuildStep):
              self.report('wk-build-log', 'Passed')
         else:
             genMailMsg('bdkv')
-            command = '../bin/blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
-            os.system(command)
-            command = '../bin/blat.exe ' + conf.bdkv_mail_file + ' -to mengqiyuan@baidu.com,caoyang@baidu.com,wuguangzhu@baidu.com,zhoujiwen@baidu.com,zhaoxin05@baidu.com,wumengqing@baidu.com,tongyang@baidu.com,gaoguanghai@baidu.com,xulin01@baidu.com,lianlian@baidu.com,liuheng@baidu.com -subject [项目流程][每日编译][杀毒项目][%date%]'
-            os.system(command)
+            command = '..\\bin\\blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+            command = '..\\bin\\blat.exe "' + conf.bdkv_mail_file + '" -to liuheng@baidu.com -subject "[项目流程][每日编译][杀毒项目][%date%]"'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
         
 ##############################################
