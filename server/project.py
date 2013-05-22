@@ -96,7 +96,7 @@ bdkv_options = {
     
     'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
 
-    'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守或无错误时'],
+    'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守时'],
 	
     #'postbuild':['check','after','清理','打包后的清理工作','default'],
 }
@@ -137,7 +137,7 @@ bdm_options = {
 
     'releasesvn':['check','after','释放SVN','重新允许SVN提交操作'],
 
-    'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守或无错误时'],
+    'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守时'],
 
 	#'postbuild':['check','after','清理','打包后的清理工作','default'],
 }

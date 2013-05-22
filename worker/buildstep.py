@@ -562,20 +562,34 @@ def updatePackage(product):
     
 def genMailMsg(product):
     mailFile = ''
+    installerFolder = ''
+    buildIdFile = ''
     if product == 'bdm':
         mailFile = conf.bdm_mail_file
+        installerFolder = conf.ftpPathNameR
+        buildIdFile = conf.buildIdFile
     elif product == 'bdkv':
         mailFile = conf.bdkv_mail_file
+        installerFolder = conf.ftpKVPathNameR
+        buildIdFile = conf.kvBuildIdFile
     fp = open(mailFile,'w')
-    fp.write('Dailybuild notification mail\r\n--------------------------------------------\r\n')
+    fp.write('Dailybuild notification mail\r\n\r\n')
+    fp.write('\r\nBuilding Log(s):\r\n--------------------------------------------\r\n')
     for file in os.listdir(conf.kvlog_path):
         if file[-3:] == 'log':
             errLog = comm.getMsg(conf.kvlog_path + file)
             fp.write(file + '\r\n')
             if errLog != '':
-                fp.write(errLog + '\r\n')
+                fp.write(errLog + '\r\n\r\n')
             else:
-                fp.write('ok\r\n')
+                fp.write('ok\r\n\r\n')
+                
+    fp.write('\r\n\r\nInstaller Folder:\r\n--------------------------------------------\r\n')
+    id = comm.getMsg(buildIdFile)
+    installerDir = installerFolder + '1.0.0.%s\\' % id
+    fp.write(installerDir)
+    
+    fp.write('\r\n\r\nYou will receive this email when daily/nighty build finishes.Do NOT want to be bothered? RTX liuheng.')
     fp.close()
 
 def makeBinplace(product,files,buildtype):
@@ -1733,10 +1747,10 @@ class SendMail(BuildStep):
              self.report('wk-build-log', 'Passed')
         else:
             genMailMsg('bdm')
-            command = '..\\bin\\blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
+            command = '..\\bin\\blat.exe -install email.baidu.com liuheng@baidu.com 3 25'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
-            command = '..\\bin\\blat.exe "' + conf.bdm_mail_file + '" -to liuheng@baidu.com -subject "[项目流程][每日编译][极光项目][%date%]"'
+            command = '..\\bin\\blat.exe "' + conf.bdm_mail_file + '" -to liuheng@baidu.com -subject "[DailyBuild][Baiduan][%date%] -u liuheng"'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
@@ -1753,10 +1767,10 @@ class KVSendMail(BuildStep):
              self.report('wk-build-log', 'Passed')
         else:
             genMailMsg('bdkv')
-            command = '..\\bin\\blat.exe -installSMTP proxy-in.baidu.com liuheng@baidu.com'
+            command = '..\\bin\\blat.exe -install email.baidu.com liuheng@baidu.com 3 25'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
-            command = '..\\bin\\blat.exe "' + conf.bdkv_mail_file + '" -to liuheng@baidu.com -subject "[项目流程][每日编译][杀毒项目][%date%]"'
+            command = '..\\bin\\blat.exe "' + conf.bdkv_mail_file + '" -to liuheng@baidu.com -subject "[DailyBuild][Baidusd][%date%] -u liuheng"'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
