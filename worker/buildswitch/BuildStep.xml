@@ -16,7 +16,7 @@
         <step name="commit" order="14" value="0" weight="10"/>
         <step name="releasesvn" order="15" value="0" weight="22"/>
         <step name="symadd" order="16" value="0" weight="32"/>
-        <step name="sendmail" order="17" value="0" weight"10"/>
+        <step name="sendmail" order="17" value="0" weight="10"/>
         <step name="postbuild" order="18" value="0" weight="1"/>
 	</build>
 	<build nickname="mgrfastrelease" product="bdm" type="Release|Win32">
@@ -36,7 +36,7 @@
         <step name="commit" order="14" value="0" weight="10"/>
         <step name="releasesvn" order="15" value="0" weight="22"/>
         <step name="symadd" order="16" value="0" weight="34"/>
-        <step name="sendmail" order="17" value="0" weight"10"/>
+        <step name="sendmail" order="17" value="0" weight="10"/>
         <step name="postbuild" order="18" value="0" weight="1"/>
 	</build>
 </conf>
