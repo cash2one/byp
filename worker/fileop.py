@@ -86,7 +86,7 @@ def Sign(file):
 
 def SignKav(file):
     logging.info('Signning File With Kav: ' + file)
-    command = conf.byp_bin_path + 'KavSign.exe /s"' + file + '" /u"keys\\PrivateKey.sgn"'
+    command = conf.byp_bin_path + 'KavSign.exe /s"' + file + '" /u"' + conf.byp_bin_path + 'keys\\PrivateKey.sgn"'
     os.system(command.encode(sys.getfilesystemencoding()))
 
 def GenRC(file,writer):
