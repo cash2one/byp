@@ -568,17 +568,19 @@ def genMailMsg(product):
         mailFile = conf.bdm_mail_file
         installerFolder = conf.ftpPathNameR
         buildIdFile = conf.buildIdFile
+        logDir = conf.log_path
     elif product == 'bdkv':
         mailFile = conf.bdkv_mail_file
         installerFolder = conf.ftpKVPathNameR
         buildIdFile = conf.kvBuildIdFile
+        logDir = conf.kvlog_path
     fp = open(mailFile,'w')
     #fp.write('<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>')
     fp.write('Dailybuild notification mail\r\n\r\n')
     fp.write('\r\nBuilding Log(s):\r\n----------------------------------------------------------------------------------------\r\n')
-    for file in os.listdir(conf.kvlog_path):
+    for file in os.listdir(logDir):
         if file[-3:] == 'log':
-            errLog = comm.getMsg(conf.kvlog_path + file)
+            errLog = comm.getMsg(logDir + file)
             fp.write(file + '\r\n')
             if errLog != '':
                 fp.write(errLog + '\r\n\r\n')
