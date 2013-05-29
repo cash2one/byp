@@ -7,7 +7,7 @@
 """
 
 import sys,os,conf,xml.dom.minidom,datetime,comm
-import rewrite_version,sign,fileop,send
+import rewrite_version,sign,fileop,rcgen,send
 import logging,time
 
 build_step_creator = {
@@ -15,8 +15,10 @@ build_step_creator = {
                       'locksvn':'LockSvn',
                       'svn':'Svn',
                       'rewriteversion':'RewriteVersion',
+                      'rcgen':'Rcgen',
                       'build':'Build',
                       'pack':'Pack',
+                      'rebase':'Rebase',
                       'sign':'Sign',
                       'verify':'Verify',
                       'install':'Install',
@@ -35,8 +37,10 @@ kvbuild_step_creator = {
                       'locksvn':'KVLockSvn',
                       'svn':'KVSvn',
                       'rewriteversion':'KVRewriteVersion',
+                      'rcgen':'KVRcgen',
                       'build':'KVBuild',
                       'pack':'KVPack',
+                      'rebase':'KVRebase',
                       'sign':'KVSign',
                       'verify':'KVVerify',
                       'install':'KVInstall',
@@ -948,6 +952,41 @@ class KVRewriteVersion(BuildStep):
         BuildStep.act(self)
     
 ##############################################
+# 0,1
+
+class Rcgen(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM rcgen operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            command = 'python rcgen.py bdm'
+            self.report('wk-build-log', command)
+            rcgen.main(2,['rcgen.py','bdm'])
+        BuildStep.act(self)
+    
+class KVRcgen(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV rcgen operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            command = 'python rcgen.py bdkv'
+            self.report('wk-build-log', command)
+            rcgen.main(2,['rcgen.py','bdkv'])
+        BuildStep.act(self)
+        
+##############################################
 # 0,1,2
 
 class Build(BuildStep):
@@ -1147,6 +1186,47 @@ class KVPack(BuildStep):
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
+##############################################
+# 0,1
+
+class Rebase(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM rebase operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            command = 'rebase.exe -d -b 0x60000000 *.dll bdmantivirus\*.dll ftsomanager\*.dll FTSWManager\sw_si_assistor\*.dll plugins\bdmkvscanplugin\*.dll plugins\bdmmainframeplugins\*.dll plugins\BDMSOManagerPlugins\*.dll plugins\bdmswmanagerplugins\*.dll plugins\bdmtrayplugins\*.dll plugins\RTPPlugins\*.dll'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+            command = 'bind.exe -u *.dll bdmantivirus\*.dll ftsomanager\*.dll FTSWManager\sw_si_assistor\*.dll plugins\bdmkvscanplugin\*.dll plugins\bdmmainframeplugins\*.dll plugins\BDMSOManagerPlugins\*.dll plugins\bdmswmanagerplugins\*.dll plugins\bdmtrayplugins\*.dll plugins\RTPPlugins\*.dll'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+        BuildStep.act(self)
+    
+class KVRebase(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV rebase operations"
+    
+    def act(self):
+        if self.value == 0:
+             self.report('wk-build-log', 'Passed')
+        else:
+            command = 'rebase.exe -d -b 0x60000000 *.dll bdmantivirus\*.dll bdmsysrepair\*.dll plugins\bdkv\*.dll plugins\bdkvrtpplugins\*.dll plugins\bdkvtrayplugins\*.dll'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+            command = 'bind.exe -u *.dll bdmantivirus\*.dll bdmsysrepair\*.dll plugins\bdkv\*.dll plugins\bdkvrtpplugins\*.dll plugins\bdkvtrayplugins\*.dll'
+            self.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+        BuildStep.act(self)
+        
 ##############################################
 # 0,1
 
