@@ -101,8 +101,13 @@ def GenRC(file,writer):
         item = '<item projdir="%s" modulename="%s.dll" filedesc="%s"/>\n' % (projdir,modulename,'')
         writer.write(item)
         
-def GenRCFile(path,op,ftype):
-    writer = open(conf.rclist_file,'w')
+def GenRCFile(path,product,op,ftype):
+    rcfile = ''
+    if product == 'bdm':
+        rcfile = conf.rclist_file
+    elif product == 'bdkv':
+        rcfile = conf.kv_rclist_file
+    writer = open(rcfile,'w')
     writer.write('<?xml version="1.0" ?><conf>\n')
     FileOperationWithExtraPara(path,op,writer,ftype)
     writer.write('</conf>')
@@ -647,7 +652,9 @@ gen_rc_list                           - generate rc list
     elif argv[1] == 'kvgen_file_list':
         GenFileVerify(argv[2],ftype,'bdkv',extra_para1)
     elif argv[1] == 'gen_rc_list':
-        GenRCFile(argv[2],GenRC,ftype)
+        GenRCFile(argv[2],'bdm',GenRC,ftype)
+    elif argv[1] == 'kv_gen_rc_list':
+        GenRCFile(argv[2],'bdkv',GenRC,ftype)
 
 if "__main__" == __name__:
     sys.exit(main(len(sys.argv),sys.argv))

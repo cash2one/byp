@@ -10,7 +10,15 @@
 import sys,os,conf,xml.dom.minidom
 
 def main(argc, argv):
-    dom = xml.dom.minidom.parse(conf.rclist_file)
+    if argc != 2:
+        print 'usage:python rcgen.py <product_shortname (bdm|bdkv)>'
+        return
+    rcfile = ''
+    if argv[1] == 'bdm':
+        rcfile = conf.rclist_file
+    elif argv[1] == 'bdkv':
+        rcfile = conf.kv_rclist_file
+    dom = xml.dom.minidom.parse(rcfile)
     root = dom.documentElement
     for node in root.childNodes:
         if node.nodeType != node.ELEMENT_NODE:
@@ -18,7 +26,7 @@ def main(argc, argv):
         projdir = node.getAttribute('projdir')
         modulename = node.getAttribute('modulename')
         filedesc = node.getAttribute('filedesc')
-        command = byp_bin_path + 'rcgen.exe --projdir="%s" --modulename="%s" --filedesc="%s"' % (projdir,modulename,filedesc)
+        command = conf.byp_bin_path + 'rcgen.exe --projdir="%s" --modulename="%s" --filedesc="%s"' % (projdir,modulename,filedesc)
         os.system(command.encode(sys.getfilesystemencoding()))
 
 if "__main__" == __name__:

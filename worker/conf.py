@@ -101,7 +101,9 @@ ver_copyright = 'Copyright ? 2012-2017 Baidu. All Rights Reserved.'
 ver_product_manager = 'Baidu Manager'
 ver_product_antivirus = u'百度杀毒'
 
-rclist_file = './AutoBuild/rcdef.xml'
+rclist_file = './conf/rcdef.xml'
+kv_rclist_file = './conf/kvrcdef.xml'
+
 svn_local_info_file = '../output/svn/svn_local.info'
 svn_remote_info_file = '../output/svn/svn_remote.info'
 

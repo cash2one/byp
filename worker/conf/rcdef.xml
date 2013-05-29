@@ -1,105 +1,74 @@
 <?xml version="1.0" ?><conf>
 <!-- antivirus_proj -->
-<item projdir="antivirus_proj\Source\BDAVCache" modulename="BDAVCache.dll" filedesc="百度杀毒病毒库升级模块"/>
-<item projdir="antivirus_proj\Source\BDMAVCache" modulename="BDMAVCache.dll" filedesc="百度杀毒缓存模块"/>
-<item projdir="antivirus_proj\Source\BDMAVEng" modulename="BDMAVEng.dll" filedesc="百度杀毒病毒扫描引擎"/>
-<item projdir="antivirus_proj\Source\BDMAVUpload" modulename="BDMAVUpload.dll" filedesc="百度杀毒文件上传模块"/>
-<item projdir="antivirus_proj\Source\BDMRepBase" modulename="BDMRepBase.dll" filedesc="百度杀毒查杀基础库模块"/>
-<item projdir="antivirus_proj\Source\BDMRepMgr" modulename="BDMRepMgr.dll" filedesc="百度杀毒查杀管理模块"/>
-<item projdir="antivirus_proj\Source\CompatibilityChecker" modulename="CompatibilityChecker.dll" filedesc="百度杀毒兼容性检测模块"/>
-<item projdir="antivirus_proj\Source\KavUpdate" modulename="KavUpdate.dll" filedesc="百度杀毒病毒库升级模块"/>
-<item projdir="antivirus_proj\Source\TrustAndIso" modulename="TrustAndIso.dll" filedesc="百度杀毒信任文件和隔离区模块"/>
-<item projdir="antivirus_proj\Source\UploadFile" modulename="UploadFile.dll" filedesc="百度杀毒文件上传模块"/>
-<!-- avcommon_proj -->
-<item projdir="avcommon_proj\Source\BDMAVE" modulename="BDMAVE.dll" filedesc="百度杀毒卡巴引擎封装模块"/>
+<item projdir="antivirus_proj\Source\BDAVCache" modulename="BDAVCache.dll" filedesc="百度卫士性能模块"/>
+<item projdir="antivirus_proj\Source\BDMAVEng" modulename="BDMAVEng.dll" filedesc="百度卫士病毒扫描引擎"/>
+<item projdir="antivirus_proj\Source\BDMRepBase" modulename="BDMRepBase.dll" filedesc="百度卫士查杀基础库模块"/>
+<item projdir="antivirus_proj\Source\BDMRepMgr" modulename="BDMRepMgr.dll" filedesc="百度卫士查杀管理模块"/>
+<item projdir="antivirus_proj\Source\CompatibilityChecker" modulename="CompatibilityChecker.dll" filedesc="百度卫士兼容性检测模块"/>
+<item projdir="antivirus_proj\Source\TrustAndIso" modulename="TrustAndIso.dll" filedesc="百度卫士功能模块"/>
+<item projdir="antivirus_proj\Source\UploadFile" modulename="UploadFile.dll" filedesc="百度卫士基础模块"/>
+
 <!-- avdriver_proj -->
-<item projdir="avdriver_proj\Source\bd0001" modulename="bd0001.dll" filedesc=""/>
-<!-- avfilemon_proj -->
-<item projdir="avfilemon_proj\Source" modulename="FileMon.dll" filedesc="百度杀毒实时防护模块"/>
+<item projdir="avdriver_proj\Source\bd0001" modulename="bd0001.dll" filedesc="百度卫士基础功能模块"/>
+
 <!-- avhips_proj -->
-<item projdir="avhips_proj\Source\BDKVFileSign" modulename="BDKVFileSign.dll" filedesc=""/>
-<item projdir="avhips_proj\Source\BDKVLogs" modulename="BDKVLogs.dll" filedesc=""/>
-<item projdir="avhips_proj\Source\DriverManager" modulename="DriverManager.dll" filedesc=""/>
-<item projdir="avhips_proj\Source\HIPSEngine" modulename="HIPSEngine.dll" filedesc=""/>
-<!-- avmain_proj -->
-<item projdir="avmain_proj\Source\BDKV" modulename="baidusd.exe" filedesc="百度杀毒主程序"/>
-<item projdir="avmain_proj\Source\BDKVCoreSvr" modulename="baidusdSvc.exe" filedesc="百度杀毒服务程序"/>
-<item projdir="avmain_proj\Source\BDKVMainFrame" modulename="BDKVMainFrame.dll" filedesc=""/>
-<item projdir="avmain_proj\Source\BDKVTray" modulename="baidusdTray.exe" filedesc="百度杀毒托盘程序"/>
-<item projdir="avmain_proj\Source\BDKVTrayTipsPlugin" modulename="BDKVTrayTipsPlugin.dll" filedesc=""/>
-<item projdir="avmain_proj\Source\BDKVVirusPlugins" modulename="BDKVVirusPlugins.dll" filedesc=""/>
+<item projdir="avhips_proj\Source\BDKVLogs" modulename="BDKVLogs.dll" filedesc="百度卫士基础日志模块"/>
+<item projdir="avhips_proj\Source\DriverManager" modulename="DriverManager.dll" filedesc="百度卫士驱动管理模块"/>
+<item projdir="avhips_proj\Source\HIPSEngine" modulename="HIPSEngine.dll" filedesc="百度卫士主动防御模块"/>
+
 <!-- client_proj -->
-<item projdir="client_proj\Source\BDAVUpdate" modulename="baidusdUpdate.exe" filedesc="百度杀毒升级程序"/>
-<item projdir="client_proj\Source\BDLogicUtils" modulename="BDLogicUtils.dll" filedesc="百度杀毒功能扩展"/>
-<item projdir="client_proj\Source\BDMBugRpt" modulename="baidusdBugRpt.exe" filedesc="百度异常报告程序"/>
-<item projdir="client_proj\Source\BDMPatchAgent" modulename="BDMUpdateAgent.dll" filedesc=""/>
+<item projdir="client_proj\Source\BDAVUpdate" modulename="BDAVUpdate.dll" filedesc="百度卫士升级程序"/>
+<item projdir="client_proj\Source\BDLogicUtils" modulename="BDLogicUtils.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="client_proj\Source\BDMBugRpt" modulename="BDMBugRpt.dll" filedesc="百度异常报告程序"/>
+<item projdir="client_proj\Source\BDMPatchAgent" modulename="BDMUpdateAgent.dll" filedesc="百度卫士功能模块"/>
 <item projdir="client_proj\Source\BDMUpdate" modulename="BDMUpdate.dll" filedesc="百度产品升级模块"/>
+<item projdir="client_proj\Source\InstallHelper" modulename="InstallHelper.dll" filedesc="百度安装辅助模块"/>
+<item projdir="client_proj\Source\NetInstallHelpler" modulename="NetInstallHelper.dll" filedesc="百度在线安装辅助模块"/>
+
 <!-- common_proj -->
-<item projdir="common_proj\Source\BDMDownload" modulename="BDMDownload.dll" filedesc=""/>
-<item projdir="common_proj\Source\BDMNet" modulename="BDMNet.dll" filedesc=""/>
-<item projdir="common_proj\Source\BDMReport" modulename="BDMReport.dll" filedesc=""/>
+<!-- reserved
+<item projdir="common_proj\Projects\BDMBase\BDMFrameWork" modulename="BDMFrameWork.dll" filedesc=""/>
+<item projdir="common_proj\Source\BDMCommon" modulename="BDMBase.dll" filedesc=""/>
+<item projdir="common_proj\Source\BDMStringUtils" modulename="BDMStringUtils.dll" filedesc=""/>
+<item projdir="common_proj\Source\BDMTinyxml" modulename="BDMTinyxml.dll" filedesc=""/>
+<item projdir="common_proj\Source\LibJSON" modulename="LibJSON.dll" filedesc=""/>
+<item projdir="common_proj\Source\BDMFramework" modulename="BDMFrameWork.dll" filedesc=""/>
+<item projdir="common_proj\Source\BDMLog" modulename="BDMLog.dll" filedesc=""/>
+<item projdir="common_proj\Source\BDMMsg" modulename="BDMMsg.dll" filedesc=""/>
+-->
+<item projdir="common_proj\Source\BDMDownload" modulename="BDMDownload.dll" filedesc="百度卫士下载模块"/>
+<item projdir="common_proj\Source\BDMNet" modulename="BDMNet.dll" filedesc="百度卫士网络模块"/>
+<item projdir="common_proj\Source\BDMReport" modulename="BDMReport.dll" filedesc="百度卫士基础功能模块"/>
+
 <!-- main_proj -->
-<item projdir="main_proj\Source\BDMCoreSvr" modulename="BDMCoreSvr.exe" filedesc="百度极光服务程序"/>
-<item projdir="main_proj\Source\BDMgr" modulename="BDMgr.exe" filedesc="百度极光主程序"/>
-<item projdir="main_proj\Source\BDMHPPlugins" modulename="HomePagePlugins.dll" filedesc=""/>
-<item projdir="main_proj\Source\BDMMainFrame" modulename="BDMMainFrame.dll" filedesc="百度极光主程序框架"/>
-<item projdir="main_proj\Source\BDMMainFramePlugins" modulename="MainFramePlugins.dll" filedesc=""/>
-<item projdir="main_proj\Source\BDTray" modulename="BDMTray.exe" filedesc=""/>
-<item projdir="main_proj\Source\BDTrayTipsPlugin" modulename="BDKVTrayTipsPlugin.dll" filedesc=""/>
-<!-- ndmain_proj -->
-<item projdir="ndmain_proj\Source\BDNDMain" modulename="BDNDMain.exe" filedesc=""/>
-<!-- qmold_proj -->
-<item projdir="qmold_proj\QMGarbageCleanerXMLParser\QMLogicDll\GarbageCleaner" modulename="GarbageCleaner.dll" filedesc=""/>
-<item projdir="qmold_proj\QMGarbageCleanerXMLParser\QMLogicDll\QMGarbageCleanConfig" modulename="QMGarbageCleanConfig.dll" filedesc=""/>
-<item projdir="qmold_proj\QMGarbageCleanerXMLParser\QMLogicDll\QMGarbageCleaner" modulename="QMGarbageCleaner.dll" filedesc=""/>
-<item projdir="qmold_proj\QMGarbageCleanerXMLParser\QMLogicDll\QMGCScriptApi" modulename="QMGCScriptApi.dll" filedesc=""/>
-<item projdir="qmold_proj\QMGarbageCleaner_proj\QMLogicDll\GarbageCleaner" modulename="GarbageCleaner.dll" filedesc=""/>
-<item projdir="qmold_proj\QMGarbageCleaner_proj\QMLogicDll\QMGarbageCleanConfig" modulename="QMGarbageCleanConfig.dll" filedesc=""/>
-<item projdir="qmold_proj\QMGarbageCleaner_proj\QMLogicDll\QMGarbageCleaner" modulename="QMGarbageCleaner.dll" filedesc=""/>
-<item projdir="qmold_proj\QMGarbageCleaner_proj\QMLogicDll\QMGCScriptApi" modulename="QMGCScriptApi.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonDll\QMCommon" modulename="QMCommon.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMConfigFile" modulename="QMConfigFile.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMDownload" modulename="QMDownload.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMEncrypt" modulename="QMEncrypt.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMFileCmdHelper" modulename="QMFileCmdHelper.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMFramework" modulename="QMFrameWork.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMFramework" modulename="QMFrameWorkCore.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMKernelObj" modulename="QMKernelObj.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMLog" modulename="QMLog.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMMacID" modulename="QMMacID.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMMd5" modulename="QMMd5.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMMisc" modulename="QMMisc.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMNetworkMgr" modulename="QMNetworkMgr.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMRegisterUtils" modulename="QMRegisterUtils.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMStringUtils" modulename="QMStringUtils.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMTinyxml" modulename="QMTinyxml.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMVerSign" modulename="QMVerSign.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMWin64Helper" modulename="QMWin64Helper.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\QMXml" modulename="QMXml.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMCommonLibDll\SqlLite" modulename="SqlLite.dll" filedesc=""/>
-<item projdir="qmold_proj\QMlib_proj\QMLogicDll\QMGarbageCleaner" modulename="QMGarbageCleaner.dll" filedesc=""/>
-<item projdir="qmold_proj\QMScheduledTaskManager_proj\Source\BDMSYSAccelerator" modulename="BDMSYSAccelerator.dll" filedesc=""/>
-<item projdir="qmold_proj\QMSysAccelerator_proj\Source\BDMSYSAccelerator" modulename="BDMSYSAccelerator.dll" filedesc=""/>
+<item projdir="main_proj\Source\BDMCoreSvr" modulename="BaiduanSvc.exe" filedesc="百度卫士服务程序"/>
+<item projdir="main_proj\Source\BDMgr" modulename="Baiduan.exe" filedesc="百度卫士主程序"/>
+<item projdir="main_proj\Source\BDMMainFrame" modulename="BDMMainFrame.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="main_proj\Source\BDMUpdateExe" modulename="BDAVUpdate.dll" filedesc="百度卫士升级程序"/>
+<item projdir="main_proj\Source\BDTray" modulename="BaiduanTray.exe" filedesc="百度卫士托盘程序"/>
+<item projdir="main_proj\Source\BDTrayTipsPlugin" modulename="BDMTrayTipsPlugin.dll" filedesc="百度卫士基础功能模块"/>
+
 <!-- skin_proj -->
-<item projdir="skin_proj\Source" modulename="BDMSkin.dll" filedesc=""/>
-<!-- sysrepair_proj -->
-<item projdir="sysrepair_proj\source\shcore" modulename="shcore.dll" filedesc=""/>
-<item projdir="sysrepair_proj\source\sreng" modulename="sreng.dll" filedesc=""/>
-<!-- system_proj -->
-<item projdir="system_proj\Source\BDMSOAcceleratorPlugin" modulename="BDMSOAcceleratorPlugin.dll" filedesc=""/>
-<item projdir="system_proj\Source\BDMSOAssistTrayPlugin" modulename="BDMSOAssistTrayPlugin.dll" filedesc=""/>
-<item projdir="system_proj\Source\BDMSOCleanerPlugin" modulename="BDMSOCleanerPlugin.dll" filedesc="百度极光清理插件"/>
-<item projdir="system_proj\Source\BDMSOManager" modulename="BDMSOManager.dll" filedesc="百度极光系统优化模块"/>
-<item projdir="system_proj\Source\BDMSOShortcutPlugin" modulename="BDMSOShortcutPlugin.dll" filedesc=""/>
-<item projdir="system_proj\Source\BDMSOTurbo" modulename="BDMSOTurbo.dll" filedesc=""/>
-<item projdir="system_proj\Source\BDMSWManager" modulename="BDMSWManager.dll" filedesc="百度极光软件管理模块"/>
-<item projdir="system_proj\Source\BDMSWManagerPlugins" modulename="BDMSWManagerPlugins.dll" filedesc="百度极光软件管理插件"/>
-<item projdir="system_proj\Source\Logic\BDMProcessRunningTime" modulename="BDMProcessRunningTime.dll" filedesc=""/>
-<item projdir="system_proj\Source\Logic\BDMStartupDelayController" modulename="BDMStartupDelayController.dll" filedesc=""/>
-<item projdir="system_proj\Source\Logic\BDMSysAccMgrWrapper" modulename="BDMSysAccMgrWrapper.dll" filedesc=""/>
-<item projdir="system_proj\Source\Logic\SYSAccMgrDll" modulename="BDMSYSAccelerator.dll" filedesc=""/>
-<item projdir="system_proj\Source\Logic\SYSCleaner" modulename="SYSCleaner.dll" filedesc="百度极光系统清理模块"/>
-<item projdir="system_proj\Source\Logic\SYSCleanerWrapper" modulename="SYSCleanerWrapper.dll" filedesc=""/>
-<!-- url_firewall_proj -->
-<item projdir="url_firewall_proj\Source" modulename="bho.dll" filedesc=""/>
+<item projdir="skin_proj\Source" modulename="BDMSkin.dll" filedesc="百度卫士基础功能模块"/>
+
+<!-- softmgr_proj -->
+<item projdir="softmgr_proj\Source\BDMSWManagerFrame" modulename="BDMSWManagerFrame.dll" filedesc="百度卫士软件管理模块"/>
+<item projdir="softmgr_proj\Source\BDMSWManagerView" modulename="BDMSWManagerView.dll" filedesc="百度卫士软件管理插件"/>
+<item projdir="softmgr_proj\Source\BDMSWNestCore" modulename="BDMSWNestCore.dll" filedesc="百度卫士软件管理功能模块"/>
+
+<!-- sysaccelerator_proj -->
+<item projdir="sysaccelerator_proj\Source\BDMSOAcceleratorPlugin" modulename="BDMSOAcceleratorPlugin.dll" filedesc="百度卫士加速插件"/>
+<item projdir="sysaccelerator_proj\Source\BDMSOAccMgrTrayPlugin" modulename="BDMSOAccMgrTrayPlugin.dll" filedesc="百度卫士加速管理插件"/>
+<item projdir="sysaccelerator_proj\Source\BDMSOAssistTrayPlugin" modulename="BDMSOAssistTrayPlugin.dll" filedesc="百度卫士辅助功能插件"/>
+<item projdir="sysaccelerator_proj\Source\Logic\BDMProcessRunningTime" modulename="BDMProcessRunningTime.dll" filedesc="百度卫士功能模块"/>
+<item projdir="sysaccelerator_proj\Source\Logic\SYSAccMgrDll" modulename="BDMSYSAccelerator.dll" filedesc="百度卫士加速管理模块"/>
+
+<!-- syscleaner_proj -->
+<item projdir="syscleaner_proj\Source\BDMSOCleanerPlugin" modulename="BDMSOCleanerPlugin.dll" filedesc="百度卫士清理插件"/>
+<item projdir="syscleaner_proj\Source\BDMSOCleanerTrayPlugin" modulename="BDMSOCleanerTrayPlugin.dll" filedesc="百度卫士功能插件"/>
+<item projdir="syscleaner_proj\Source\Logic\SYSCleaner" modulename="SYSCleaner.dll" filedesc="百度卫士清理模块"/>
+
+<!-- trojanscan_proj -->
+<item projdir="trojanscan_proj\Source\BDMKVMainPlugin" modulename="BDMKVMainPlugin.dll" filedesc="百度卫士木马扫描插件"/>
+<item projdir="trojanscan_proj\Source\BDMKVScanPlugin" modulename="BDKVVirusPlugins.dll" filedesc="百度卫士木马扫描模块"/>
 </conf>
