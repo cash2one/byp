@@ -1048,10 +1048,10 @@ class Build(BuildStep):
                     logging.error("error occers when parsing xml or run command:")
                     logging.error(e)
                 if bIgnoreFault:
-                    msg = '<h5>Build error(s) found, xbuild continues, please handler these error(s) below later : </h5>'
+                    msg = '<h5>Build error(s) found, xbuild continues, please handle these error(s) below later : </h5>'
                     self.report('wk-build-log',msg)
                 else:
-                    msg = '<h5>Build error(s) found, xbuild quit, please handler these error(s) below : </h5>'
+                    msg = '<h5>Build error(s) found, xbuild quit, please handle these error(s) below : </h5>'
                     self.report('wk-status-change', 'error')
                     self.report('wk-build-log',msg)
                 for file in os.listdir(conf.log_path):
@@ -1129,10 +1129,10 @@ class KVBuild(BuildStep):
                     logging.error("error occers when parsing xml or run command:")
                     logging.error(e)
                 if bIgnoreFault:
-                    msg = '<h5>Build error(s) found, xbuild continues, please handler these error(s) below later : </h5>'
+                    msg = '<h5>Build error(s) found, xbuild continues, please handle these error(s) below later : </h5>'
                     self.report('wk-build-log',msg)
                 else:
-                    msg = '<h5>Build error(s) found, xbuild quit, please handler these error(s) below : </h5>'
+                    msg = '<h5>Build error(s) found, xbuild quit, please handle these error(s) below : </h5>'
                     self.report('wk-status-change', 'error')
                     self.report('wk-build-log',msg)
                 for file in os.listdir(conf.kvlog_path):
@@ -1200,10 +1200,10 @@ class Rebase(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            command = 'rebase.exe -d -b 0x60000000 *.dll bdmantivirus\*.dll ftsomanager\*.dll FTSWManager\sw_si_assistor\*.dll plugins\bdmkvscanplugin\*.dll plugins\bdmmainframeplugins\*.dll plugins\BDMSOManagerPlugins\*.dll plugins\bdmswmanagerplugins\*.dll plugins\bdmtrayplugins\*.dll plugins\RTPPlugins\*.dll'
+            command = conf.byp_bin_path + 'rebase.exe -d -b 0x60000000 ..\\..\\basic\\output\\binrelease\\*.dll ..\\..\\basic\\output\\binrelease\\bdmantivirus\\*.dll ..\\..\\basic\\output\\binrelease\\ftsomanager\\*.dll ..\\..\\basic\\output\\binrelease\\FTSWManager\\sw_si_assistor\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmkvscanplugin\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmmainframeplugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\BDMSOManagerPlugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmswmanagerplugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmtrayplugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\RTPPlugins\\*.dll'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
-            command = 'bind.exe -u *.dll bdmantivirus\*.dll ftsomanager\*.dll FTSWManager\sw_si_assistor\*.dll plugins\bdmkvscanplugin\*.dll plugins\bdmmainframeplugins\*.dll plugins\BDMSOManagerPlugins\*.dll plugins\bdmswmanagerplugins\*.dll plugins\bdmtrayplugins\*.dll plugins\RTPPlugins\*.dll'
+            command = conf.byp_bin_path + 'bind.exe -u ..\\..\\basic\\output\\binrelease\\*.dll ..\\..\\basic\\output\\binrelease\\bdmantivirus\\*.dll ..\\..\\basic\\output\\binrelease\\ftsomanager\\*.dll ..\\..\\basic\\output\\binrelease\\FTSWManager\\sw_si_assistor\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmkvscanplugin\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmmainframeplugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\BDMSOManagerPlugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmswmanagerplugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\bdmtrayplugins\\*.dll ..\\..\\basic\\output\\binrelease\\plugins\\RTPPlugins\\*.dll'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
@@ -1219,10 +1219,10 @@ class KVRebase(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            command = 'rebase.exe -d -b 0x60000000 *.dll bdmantivirus\*.dll bdmsysrepair\*.dll plugins\bdkv\*.dll plugins\bdkvrtpplugins\*.dll plugins\bdkvtrayplugins\*.dll'
+            command = conf.byp_bin_path + 'rebase.exe -d -b 0x60000000 ..\\..\\basic\\kvoutput\\binrelease\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\bdmsysrepair\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\plugins\\bdkv\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\plugins\\bdkvrtpplugins\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\plugins\\bdkvtrayplugins\\*.dll'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
-            command = 'bind.exe -u *.dll bdmantivirus\*.dll bdmsysrepair\*.dll plugins\bdkv\*.dll plugins\bdkvrtpplugins\*.dll plugins\bdkvtrayplugins\*.dll'
+            command = conf.byp_bin_path + 'bind.exe -u ..\\..\\basic\\kvoutput\\binrelease\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\bdmsysrepair\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\plugins\\bdkv\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\plugins\\bdkvrtpplugins\\*.dll ..\\..\\basic\\kvoutput\\binrelease\\plugins\\bdkvtrayplugins\\*.dll'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
