@@ -69,7 +69,7 @@ bdkv_options = {
     
     'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
 
-    'rcgen':['check','before','重置版本','重新生成产品对应的版本信息','default'],
+    'rcgen':['check','before','修复版本RC','重新生成产品相关的版本信息','default'],
 
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
@@ -83,7 +83,7 @@ bdkv_options = {
 	#'signkav':['check','build','卡巴签名','更新卡巴签名','default'],
 	#'signbaidu':['check','build','百度签名','更新百度签名','default'],
 	
-    'rebase':['check','build','基地址修复','修改模块ImageBase并绑定以提高程序加载速度','default'],
+    'rebase':['check','build','ImageBase修复','修改模块基地址并绑定以提高程序加载速度','default'],
 
 	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
 	'install':['check','build','生成安装包','生成安装包','default'],
@@ -117,7 +117,7 @@ bdm_options = {
 
     'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
 
-    'rcgen':['check','before','重置版本','重新生成产品对应的版本信息','default'],
+    'rcgen':['check','before','修复版本RC','重新生成产品相关的版本信息','default'],
 
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
 	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
@@ -129,7 +129,7 @@ bdm_options = {
 	'pack':['check','build','打包资源','重新打包资源','default'],
 	#'sign':['check','build','百度签名','更新百度签名','default'],
 	
-    'rebase':['check','build','基地址修复','修改模块ImageBase并绑定以提高程序加载速度','default'],
+    'rebase':['check','build','ImageBase修复','修改模块基地址并绑定以提高程序加载速度','default'],
 
 	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
 	'install':['check','build','生成安装包','生成安装包','default'],
