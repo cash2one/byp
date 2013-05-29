@@ -39,6 +39,7 @@
 <item projdir="common_proj\Source\BDMDownload" modulename="BDMDownload.dll" filedesc="百度卫士下载模块"/>
 <item projdir="common_proj\Source\BDMNet" modulename="BDMNet.dll" filedesc="百度卫士网络模块"/>
 <item projdir="common_proj\Source\BDMReport" modulename="BDMReport.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="common_proj\Source\BDMEvents" modulename="BDMEvents.dll" filedesc="百度卫士基础功能模块"/>
 
 <!-- main_proj -->
 <item projdir="main_proj\Source\BDMCoreSvr" modulename="BaiduanSvc.exe" filedesc="百度卫士服务程序"/>

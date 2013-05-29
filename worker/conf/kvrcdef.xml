@@ -11,6 +11,7 @@
 
 <!-- avcommon_proj -->
 <item projdir="avcommon_proj\Source\BDMAVE" modulename="BDMAVE.dll" filedesc="百度杀毒卡巴引擎封装模块"/>
+<item projdir="avcommon_proj\Source\rfp_api" modulename="rfp_api.dll" filedesc="百度杀毒基础功能模块"/>
 
 <!-- avdriver_proj -->
 <item projdir="avdriver_proj\Source\bd0001" modulename="bd0001.dll" filedesc="百度杀毒基础功能模块"/>
@@ -56,6 +57,7 @@
 <item projdir="common_proj\Source\BDMDownload" modulename="BDMDownload.dll" filedesc="百度杀毒下载模块"/>
 <item projdir="common_proj\Source\BDMNet" modulename="BDMNet.dll" filedesc="百度杀毒网络模块"/>
 <item projdir="common_proj\Source\BDMReport" modulename="BDMReport.dll" filedesc="百度杀毒基础功能模块"/>
+<item projdir="common_proj\Source\BDMEvents" modulename="BDMEvents.dll" filedesc="百度杀毒基础功能模块"/>
 
 <!-- skin_proj -->
 <item projdir="skin_proj\Source" modulename="BDMSkin.dll" filedesc="百度杀毒基础功能模块"/>
