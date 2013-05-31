@@ -33,9 +33,9 @@ def main(argc, argv):
     fileop.VerifyFileExist(userconf.data_conf_dir,['*.*'],argv[1],logfile,datadir_verify_list)
     #installer_folder_file_version_verify
     fileop.VerifyFileVersion(installdir,['*.exe','*.dll','*.sys'],argv[1],logfile)
+    #driver_sign_verify
+    fileop.VerifyDriverSign(installdir,['*.exe'],argv[1],logfile)
     if argv[1] == 'bdkv':
-        #driver_sign_verify
-        fileop.VerifyDriverSign(installdir,['*.exe'],'bdkv',logfile)
         #kav_sign_verify
         fileop.VerifyKavSign(installdir,['*.exe'],'bdkv',logfile)
     #baidu_official_sign_verify(please edit ./BuildSwitch/Signature.xml|KVSignature.xml)
