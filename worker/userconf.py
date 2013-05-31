@@ -20,5 +20,5 @@ kv_install_verify_file = './verifylist/kvafterinstall.xml'
 mgr_datadir_verify_file = './verifylist/config.xml'
 kv_datadir_verify_file = './verifylist/kvconfig.xml'
 
-mgr_verify_log_file = './AutoBuild/ProductVerify.txt'
-kv_verify_log_file = './AutoBuild/KVProductVerify.txt'
+mgr_verify_log_file = '../output/verifylog/ProductVerify.txt'
+kv_verify_log_file = '../output/verifylog/KVProductVerify.txt'
