@@ -9,10 +9,10 @@
 	user configuration,edit it by yourself
 """
 
-mgr_install_dir = 'D:\\Baidu\\BDM\\1.0.0.151\\'
-kv_install_dir = 'D:\\Baidu\\BDKV\\1.0.1.25\\'
+mgr_install_dir = 'C:\\Program Files\\baidu\\baiduan\\1.0.0.274\\'
+kv_install_dir = 'C:\\Program Files\\baidu\\baidusd\\1.0.0.311\\'
 
-data_conf_dir = 'C:\\ProgramData\\Baidu\\'
+data_conf_dir = 'C:\\Documents and Settings\\All Users\\Application Data\\Baidu\\'
 
 mgr_install_verify_file = './verifylist/afterinstall.xml'
 kv_install_verify_file = './verifylist/kvafterinstall.xml'
