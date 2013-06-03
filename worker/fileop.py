@@ -641,9 +641,9 @@ gen_rc_list                           - generate rc list
     elif argv[1] == 'kvsign_baidu':
         SignBaiduOfficial(argv[2],ftype,'bdkv',conf.kv_official_sign_excluded_dir)
     elif argv[1] == 'verify_file_exist':
-        VerifyFileExist(argv[2],ftype,'bdm',extra_para1,extra_para2)
+        VerifyFileExist(argv[2],ftype,'bdm',extra_para1,extra_para2,conf.mgr_file_exist_excluded_dir)
     elif argv[1] == 'kvverify_file_exist':
-        VerifyFileExist(argv[2],ftype,'bdkv',extra_para1,extra_para2)
+        VerifyFileExist(argv[2],ftype,'bdkv',extra_para1,extra_para2,conf.kv_file_exist_excluded_dir)
     elif argv[1] == 'verify_file_version':
         VerifyFileVersion(argv[2],ftype,'bdm',extra_para1,conf.mgr_verify_excluded_dir)
     elif argv[1] == 'kvverify_file_version':

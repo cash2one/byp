@@ -141,6 +141,9 @@ kv_verify_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
                          userconf.kv_install_dir + 'microsoft.vc80.crt\\',
                          userconf.kv_install_dir + 'bdmantivirus\\kavupdate\\',]
 
+mgr_file_exist_excluded_dir = ['.pdb','.exp','.lib',]
+
+kv_file_exist_excluded_dir = ['.pdb','.exp','.lib',]
 
 #总的工程根目录
 sln_root = '..\\..\\'
