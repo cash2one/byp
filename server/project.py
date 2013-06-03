@@ -95,6 +95,9 @@ bdkv_options = {
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
 
+    'verify':['check','after','校验生成文件','校验生成的二进制文件的完整性、版本、签名等是否正确'],
+    'verifyinstaller':['check','after','校验安装包','校验安装包是否生成、版本、签名等是否正确'],
+
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
     
@@ -139,6 +142,9 @@ bdm_options = {
 	'send':['radio','after',[('不归档安装包','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
+
+    'verify':['check','after','校验生成文件','校验生成的二进制文件的完整性、版本、签名等是否正确'],
+    'verifyinstaller':['check','after','校验安装包','校验安装包是否生成、版本、签名等是否正确'],
 
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
