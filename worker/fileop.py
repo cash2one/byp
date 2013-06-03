@@ -648,8 +648,12 @@ gen_rc_list                           - generate rc list
         VerifyFileVersion(argv[2],ftype,'bdm',extra_para1)
     elif argv[1] == 'kvverify_file_version':
         VerifyFileVersion(argv[2],ftype,'bdkv',extra_para1)
+    elif argv[1] == 'verify_driver_sign':
+        VerifyDriverSign(argv[2],ftype,'bdm',extra_para1)
     elif argv[1] == 'kvverify_driver_sign':
         VerifyDriverSign(argv[2],ftype,'bdkv',extra_para1)
+    elif argv[1] == 'verify_kav_sign':
+        VerifyKavSign(argv[2],ftype,'bdm',extra_para1)
     elif argv[1] == 'kvverify_kav_sign':
         VerifyKavSign(argv[2],ftype,'bdkv',extra_para1)
     elif argv[1] == 'verify_baidu_sign':
