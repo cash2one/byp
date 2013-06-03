@@ -106,7 +106,6 @@ ver_product_antivirus = u'百度杀毒'
 rclist_file = './conf/rcdef.xml'
 kv_rclist_file = './conf/kvrcdef.xml'
 
-svn_local_info_file = '../output/svn/svn_local.info'
 svn_remote_info_file = '../output/svn/svn_remote.info'
 
 mgr_official_sign_excluded_dir = []
