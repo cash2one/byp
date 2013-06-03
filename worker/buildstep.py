@@ -1314,11 +1314,15 @@ class Verify(BuildStep):
             commands = []
             commands.append('python fileop.py verify_file_exist ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.*')
             commands.append('python fileop.py verify_file_version ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
+            commands.append('python fileop.py verify_driver_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe')
+            commands.append('python fileop.py verify_kav_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe')
             commands.append('python fileop.py verify_baidu_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             for item in commands:
                 self.report('wk-build-log', command)
             fileop.main(4,['fileop.py','verify_file_exist',conf.sln_root + 'basic\\Output\\BinRelease\\','*.*'])
             fileop.main(4,['fileop.py','verify_file_version',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
+            fileop.main(4,['fileop.py','verify_driver_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
+            fileop.main(4,['fileop.py','verify_kav_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
             fileop.main(4,['fileop.py','verify_baidu_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
         BuildStep.act(self)
     
@@ -1564,10 +1568,14 @@ class VerifyInstaller(BuildStep):
         elif self.value == 1:
             commands = []
             commands.append('python fileop.py verify_file_version ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py verify_driver_sign ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py verify_kav_sign ..\\output\\setup\\ *.exe')
             commands.append('python fileop.py verify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
                 self.report('wk-build-log', item)
             fileop.main(4,['fileop.py','verify_file_version','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','verify_driver_sign','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','verify_kav_sign','..\\output\\setup\\','*.exe'])
             fileop.main(4,['fileop.py','verify_baidu_sign','..\\output\\setup\\','*.exe'])
         BuildStep.act(self)
     
@@ -1583,16 +1591,16 @@ class KVVerifyInstaller(BuildStep):
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
             commands = []
-            commands.append('python fileop.py kvverify_file_version ..\\output\\setup\\ *.exe')
-            commands.append('python fileop.py kvverify_driver_sign ..\\output\\setup\\ *.exe')
-            commands.append('python fileop.py kvverify_kav_sign ..\\output\\setup\\ *.exe')
-            commands.append('python fileop.py kvverify_baidu_sign ..\\output\\setup\\ *.exe')
+            commands.append('python fileop.py kvverify_file_version ..\\output\\kvsetup\\ *.exe')
+            commands.append('python fileop.py kvverify_driver_sign ..\\output\\kvsetup\\ *.exe')
+            commands.append('python fileop.py kvverify_kav_sign ..\\output\\kvsetup\\ *.exe')
+            commands.append('python fileop.py kvverify_baidu_sign ..\\output\\kvsetup\\ *.exe')
             for item in commands:
                 self.report('wk-build-log', item)
-            fileop.main(4,['fileop.py','kvverify_file_version','..\\output\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_driver_sign','..\\output\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_kav_sign','..\\output\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_baidu_sign','..\\output\\setup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_file_version','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_driver_sign','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_kav_sign','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4,['fileop.py','kvverify_baidu_sign','..\\output\\kvsetup\\','*.exe'])
         BuildStep.act(self)
 
 ##############################################

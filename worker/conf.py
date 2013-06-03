@@ -9,6 +9,8 @@
 	
 """
 
+import userconf
+
 svn_url = 'http://192.168.10.242:8000/client/'
 svn_conf_file = './buildswitch/SVN.xml'
 markup_conf_file = './buildswitch/MarkupCode.xml'
@@ -108,7 +110,8 @@ kv_rclist_file = './conf/kvrcdef.xml'
 
 svn_remote_info_file = '../output/svn/svn_remote.info'
 
-mgr_official_sign_excluded_dir = []
+mgr_official_sign_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
+								'..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',]
 
 kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
@@ -121,6 +124,22 @@ kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinsta
 
 kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
                           '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
+
+mgr_verify_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
+						  '..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',
+						  userconf.mgr_install_dir + 'microsoft.vc80.atl\\',
+						  userconf.mgr_install_dir + 'microsoft.vc80.crt\\',]
+
+kv_verify_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
+						 '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
+						 '..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.atl\\',
+						 '..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.crt\\',
+                         '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',
+                         userconf.kv_install_dir + 'kav\\',
+                         userconf.kv_install_dir + 'kavdrivers\\',
+                         userconf.kv_install_dir + 'microsoft.vc80.atl\\',
+                         userconf.kv_install_dir + 'microsoft.vc80.crt\\',
+                         userconf.kv_install_dir + 'bdmantivirus\\kavupdate\\',]
 
 
 #总的工程根目录

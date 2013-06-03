@@ -210,7 +210,7 @@ def SignBaidu(file,para):
         
     return
 
-def SignBaiduOfficial(path,ftype,product,excluded_dir):
+def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
     done = False
     signId = '0'
     signConfFile = ''
@@ -277,7 +277,7 @@ def CheckFileUnexist(root,writer):
             writer.write(log)
 
 
-def VerifyFileExist(path,ftype,product,logfile = '',configfile = ''):
+def VerifyFileExist(path,ftype,product,logfile = '',configfile = '',excluded_dir = []):
     confFile = ''
     logFile = ''
     if product == 'bdm':
@@ -303,7 +303,7 @@ def VerifyFileExist(path,ftype,product,logfile = '',configfile = ''):
     root = dom.documentElement
     writer = open(logFile,'a')
     writer.write('\n----------------Verify Files----------------\n')
-    FileOperationWithExtraPara(path,FileVerify,(root,writer,path[path[:-1].rfind('\\')+1:]),ftype)
+    FileOperationWithExtraPara(path,FileVerify,(root,writer,path[path[:-1].rfind('\\')+1:]),ftype,excluded_dir)
     CheckFileUnexist(root,writer)
     writer.close()
 
@@ -417,7 +417,7 @@ def GetProductVersion(product):
     productversion = '%s.%s.%s.%s' % (bn1,bn2,bn3,bn4)
     return (company,trademark,copyright,productname,productversion)
 
-def VerifyFileVersion(path,ftype,product,logfile = ''):
+def VerifyFileVersion(path,ftype,product,logfile = '',excluded_dir = []):
     logFile = ''
     if product == 'bdm':
         if logfile != '':
@@ -432,7 +432,7 @@ def VerifyFileVersion(path,ftype,product,logfile = ''):
     verInfo = GetProductVersion(product)
     writer = open(logFile,'a')
     writer.write('\n----------------Verify File Version----------------\n')
-    FileOperationWithExtraPara(path,VersionVerify,(verInfo,writer),ftype)
+    FileOperationWithExtraPara(path,VersionVerify,(verInfo,writer),ftype,excluded_dir)
     writer.close()
 
 
@@ -447,7 +447,7 @@ def DriverSignVerify(file,writer):
     writer.write(log)
 
 
-def VerifyDriverSign(path,ftype,product,logfile = ''):
+def VerifyDriverSign(path,ftype,product,logfile = '',excluded_dir = []):
     logFile = ''
     if product == 'bdm':
         if logfile != '':
@@ -461,7 +461,7 @@ def VerifyDriverSign(path,ftype,product,logfile = ''):
             logFile = conf.kvverify_log_file
     writer = open(logFile,'a')
     writer.write('\n----------------Verify Driver Sign----------------\n')
-    FileOperationWithExtraPara(path,DriverSignVerify,writer,ftype)
+    FileOperationWithExtraPara(path,DriverSignVerify,writer,ftype,excluded_dir)
     writer.close()
 
 
@@ -477,7 +477,7 @@ def KavSignVerify(file,writer):
     writer.write(log)
     
 
-def VerifyKavSign(path,ftype,product,logfile = ''):
+def VerifyKavSign(path,ftype,product,logfile = '',excluded_dir = []):
     logFile = ''
     if product == 'bdm':
         if logfile != '':
@@ -491,7 +491,7 @@ def VerifyKavSign(path,ftype,product,logfile = ''):
             logFile = conf.kvverify_log_file
     writer = open(logFile,'a')
     writer.write('\n----------------Verify Kav Sign----------------\n')
-    FileOperationWithExtraPara(path,KavSignVerify,writer,ftype)
+    FileOperationWithExtraPara(path,KavSignVerify,writer,ftype,excluded_dir)
     writer.close()
 
 
@@ -508,7 +508,7 @@ def BaiduVerify(file,para):
     writer.write(log)
 
 
-def VerifyBaiduSign(path,ftype,product,logfile = '',configfile = ''):
+def VerifyBaiduSign(path,ftype,product,logfile = '',configfile = '',excluded_dir = []):
     done = False
     digitalSign = ''
     signConfFile = ''
@@ -552,7 +552,7 @@ def VerifyBaiduSign(path,ftype,product,logfile = '',configfile = ''):
     if done:
         writer = open(logFile,'a')
         writer.write('\n----------------Verify Baidu Sign----------------\n')
-        FileOperationWithExtraPara(path,BaiduVerify,(digitalSign,writer),ftype)
+        FileOperationWithExtraPara(path,BaiduVerify,(digitalSign,writer),ftype,excluded_dir)
         writer.close()
 
 def GenFileList(file,para):
@@ -637,29 +637,29 @@ gen_rc_list                           - generate rc list
     elif argv[1] == 'kvsign_kav':
         FileOperation(argv[2],SignKav,ftype,conf.kvsign_kav_excluded_dir)
     elif argv[1] == 'sign_baidu':
-        SignBaiduOfficial(argv[2],ftype,'bdm')
+        SignBaiduOfficial(argv[2],ftype,'bdm',conf.mgr_official_sign_excluded_dir)
     elif argv[1] == 'kvsign_baidu':
         SignBaiduOfficial(argv[2],ftype,'bdkv',conf.kv_official_sign_excluded_dir)
     elif argv[1] == 'verify_file_exist':
-        VerifyFileExist(argv[2],ftype,'bdm',extra_para1,extra_para2)
+        VerifyFileExist(argv[2],ftype,'bdm',extra_para1,extra_para2,conf.mgr_verify_excluded_dir)
     elif argv[1] == 'kvverify_file_exist':
-        VerifyFileExist(argv[2],ftype,'bdkv',extra_para1,extra_para2)
+        VerifyFileExist(argv[2],ftype,'bdkv',extra_para1,extra_para2,conf.kv_verify_excluded_dir)
     elif argv[1] == 'verify_file_version':
-        VerifyFileVersion(argv[2],ftype,'bdm',extra_para1)
+        VerifyFileVersion(argv[2],ftype,'bdm',extra_para1,conf.mgr_verify_excluded_dir)
     elif argv[1] == 'kvverify_file_version':
-        VerifyFileVersion(argv[2],ftype,'bdkv',extra_para1)
+        VerifyFileVersion(argv[2],ftype,'bdkv',extra_para1,conf.kv_verify_excluded_dir)
     elif argv[1] == 'verify_driver_sign':
-        VerifyDriverSign(argv[2],ftype,'bdm',extra_para1)
+        VerifyDriverSign(argv[2],ftype,'bdm',extra_para1,conf.mgr_verify_excluded_dir)
     elif argv[1] == 'kvverify_driver_sign':
-        VerifyDriverSign(argv[2],ftype,'bdkv',extra_para1)
+        VerifyDriverSign(argv[2],ftype,'bdkv',extra_para1,conf.kv_verify_excluded_dir)
     elif argv[1] == 'verify_kav_sign':
-        VerifyKavSign(argv[2],ftype,'bdm',extra_para1)
+        VerifyKavSign(argv[2],ftype,'bdm',extra_para1,conf.mgr_verify_excluded_dir)
     elif argv[1] == 'kvverify_kav_sign':
-        VerifyKavSign(argv[2],ftype,'bdkv',extra_para1)
+        VerifyKavSign(argv[2],ftype,'bdkv',extra_para1,conf.kv_verify_excluded_dir)
     elif argv[1] == 'verify_baidu_sign':
-        VerifyBaiduSign(argv[2],ftype,'bdm',extra_para1,extra_para2)
+        VerifyBaiduSign(argv[2],ftype,'bdm',extra_para1,extra_para2,conf.mgr_verify_excluded_dir)
     elif argv[1] == 'kvverify_baidu_sign':
-        VerifyBaiduSign(argv[2],ftype,'bdkv',extra_para1,extra_para2)
+        VerifyBaiduSign(argv[2],ftype,'bdkv',extra_para1,extra_para2,conf.kv_verify_excluded_dir)
     elif argv[1] == 'gen_file_list':
         GenFileVerify(argv[2],ftype,'bdm',extra_para1)
     elif argv[1] == 'kvgen_file_list':
