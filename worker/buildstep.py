@@ -568,16 +568,19 @@ def genMailMsg(product):
     mailFile = ''
     installerFolder = ''
     buildIdFile = ''
+    verify_log_file = ''
     if product == 'bdm':
         mailFile = conf.bdm_mail_file
         installerFolder = conf.ftpPathNameR
         buildIdFile = conf.buildIdFile
         logDir = conf.log_path
+        verify_log_file = conf.verify_log_file
     elif product == 'bdkv':
         mailFile = conf.bdkv_mail_file
         installerFolder = conf.ftpKVPathNameR
         buildIdFile = conf.kvBuildIdFile
         logDir = conf.kvlog_path
+        verify_log_file = conf.kvverify_log_file
     fp = open(mailFile,'w')
     #fp.write('<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>')
     fp.write('Dailybuild notification mail\r\n\r\n')
@@ -591,6 +594,11 @@ def genMailMsg(product):
             else:
                 fp.write('ok\r\n\r\n')
                 
+    if os.path.exists(verify_log_file):
+        fp.write('\r\n\r\nFile Verify Log:\r\n----------------------------------------------------------------------------------------\r\n')
+        ctx = comm.getMsg(verify_log_file)
+        fp.write(ctx)
+    
     fp.write('\r\n\r\nInstaller Folder:\r\n----------------------------------------------------------------------------------------\r\n')
     id = comm.getMsg(buildIdFile)
     installerDir = installerFolder + '1.0.0.%s\\' % id
@@ -688,6 +696,7 @@ def genPrebuildActions(product,value):
             commands.append('del /Q ..\\output\\setup\\*.exe')
             commands.append('del /Q ..\\output\\err\\*.log')
             commands.append('del /Q ' + conf.bdm_mail_file)
+            commands.append('del /Q ' + conf.verify_log_file)
         elif product == 'bdkv':
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvbuildid.txt')
             commands.append('del /Q ' + conf.sln_root + 'basic\\tools\\AutoBuild\\kvversionbuildid.txt')
@@ -697,6 +706,7 @@ def genPrebuildActions(product,value):
             commands.append('del /Q ..\\output\\kvsetup\\*.exe')
             commands.append('del /Q ..\\output\\kverr\\*.log')
             commands.append('del /Q ' + conf.bdkv_mail_file)
+            commands.append('del /Q ' + conf.kvverify_log_file)
     if value == 2:
         commands.append('del /Q /S ' + conf.sln_root + 'basic\\lib')
         if product == 'bdm':
@@ -1310,7 +1320,6 @@ class Verify(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            os.system('del /Q ' + conf.verify_log_file.encode(sys.getfilesystemencoding()))
             commands = []
             commands.append('python fileop.py verify_file_exist ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.*')
             commands.append('python fileop.py verify_file_version ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
@@ -1318,7 +1327,7 @@ class Verify(BuildStep):
             commands.append('python fileop.py verify_kav_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe')
             commands.append('python fileop.py verify_baidu_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             for item in commands:
-                self.report('wk-build-log', command)
+                self.report('wk-build-log', item)
             fileop.main(4,['fileop.py','verify_file_exist',conf.sln_root + 'basic\\Output\\BinRelease\\','*.*'])
             fileop.main(4,['fileop.py','verify_file_version',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
             fileop.main(4,['fileop.py','verify_driver_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
@@ -1337,7 +1346,6 @@ class KVVerify(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            os.system('del /Q ' + conf.kvverify_log_file.encode(sys.getfilesystemencoding()))
             commands = []
             commands.append('python fileop.py kvverify_file_exist ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.*')
             commands.append('python fileop.py kvverify_file_version ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe,*.dll,*.sys')
@@ -1345,7 +1353,7 @@ class KVVerify(BuildStep):
             commands.append('python fileop.py kvverify_kav_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe')
             commands.append('python fileop.py kvverify_baidu_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ .exe,*.dll,*.sys')
             for item in commands:
-                self.report('wk-build-log', command)
+                self.report('wk-build-log', item)
             fileop.main(4,['fileop.py','kvverify_file_exist',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.*'])
             fileop.main(4,['fileop.py','kvverify_file_version',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','.exe,*.dll,*.sys'])
             fileop.main(4,['fileop.py','kvverify_driver_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])

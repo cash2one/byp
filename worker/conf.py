@@ -30,8 +30,8 @@ kvsign_file_product=u'百度杀毒'
 sign_conf_file='./buildswitch/Signature.xml'
 kvsign_conf_file='./buildswitch/KVSignature.xml'
 
-verify_log_file = '../output/BinVerify.txt'
-kvverify_log_file = '../output/KVBinVerify.txt'
+verify_log_file = '..\\output\\verifylog\\BinVerify.txt'
+kvverify_log_file = '..\\output\\verifylog\\KVBinVerify.txt'
 
 exist_verify_file = './verifylist/FileVerify.xml'
 kvexist_verify_file = './verifylist/KVFileVerify.xml'
@@ -99,10 +99,10 @@ toaddr=["liuheng@baidu.com"]
 
 smtp_host="proxy-in.baidu.com"
 
-ver_company_name = u'百度在线网络技术（北京）科技有限公司'
-ver_legal_trademarks = 'Baidu'
-ver_copyright = 'Copyright ? 2012-2017 Baidu. All Rights Reserved.'
-ver_product_manager = 'Baidu Manager'
+ver_company_name = u'百度在线网络技术（北京）有限公司'
+ver_legal_trademarks = u'Baidu'
+ver_copyright = u'Copyright (C) 2013 Baidu Inc.'
+ver_product_manager = u'百度卫士'
 ver_product_antivirus = u'百度杀毒'
 
 rclist_file = './conf/rcdef.xml'
