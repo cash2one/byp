@@ -171,17 +171,17 @@ def SignBaidu(file,para):
     files,fields = [],[]
     fields.append(('desc',sign_product))
     fields.append(('cert',signType))
-    #files.append(('f1',file,comm.getFileBuf(file)))
+    files.append(('f1',file,comm.getFileBuf(file)))
     #blanks = ['f2','f3','f4','f5','f6','f7','f8','f9']
-    files.append(('file[]',file,comm.getFileBuf(file)))
+    #files.append(('file[]',file,comm.getFileBuf(file)))
     #blanks = ['file[]','file[]','file[]','file[]']
     
     blanks = []
     
     digitalSign = ''
-    if signType == '2':
+    if signType == '1':
         digitalSign = 'baidu_cn'
-    elif signType == '1':
+    elif signType == '2':
         digitalSign = 'baidu_bj_netcom'
     elif signType == '3':
         digitalSign = 'baidu_jp'
@@ -234,9 +234,9 @@ def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
                 continue
             type = node.getAttribute('type')
             if type == 'baidu_cn':
-                signId = '2'
-            elif type == 'baidu_bj_netcom':
                 signId = '1'
+            elif type == 'baidu_bj_netcom':
+                signId = '2'
             elif type == 'baidu_jp':
                 signId = '3'
             #node.setAttribute('sign','0')
