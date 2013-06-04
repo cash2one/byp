@@ -44,6 +44,8 @@ function initUI() {
 
     //重新计算输出框的height，为了fit整个的height=550px
     var hTotal = $(window).height();
+    if (hTotal < 595)
+        hTotal = 595;
     var h1 = $("#table-build-config").height();
     var h2 = $("#table-build-info").height();
     var h3 = $("#table-build-depend").height();
