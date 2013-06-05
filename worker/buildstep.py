@@ -485,7 +485,7 @@ def getViruslibVersion():
             return ''
         vStr = buf[iIndex + 12:iIndex + 25]
         try:
-            vRet = vStr[4:8] + vStr[2:4] + vStr[0:2] + vStr[8:]
+            vRet = vStr[4:8] + '.' + vStr[2:4] + '.' + vStr[0:2] + vStr[8:]
             return vRet
         except:
             return ''
@@ -531,6 +531,19 @@ def installKvFullPackage():
         file_w  = open(vInstallFile,"w")
         file_w .writelines(lines)
         file_w .close()
+        
+    command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi ..\\output\\backup\\KV_install.nsi'
+    os.system(command.encode(sys.getfilesystemencoding()))
+    vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi'
+    file_r = open(vInstallFile)
+    lines = file_r.readlines()
+    file_r.close()
+    for index in range(len(lines)):
+        if lines[index].find('StrCpy $SupplyID')!= -1:
+            lines[index] = 'StrCpy $SupplyID "10015"\r\n'
+    file_w  = open(vInstallFile,"w")
+    file_w .writelines(lines)
+    file_w .close()
     
     #install
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
@@ -540,7 +553,11 @@ def installKvFullPackage():
     os.system(command)
     command = 'copy /Y ..\\output\\backup\\KV_Language.nsh ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh'
     os.system(command)
+    command = 'copy /Y ..\\output\\backup\\KV_install.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi'
+    os.system(command)
     command = 'del /Q /S ..\\output\\backup\\KV_Language.nsh'
+    os.system(command)
+    command = 'del /Q /S ..\\output\\backup\\KV_install.nsi'
     os.system(command)
     command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
     os.system(command)
