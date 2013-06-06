@@ -26,7 +26,7 @@ cerf_addr='m1-scm-cluster-test03.m1.baidu.com:8111'
 #cerf_addr='sign.baidu.com'
 cerf_login_server='uuap.baidu.com'
 
-sign_file_exts='*.exe,*.dll,*.sys'
+sign_file_exts='*.exe,*.dll'
 sign_file_product=u'百度卫士'
 kvsign_file_product=u'百度杀毒'
 sign_conf_file='./buildswitch/Signature.xml'
