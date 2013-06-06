@@ -193,7 +193,7 @@ def SignBaidu(file,para):
     elif signType == '3':
         digitalSign = 'baidu_jp'
     
-    for i in range(0,5):
+    for i in range(0,10):
         response = post_multipart(conf.cerf_addr,'/sign.php',fields,files,blanks)
         logging.info( response)
         iStart = response.find('href=') + 6
@@ -210,10 +210,10 @@ def SignBaidu(file,para):
             shutil.move(file+'.sign', file)
             break;
         
-        if i == 4:
+        if i == 9:
             logging.info('Sign baidu official digital signature failed.')
             print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-            raise 'Sign baidu official digital signature failed.'
+            #raise 'Sign baidu official digital signature failed.'
         
     return
 
