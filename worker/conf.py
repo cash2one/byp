@@ -165,6 +165,7 @@ bdkv_conf_files = {
 	'antivirus':'BDMAntiVirus',
 	'bdkv':'BDKV',
 	'bd0001':'BD0001',
+	'defense':'SDWrench',
 }
 
 bdm_conf_files = {
