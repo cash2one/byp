@@ -42,9 +42,9 @@ def main(argc, argv):
                     continue
                 type = node.getAttribute('type')
                 if type == 'baidu_cn':
-                    signId = '1'
-                elif type == 'baidu_bj_netcom':
                     signId = '2'
+                elif type == 'baidu_bj_netcom':
+                    signId = '1'
                 elif type == 'baidu_jp':
                     signId = '3'
                 #node.setAttribute('sign','0')
@@ -52,6 +52,11 @@ def main(argc, argv):
         writer = open(confFile,'w')
         dom.writexml(writer)
         writer.close()
+        
+        #login
+        #ret = fileop.loginSignServer(conf.cerf_login_server)
+        #print ret
+        
         if done:
             fileop.FileOperationWithExtraPara(argv[2],fileop.SignBaidu,(argv[1].lower(),signId),conf.sign_file_exts.split(','),excluded_dir)
     except Exception,e:

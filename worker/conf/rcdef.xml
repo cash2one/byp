@@ -6,7 +6,7 @@
 <item projdir="antivirus_proj\Source\BDMRepMgr" modulename="BDMRepMgr.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="antivirus_proj\Source\CompatibilityChecker" modulename="CompatibilityChecker.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="antivirus_proj\Source\TrustAndIso" modulename="TrustAndIso.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="antivirus_proj\Source\UploadFile" modulename="UploadFile.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="antivirus_proj\Source\UploadFile" modulename="bduf.dll" filedesc="百度卫士基础功能模块"/>
 
 <!-- avdriver_proj -->
 <item projdir="avdriver_proj\Source\bd0001" modulename="bd0001.dll" filedesc="百度卫士基础功能模块"/>
@@ -14,12 +14,12 @@
 <!-- avhips_proj -->
 <item projdir="avhips_proj\Source\BDKVLogs" modulename="BDKVLogs.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="avhips_proj\Source\DriverManager" modulename="DriverManager.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="avhips_proj\Source\HIPSEngine" modulename="HIPSEngine.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="avhips_proj\Source\HIPSEngine" modulename="HIPS.dll" filedesc="百度卫士基础功能模块"/>
 
 <!-- client_proj -->
 <item projdir="client_proj\Source\BDAVUpdate" modulename="BDAVUpdate.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="client_proj\Source\BDLogicUtils" modulename="BDLogicUtils.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="client_proj\Source\BDMBugRpt" modulename="BDMBugRpt.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="client_proj\Source\BDMBugRpt" modulename="BaiduanBugRpt.exe" filedesc="百度卫士异常报告程序"/>
 <item projdir="client_proj\Source\BDMPatchAgent" modulename="BDMUpdateAgent.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="client_proj\Source\BDMUpdate" modulename="BDMUpdate.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="client_proj\Source\InstallHelper" modulename="InstallHelper.dll" filedesc="百度卫士基础功能模块"/>
@@ -45,7 +45,7 @@
 <item projdir="main_proj\Source\BDMCoreSvr" modulename="BaiduanSvc.exe" filedesc="百度卫士服务程序"/>
 <item projdir="main_proj\Source\BDMgr" modulename="Baiduan.exe" filedesc="百度卫士主程序"/>
 <item projdir="main_proj\Source\BDMMainFrame" modulename="BDMMainFrame.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="main_proj\Source\BDMUpdateExe" modulename="BDAVUpdate.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="main_proj\Source\BDMUpdateExe" modulename="BaiduanUpdate.exe" filedesc="百度卫士升级程序"/>
 <item projdir="main_proj\Source\BDTray" modulename="BaiduanTray.exe" filedesc="百度卫士托盘程序"/>
 <item projdir="main_proj\Source\BDTrayTipsPlugin" modulename="BDMTrayTipsPlugin.dll" filedesc="百度卫士基础功能模块"/>
 
@@ -71,5 +71,5 @@
 
 <!-- trojanscan_proj -->
 <item projdir="trojanscan_proj\Source\BDMKVMainPlugin" modulename="BDMKVMainPlugin.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="trojanscan_proj\Source\BDMKVScanPlugin" modulename="BDKVVirusPlugins.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="trojanscan_proj\Source\BDMKVScanPlugin" modulename="BDMVirusPlugins.dll" filedesc="百度卫士基础功能模块"/>
 </conf>

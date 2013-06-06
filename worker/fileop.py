@@ -151,6 +151,12 @@ def post_multipart(host, selector, fields, files, blanks):
     h.putrequest('POST', selector)
     h.putheader('content-type', content_type)
     h.putheader('content-length', str(len(body)))
+    h.putheader('Connection','keep-alive')
+    h.putheader('Cache-Control','max-age=0')
+    h.putheader('Host','sign.baidu.com')
+    h.putheader('origin','http://sign.baidu.com')
+    h.putheader('Referer','http://sign.baidu.com/')
+    h.putheader('Cookie','PHPSESSID=ST-507572-yYKJTf1OKQ6rTbjfcieD-uuap')
     h.endheaders()
     h.send(body)
     errcode, errmsg, headers = h.getreply()
@@ -171,17 +177,18 @@ def SignBaidu(file,para):
     files,fields = [],[]
     fields.append(('desc',sign_product))
     fields.append(('cert',signType))
-    files.append(('f1',file,comm.getFileBuf(file)))
+    
+    #files.append(('f1',file,comm.getFileBuf(file)))
     #blanks = ['f2','f3','f4','f5','f6','f7','f8','f9']
-    #files.append(('file[]',file,comm.getFileBuf(file)))
+    files.append(('file[]',file,comm.getFileBuf(file)))
     #blanks = ['file[]','file[]','file[]','file[]']
     
     blanks = []
     
     digitalSign = ''
-    if signType == '1':
+    if signType == '2':
         digitalSign = 'baidu_cn'
-    elif signType == '2':
+    elif signType == '1':
         digitalSign = 'baidu_bj_netcom'
     elif signType == '3':
         digitalSign = 'baidu_jp'
@@ -234,9 +241,9 @@ def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
                 continue
             type = node.getAttribute('type')
             if type == 'baidu_cn':
-                signId = '1'
-            elif type == 'baidu_bj_netcom':
                 signId = '2'
+            elif type == 'baidu_bj_netcom':
+                signId = '1'
             elif type == 'baidu_jp':
                 signId = '3'
             #node.setAttribute('sign','0')
@@ -245,8 +252,28 @@ def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
     dom.writexml(writer)
     writer.close()
     
+    #login uuap.baidu.com
+    #ret = loginSignServer(conf.cerf_login_server)
+    #logging.info(ret)
+    
     if done:
         FileOperationWithExtraPara(path,SignBaidu,(product,signId),ftype,excluded_dir)
+
+def loginSignServer(host):
+    body = 'username=liuheng&password=Agnes880204&rememberMe=true&_rememberMe=on&_viaToken=on&lt=LT-272454-0F2jsAvArBEb1MbW1PoRnSoocCpCcO&execution=e1s1&_eventId=submit&submit='
+    h = httplib.HTTP(host)
+    h.putrequest('POST', '/login;jsessionid=1049AFE6754CDD4F88A81D4278BA11B8.jvm-uuap04')
+    h.putheader('content-length', len(body))
+    h.putheader('Connection','keep-alive')
+    h.putheader('Cache-Control','max-age=0')
+    h.putheader('Host','uuap.baidu.com')
+    h.putheader('origin','http://uuap.baidu.com')
+    h.putheader('Content-Type','application/x-www-form-urlencoded')
+    h.putheader('Referer','http://uuap.baidu.com/login')
+    h.endheaders()
+    h.send(body)
+    errcode, errmsg, headers = h.getreply()
+    return h.file.read()
 
 def FileVerify(file,para):
     root = para[0]
