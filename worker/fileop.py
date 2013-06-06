@@ -15,7 +15,7 @@
 """
 
 import sys,os,glob,httplib,urllib,mimetypes,comm,conf,xml.dom.minidom,win32api,shutil
-import logging
+import logging,userconf
 
 def FileOperation(dir,op,fileType,excluded_dir=[]):
     #root dir
@@ -156,7 +156,7 @@ def post_multipart(host, selector, fields, files, blanks):
     h.putheader('Host','sign.baidu.com')
     h.putheader('origin','http://sign.baidu.com')
     h.putheader('Referer','http://sign.baidu.com/')
-    h.putheader('Cookie','PHPSESSID=ST-507572-yYKJTf1OKQ6rTbjfcieD-uuap')
+    h.putheader('Cookie',userconf.sign_cookie)
     h.endheaders()
     h.send(body)
     errcode, errmsg, headers = h.getreply()
