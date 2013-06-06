@@ -26,6 +26,7 @@ bdkv_slns = [
 	['antivirus','杀毒模块','赵欣','module',1,[]],
 	['bdkv','杀毒主程序模块','易善鸿','module',1,[]],
 	['bd0001','驱动模块','曹杨','module',1,[]],
+	['defense','攻防模块','时永昌','module',1,[]],
 ]
 
 bdm_slns = [
