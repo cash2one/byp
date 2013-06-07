@@ -1464,9 +1464,13 @@ class KVSign(BuildStep):
             sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
             self.update_step(30)
 
-            command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'
+            command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'
             self.report('wk-build-log',command)
-            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'])
+            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'])
+
+            command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\Tools\\KVNetInstall\\res\\'
+            self.report('wk-build-log',command)
+            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\KVNetInstall\\res\\'])
             
         BuildStep.act(self)
     
