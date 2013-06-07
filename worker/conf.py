@@ -201,3 +201,5 @@ build_conf_files = {
 	'X光': bdkv_conf_files,
 	'极光': bdm_conf_files,
 }
+
+default_installer_supplyid = ['m10001','n10000','f10015']

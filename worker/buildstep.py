@@ -494,10 +494,10 @@ def getViruslibVersion():
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
 
-def installMiniPackage(obj,product):
+def installMiniPackage(obj,product,bSupplyid = False):
     pass
 
-def installNormalPackage(obj,product):
+def installNormalPackage(obj,product,bSupplyid = False):
     command = ''
     if product == 'bdm':
         command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
@@ -506,7 +506,7 @@ def installNormalPackage(obj,product):
     obj.report('wk-build-log', command)
     os.system(command.encode(sys.getfilesystemencoding()))
 
-def installKvFullPackage(obj):
+def installKvFullPackage(obj,bSupplyid = False):
     #prepare
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
@@ -1301,6 +1301,11 @@ class Sign(BuildStep):
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'
             self.report('wk-build-log',command)
             sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
+            
+            command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Tools\\SetupScript\\res\\'
+            self.report('wk-build-log',command)
+            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Tools\\SetupScript\\res\\'])
+            
         BuildStep.act(self)
     
 class KVSign(BuildStep):
@@ -1334,6 +1339,10 @@ class KVSign(BuildStep):
             sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
             self.update_step(30)
 
+            command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'
+            self.report('wk-build-log',command)
+            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'])
+            
         BuildStep.act(self)
     
 ##############################################
@@ -1427,9 +1436,9 @@ class Install(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self,'bdm')
+                installNormalPackage(self,'bdm',True)
             if bInstallMini:
-                    installMiniPackage(self,'bdm')
+                    installMiniPackage(self,'bdm',True)
             if bInstall and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
@@ -1490,11 +1499,11 @@ class KVInstall(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self,'bdkv')
+                installNormalPackage(self,'bdkv',True)
             if bInstallMini:
-                    installMiniPackage(self,'bdkv')
+                    installMiniPackage(self,'bdkv',True)
             if bInstallFull:
-                installKvFullPackage(self)
+                installKvFullPackage(self,True)
             if (bInstall or bInstallMini or bInstallFull) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
