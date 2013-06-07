@@ -2,5 +2,5 @@
     <item name="ignorefault" value="0"/>
     <item name="email" value="sw@baidu.com"/>
     <item name="reason" value="daily build"/>
-    <item name="supplyid" value="m40001,n10000,f10015"/>
+    <item name="supplyid" value="m10001,n10000,f10015"/>
 </conf>

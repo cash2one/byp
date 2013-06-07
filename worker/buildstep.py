@@ -494,7 +494,19 @@ def getViruslibVersion():
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
 
-def installKvFullPackage():
+def installMiniPackage(obj,product):
+    pass
+
+def installNormalPackage(obj,product):
+    command = ''
+    if product == 'bdm':
+        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+    elif product == 'bdkv':
+        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+    obj.report('wk-build-log', command)
+    os.system(command.encode(sys.getfilesystemencoding()))
+
+def installKvFullPackage(obj):
     #prepare
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
@@ -1415,15 +1427,16 @@ class Install(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
-                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
-                self.report('wk-build-log', command)
-                os.system(command.encode(sys.getfilesystemencoding()))
+                installNormalPackage(self,'bdm')
+            if bInstallMini:
+                    installMiniPackage(self,'bdm')
             if bInstall and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
-                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
-                    self.report('wk-build-log', command)
-                    os.system(command.encode(sys.getfilesystemencoding()))
+                    installNormalPackage(self,'bdm')
+                if bInstallMini:
+                    installMiniPackage(self,'bdm')
+            #check installer
             bOk = False
             for file in os.listdir(conf.original_setup_path):
                 if file[-3:] == 'exe':
@@ -1477,20 +1490,20 @@ class KVInstall(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
-                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
-                self.report('wk-build-log', command)
-                os.system(command.encode(sys.getfilesystemencoding()))
+                installNormalPackage(self,'bdkv')
+            if bInstallMini:
+                    installMiniPackage(self,'bdkv')
             if bInstallFull:
-                installKvFullPackage()
-            if (bInstall or bInstallFull) and bInstallUpdate:
+                installKvFullPackage(self)
+            if (bInstall or bInstallMini or bInstallFull) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
-                    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
-                    self.report('wk-build-log', command)
-                    os.system(command.encode(sys.getfilesystemencoding()))
+                    installNormalPackage(self,'bdkv')
+                if bInstallMini:
+                    installMiniPackage(self,'bdkv')
                 if bInstallFull:
-                    installKvFullPackage()
-            #check exe
+                    installKvFullPackage(self)
+            #check installer
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):
                 if file[-3:] == 'exe':
