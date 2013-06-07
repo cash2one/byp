@@ -107,6 +107,16 @@ class Worker(threading.Thread):
                             step.setAttribute('value',self.extraOptions[name])
                         else:
                             step.setAttribute('value','0')
+                        if name == 'install':
+                            if self.options.has_key('install') and self.options['install'] == '1':
+                                step.setAttribute('value','1')
+                            elif self.options.has_key('install_full') and self.options['install_full'] == '1':
+                                step.setAttribute('value','1')
+                            elif self.options.has_key('install_update') and self.options['install_update'] == '1':
+                                step.setAttribute('value','1')
+                            else:
+                                step.setAttribute('value','0')
+                                
             writer = open(bsFile,'w')
             dom.writexml(writer)
             writer.close()
@@ -248,7 +258,7 @@ class Worker(threading.Thread):
         except Exception,e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
-        
+
         
     def applyBuildSettings(self):
         self.applySlnSettings()
