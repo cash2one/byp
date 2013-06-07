@@ -467,9 +467,10 @@ def getInstallOptions():
         dom = xml.dom.minidom.parse(pkgFile)
         root = dom.documentElement
         bInstall = False if root.getAttribute('install') == '0' else True
+        bInstallMini = False if root.getAttribute('install_mini') == '0' else True
         bInstallFull = False if root.getAttribute('install_full') == '0' else True
         bInstallUpdate = False if root.getAttribute('install_update') == '0' else True
-        return (bInstall,bInstallFull,bInstallUpdate)
+        return (bInstall,bInstallMini,bInstallFull,bInstallUpdate)
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
@@ -1412,7 +1413,7 @@ class Install(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
                 self.report('wk-build-log', command)
@@ -1474,7 +1475,7 @@ class KVInstall(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallFull, bInstallUpdate) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
                 self.report('wk-build-log', command)

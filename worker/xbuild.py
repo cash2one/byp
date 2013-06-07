@@ -110,6 +110,8 @@ class Worker(threading.Thread):
                         if name == 'install':
                             if self.options.has_key('install') and self.options['install'] == '1':
                                 step.setAttribute('value','1')
+                            elif self.options.has_key('install_mini') and self.options['install_mini'] == '1':
+                                step.setAttribute('value','1')
                             elif self.options.has_key('install_full') and self.options['install_full'] == '1':
                                 step.setAttribute('value','1')
                             elif self.options.has_key('install_update') and self.options['install_update'] == '1':
@@ -244,6 +246,10 @@ class Worker(threading.Thread):
                 root.setAttribute('install',self.options['install'])
             else:
                 root.setAttribute('install','0')
+            if self.options.has_key('install_mini'):
+                root.setAttribute('install_mini',self.options['install_mini'])
+            else:
+                root.setAttribute('install_mini','0')
             if self.options.has_key('install_full'):
                 root.setAttribute('install_full',self.options['install_full'])
             else:
