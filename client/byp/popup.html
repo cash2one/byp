@@ -167,12 +167,17 @@
             <td class="td-form-title" width="12%">
               <a href="#" rel="tooltip" title="简述这次打包的原因 [必选 15字以内] ">打包原因</a>
             </td>
-            <td id="td-build-reason"><input id="ws-build-reason" type="text" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]" value="daily build"></td>
+            <td id="td-build-reason"><input type="text" style="width:80px" id="ws-build-reason" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]" value="daily build"></td>
             <!-- user email -->
             <td class="td-form-title">
               <a href="#" rel="tooltip" title="您的百度邮箱地址 [必选 30字符以内] ">百度邮箱</a>
             </td>
-            <td id="td-user-email"><input type="text" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]" value="sw@baidu.com"></td>
+            <td id="td-user-email"><input type="text" style="width:100px" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]" value="sw@baidu.com"></td>
+            <!-- supplyid -->
+            <td class="td-form-title">
+              <a href="#" rel="tooltip" title="安装包渠道号（逗号分隔，如m10001,n10000,f10015）">渠道号</a>
+            </td>
+            <td id="td-installer-supplyid"><input type="text" style="width:160px" id="ws-installer-supplyid" data-provide="typeahead" data-items="4" data-source="[\"m10001\";\"n10000\";\"f10015\"]" value="m10001,n10000,f10015"></td>
           </tr>
         </table>
 

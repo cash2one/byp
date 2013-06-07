@@ -52,7 +52,7 @@ a {
   vertical-align: middle;
 }
 
-#ws-build-reason, #ws-user-email, #ws-cb-detail, #ws-markup-detail {
+#ws-build-reason, #ws-user-email, #ws-installer-supplyid, #ws-cb-detail, #ws-markup-detail {
   width: auto;
 }
 

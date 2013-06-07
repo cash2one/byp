@@ -75,9 +75,9 @@ $(document).ready(function() {
     $('#ws-project-select').bind('change',onProjectSelect);
     $('#ws-worker-select').bind('change',onWorkerSelect);
     //绑定input text默认事件
-    $('#ws-cb-detail,#ws-build-reason,#ws-user-email,#ws-markup-detail').bind('click',onInputClick);
+    $('#ws-cb-detail,#ws-build-reason,#ws-user-email,#ws-installer-supplyid,#ws-markup-detail').bind('click',onInputClick);
     //初始化typeahead
-    $('#ws-cb-detail,#ws-build-reason,#ws-user-email').typeahead();
+    $('#ws-cb-detail,#ws-build-reason,#ws-user-email,#ws-installer-supplyid').typeahead();
     //初始化build按钮
     $("#ws-btn-build").bind('click',onBtnBuildClick);
     //初始化log-tab按下事件
@@ -189,6 +189,18 @@ function onBtnBuildClick() {
     }
     ctx += String.format("reason,{0}|",reason);
     ctx += String.format("email,{0}|",email);
+    //supplyid
+    var supplyid = document.getElementById("ws-installer-supplyid").value;
+    sids = supplyid.split(',');
+    for (var i in sids){
+        if (!sids[i].match(/^[mnf]\d{1,}$/) && sids[i] != "") {
+            alert("supplyid格式不正确，请重新输入。")
+            $("#ws-installer-supplyid").focus();
+            $("#ws-installer-supplyid").select();
+            return;
+        };
+    }
+    ctx += String.format("supplyid,{0}|",supplyid);
     //codebase
     $(".btn[id^='ws-btn-codebase-']").each( function() {
         if ($(this).hasClass("active")) {
