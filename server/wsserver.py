@@ -106,7 +106,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         #client连接时发送；增加client
         if msg['msrc'] == 'ws-client-connect':
             #更新检查机制
-            current_crx_version = 13
+            current_crx_version = 14
             if msg['content'] != '':
                 if current_crx_version > int(msg['content']):
                     content = '{"msrc":"ws-crx-update","content":"http://172.17.180.61:13412/byp.crx"}'

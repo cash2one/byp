@@ -86,18 +86,19 @@ bdkv_options = {
 	
     'rebase':['check','build','ImageBase修复','修改模块基地址并绑定以提高程序加载速度','default'],
 
-	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
-	'install':['check','build','生成安装包','生成安装包','default'],
+	'sign':['check','build','文件签名','对打包生成的文件进行签名','default'],
+	'install':['check','build','安装包','生成安装包','default'],
 	
-	'install_full':['check','build','生成全量包','同时生成带全量病毒库的安装包'],
-	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包'],
+    'install_mini':['check','build','迷你下载器','同时生成迷你下载器（在线安装包）'],
+	'install_full':['check','build','全量包','同时生成带全量病毒库的安装包'],
+	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 
-	'send':['radio','after',[('不归档安装包','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
+	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
 
-    'verify':['check','after','校验生成文件','校验生成的二进制文件的完整性、版本、签名等是否正确'],
-    'verifyinstaller':['check','after','校验安装包','校验安装包是否生成、版本、签名等是否正确'],
+    'verify':['check','after','文件校验','校验生成的二进制文件的完整性、版本、签名等是否正确'],
+    'verifyinstaller':['check','after','安装包校验','校验安装包是否生成、版本、签名等是否正确'],
 
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
@@ -135,17 +136,18 @@ bdm_options = {
 	
     'rebase':['check','build','ImageBase修复','修改模块基地址并绑定以提高程序加载速度','default'],
 
-	'sign':['check','build','生成文件签名','对打包生成的文件进行签名','default'],
-	'install':['check','build','生成安装包','生成安装包','default'],
+	'sign':['check','build','文件签名','对打包生成的文件进行签名','default'],
+	'install':['check','build','安装包','生成安装包','default'],
 	
-	'install_update':['check','build','生成升级测试包','同时生成升级测试安装包'],
+    'install_mini':['check','build','迷你下载器','同时生成迷你下载器（在线安装包）'],
+	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 
-	'send':['radio','after',[('不归档安装包','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
+	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
 
-    'verify':['check','after','校验生成文件','校验生成的二进制文件的完整性、版本、签名等是否正确'],
-    'verifyinstaller':['check','after','校验安装包','校验安装包是否生成、版本、签名等是否正确'],
+    'verify':['check','after','文件校验','校验生成的二进制文件的完整性、版本、签名等是否正确'],
+    'verifyinstaller':['check','after','安装包校验','校验安装包是否生成、版本、签名等是否正确'],
 
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
 	'commit':['check','after','提交basic','向代码服务器提交baisc目录','default'],
