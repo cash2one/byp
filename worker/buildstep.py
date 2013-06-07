@@ -494,8 +494,125 @@ def getViruslibVersion():
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
 
+def buildSupplyidPackage(obj,product,type):#type: mini, normal, full
+    insFile = ''
+    vInstallFile = ''
+    key = ''
+    if len(type) > 0:
+        key = type[0]
+        
+    if product == 'bdm':
+        insFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+        vInstallFile = conf.sln_root + 'basic\\tools\\SetupScript\\include\\BDM_install.nsi'
+    elif product == 'bdkv':
+        if key == 'm':
+            insFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi'
+        else:
+            insFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+            vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi'
+    
+    confFile = './BuildSwitch/Misc.xml'
+    slist = []
+    #read supplyid list
+    try:
+        dom = xml.dom.minidom.parse(confFile)
+        root = dom.documentElement
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == 'supplyid':
+                value = node.getAttribute('value')
+                slist = value.split(',')
+                break
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
+    #do it
+    for item in slist:
+        if len(item) < 2:
+            continue
+        if item[0] != key:
+            continue
+        if item in conf.default_installer_supplyid:
+            continue
+        token = '_sid_' + item[1:]
+        supplyid = item[1:]
+        newInsFile = insFile[:-4] + '_sid_' + item[1:] + '.nsi'
+        #nsis backup
+        command = 'copy /Y ' + insFile + ' ' + newInsFile
+        os.system(command.encode(sys.getfilesystemencoding()))
+        file_r = open(newInsFile)
+        lines = file_r.readlines()
+        file_r.close()
+        for index in range(len(lines)):
+            if lines[index].find('OutFile')!= -1:
+                if key == 'm':
+                    lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup%s.exe"\r\n' % token
+                elif key == 'n':
+                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}%s.exe"\r\n' % token
+                elif key == 'f':
+                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}%s.exe"\r\n' % token
+        file_w  = open(newInsFile,"w")
+        file_w .writelines(lines)
+        file_w .close()
+        #nsis backup again
+        ctx = ''
+        if key != 'm':
+            file_r = open(vInstallFile)
+            lines = file_r.readlines()
+            file_r.close()
+            for index in range(len(lines)):
+                if lines[index].find('StrCpy $SupplyID')!= -1:
+                    lines[index] = 'StrCpy $SupplyID "%s"\r\n' % item[1:]
+            file_w  = open(vInstallFile,"w")
+            file_w .writelines(lines)
+            file_w .close()
+        else:
+            ctx = comm.getMsg(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini')
+            ctx_new = ctx.replace('10001',item[1:])
+            comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx_new)
+        #do install
+        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newInsFile
+        os.system(command.encode(sys.getfilesystemencoding()))
+        #clean
+        command = 'del /Q /S ' + newInsFile
+        os.system(command)
+        if key != 'm':
+            file_r = open(vInstallFile)
+            lines = file_r.readlines()
+            file_r.close()
+            for index in range(len(lines)):
+                if lines[index].find('StrCpy $SupplyID')!= -1:
+                    lines[index] = 'StrCpy $SupplyID "10000"\r\n'
+            file_w  = open(vInstallFile,"w")
+            file_w .writelines(lines)
+            file_w .close()
+        else:
+            comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx)
+
 def installMiniPackage(obj,product,bSupplyid = False):
-    pass
+    #nsis backup
+    newNetInstallFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall_Dummy.nsi'
+    command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi' + ' ' + newNetInstallFile
+    os.system(command.encode(sys.getfilesystemencoding()))
+    file_r = open(newNetInstallFile)
+    lines = file_r.readlines()
+    file_r.close()
+    for index in range(len(lines)):
+        if lines[index].find('OutFile')!= -1:
+            lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup.exe"\r\n'
+    file_w  = open(newNetInstallFile,"w")
+    file_w .writelines(lines)
+    file_w .close()
+    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
+    obj.report('wk-build-log', command)
+    os.system(command.encode(sys.getfilesystemencoding()))
+    command = 'del /Q /S ' + newNetInstallFile
+    os.system(command.encode(sys.getfilesystemencoding()))
+    #supplyid
+    if bSupplyid:
+        buildSupplyidPackage(obj,product,'mini')
 
 def installNormalPackage(obj,product,bSupplyid = False):
     command = ''
@@ -505,8 +622,11 @@ def installNormalPackage(obj,product,bSupplyid = False):
         command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
     obj.report('wk-build-log', command)
     os.system(command.encode(sys.getfilesystemencoding()))
+    #supplyid
+    if bSupplyid:
+        buildSupplyidPackage(obj,product,'normal')
 
-def installKvFullPackage(obj,bSupplyid = False):
+def installKvFullPackage(obj,product,bSupplyid = False):
     #prepare
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
@@ -561,6 +681,11 @@ def installKvFullPackage(obj,bSupplyid = False):
     #install
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
+    
+    #supplyid
+    if bSupplyid:
+        buildSupplyidPackage(obj,product,'full')
+        
     #clean
     command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command)
@@ -1437,14 +1562,14 @@ class Install(BuildStep):
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
             if bInstall:
                 installNormalPackage(self,'bdm',True)
-            if bInstallMini:
-                    installMiniPackage(self,'bdm',True)
-            if bInstall and bInstallUpdate:
+            #if bInstallMini:
+                    #installMiniPackage(self,'bdm',True)
+            if (bInstall or bInstallMini) and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
                     installNormalPackage(self,'bdm')
-                if bInstallMini:
-                    installMiniPackage(self,'bdm')
+                #if bInstallMini:
+                    #installMiniPackage(self,'bdm')
             #check installer
             bOk = False
             for file in os.listdir(conf.original_setup_path):
@@ -1503,7 +1628,7 @@ class KVInstall(BuildStep):
             if bInstallMini:
                     installMiniPackage(self,'bdkv',True)
             if bInstallFull:
-                installKvFullPackage(self,True)
+                installKvFullPackage(self,'bdkv',True)
             if (bInstall or bInstallMini or bInstallFull) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
@@ -1511,7 +1636,7 @@ class KVInstall(BuildStep):
                 if bInstallMini:
                     installMiniPackage(self,'bdkv')
                 if bInstallFull:
-                    installKvFullPackage(self)
+                    installKvFullPackage(self,'bdkv')
             #check installer
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):
