@@ -476,22 +476,12 @@ def getInstallOptions():
         logging.error(e)
         
 def getViruslibVersion():
-    vlibVersionFile = conf.sln_root + 'basic\\KVOutput\\binrelease\\kav\\bases\\u0607g.xml'
+    vlibVersionFile = conf.sln_root + 'basic\\KVOutput\\virusdb\\version'
     try:
-        f = open(vlibVersionFile)
-        buf = f.read()
-        f.close()
-        iIndex = buf.find('UpdateDate')
-        if iIndex == -1:
-            return ''
-        vStr = buf[iIndex + 12:iIndex + 25]
-        try:
-            vRet = vStr[4:8] + '.' + vStr[2:4] + '.' + vStr[0:2] + vStr[8:]
-            return vRet
-        except:
-            return ''
+        ctx = comm.getMsg(vlibVersionFile)
+        return ctx
     except Exception,e:
-        logging.error("error occers when parsing xml or run command:")
+        logging.error("error occers when getting vlib version")
         logging.error(e)
 
 def buildSupplyidPackage(obj,product,type):#type: mini, normal, full
@@ -647,7 +637,7 @@ def installKvFullPackage(obj,product,bSupplyid = False):
     os.system(command)
     command = 'rd /Q /S ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases'
     os.system(command)
-    command = 'xcopy /Y /E /S ' + conf.sln_root + 'basic\\kvoutput\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases\\'
+    command = 'xcopy /Y /E /S ' + conf.sln_root + 'basic\\kvoutput\\virusdb\\bases ' + conf.sln_root + 'basic\\kvoutput\\binrelease\\kav\\bases\\'
     os.system(command)
     
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_Language.nsh ..\\output\\backup\\KV_Language.nsh'
