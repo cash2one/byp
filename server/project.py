@@ -165,7 +165,7 @@ build_options = {
 }
 
 #支持的代码基依赖
-svn_codebase = [('Branch','基于特定Branch，输入Branch名称',1),('Tag','基于特定Tag，输入Tag名称',2),('Trunk','基于主线构造',3,'default'),('Revision','基于特定Revision，输入代码Revision',4)]
+svn_codebase = [('Branch','基于特定Branch，输入Branch名称',1),('Tag','基于特定Tag，输入Tag名称',2),('Trunk','基于主线构造',3,'default'),('Revision','基于主线Revision，输入Revision号',4)]
 
 build_depends = {
 	'X光': svn_codebase,
