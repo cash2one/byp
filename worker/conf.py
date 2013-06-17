@@ -202,4 +202,4 @@ build_conf_files = {
 	'极光': bdm_conf_files,
 }
 
-default_installer_supplyid = ['m10001','n10000','f10015']
+default_installer_supplyid = ['m10001','n10000','n50000','f10015']
