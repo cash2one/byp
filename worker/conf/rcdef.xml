@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf>
 <!-- antivirus_proj -->
-<item projdir="antivirus_proj\Source\BDAVCache" modulename="BDAVCache.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="antivirus_proj\Source\BDMAVCached" modulename="BDMAVCached.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="antivirus_proj\Source\BDMAVEng" modulename="BDMAVEng.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="antivirus_proj\Source\BDMRepBase" modulename="BDMRepBase.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="antivirus_proj\Source\BDMRepMgr" modulename="BDMRepMgr.dll" filedesc="百度卫士基础功能模块"/>
@@ -58,6 +58,7 @@
 <item projdir="softmgr_proj\Source\BDMSWNestCore" modulename="BDMSWNestCore.dll" filedesc="百度卫士基础功能模块"/>
 
 <!-- sysaccelerator_proj -->
+<item projdir="sysaccelerator_proj\Source\BDMSOAccCoolyPlugin" modulename="BDMSOAccCoolyPlugin.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="sysaccelerator_proj\Source\BDMSOAcceleratorPlugin" modulename="BDMSOAcceleratorPlugin.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="sysaccelerator_proj\Source\BDMSOAccMgrTrayPlugin" modulename="BDMSOAccMgrTrayPlugin.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="sysaccelerator_proj\Source\BDMSOAssistTrayPlugin" modulename="BDMSOAssistTrayPlugin.dll" filedesc="百度卫士基础功能模块"/>
