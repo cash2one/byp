@@ -50,6 +50,8 @@ bdm_slns = [
     ['drivermanager','驱动管理模块','曹杨','module',1,[]],
     ['avhips','主动防御模块','曹杨','module',1,[]],
     ['bd0001','驱动模块','曹杨','module',1,[]],
+    ['patcher','漏洞修复模块','赵北宁','module',1,[]],
+    ['patcherplugin','漏洞修复插件','赵北宁','module',1,[]],
 ]
 
 projects = {

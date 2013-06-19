@@ -195,6 +195,8 @@ bdm_conf_files = {
     'drivermanager':'DriverManager',
     'avhips':'AVHips',
     'bd0001':'BD0001',
+    'patcher':'BDMPatcher',
+    'patcherplugin':'BDMPatcherPlugin',
 }
 
 build_conf_files = {
