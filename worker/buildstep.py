@@ -470,7 +470,8 @@ def getInstallOptions():
         bInstallMini = False if root.getAttribute('install_mini') == '0' else True
         bInstallFull = False if root.getAttribute('install_full') == '0' else True
         bInstallUpdate = False if root.getAttribute('install_update') == '0' else True
-        return (bInstall,bInstallMini,bInstallFull,bInstallUpdate)
+        bInstallUpdate = False if root.getAttribute('install_silence') == '0' else True
+        return (bInstall,bInstallMini,bInstallFull,bInstallUpdate,bInstallSilence)
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
@@ -484,7 +485,46 @@ def getViruslibVersion():
         logging.error("error occers when getting vlib version")
         logging.error(e)
 
-def buildSupplyidPackage(obj,product,type):#type: mini, normal, full
+def buildSilentPackage(obj,product,type,file = ''):
+    nsiFile = ''
+    if product == 'bdm':
+        if type == 'mini':
+            nsiFile = conf.bdm_netinstall_file
+        elif type == 'normal' or type == 'full':
+            nsiFile = conf.bdm_nsifile_daily
+    elif product == 'bdkv':
+        if type == 'mini':
+            nsiFile = conf.bdkv_netinstall_file
+        elif type == 'normal' or type == 'full':
+            nsiFile = conf.bdkv_nsifile_daily
+    if len(file) > 0:
+        nsiFile = file
+    if not os.path.exists(nsiFile):
+        return
+    file_r = open(nsiFile)
+    lines = file_r.readlines()
+    file_r.close()
+    for index in range(len(lines)):
+        if lines[index].find('Strcpy $IsSlient  "1" #silent#')!= -1:
+            lines[index] = 'Strcpy $IsSlient  "1" #silent#\r\n'
+    file_w  = open(nsiFile,"w")
+    file_w .writelines(lines)
+    file_w .close()
+    #do install
+    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
+    os.system(command.encode(sys.getfilesystemencoding()))
+    #clean
+    file_r = open(nsiFile)
+    lines = file_r.readlines()
+    file_r.close()
+    for index in range(len(lines)):
+        if lines[index].find('Strcpy $IsSlient  "1" #silent#')!= -1:
+            lines[index] = '#Strcpy $IsSlient  "1" #silent#\r\n'
+    file_w  = open(nsiFile,"w")
+    file_w .writelines(lines)
+    file_w .close()
+
+def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
     insFile = ''
     vInstallFile = ''
     key = ''
@@ -563,8 +603,11 @@ def buildSupplyidPackage(obj,product,type):#type: mini, normal, full
             ctx_new = ctx.replace('10001',item[1:])
             comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx_new)
         #do install
-        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newInsFile
-        os.system(command.encode(sys.getfilesystemencoding()))
+        if not bSilent:
+            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newInsFile
+            os.system(command.encode(sys.getfilesystemencoding()))
+        else:
+            buildSilentPackage(obj,product,type,newInsFile)
         #clean
         command = 'del /Q /S ' + newInsFile
         os.system(command)
@@ -581,7 +624,7 @@ def buildSupplyidPackage(obj,product,type):#type: mini, normal, full
         else:
             comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx)
 
-def installMiniPackage(obj,product,bSupplyid = False):
+def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
     #nsis backup
     newNetInstallFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall_Dummy.nsi'
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi' + ' ' + newNetInstallFile
@@ -595,28 +638,35 @@ def installMiniPackage(obj,product,bSupplyid = False):
     file_w  = open(newNetInstallFile,"w")
     file_w .writelines(lines)
     file_w .close()
-    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
-    obj.report('wk-build-log', command)
-    os.system(command.encode(sys.getfilesystemencoding()))
+    #do it
+    if not bSilent:
+        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
+        obj.report('wk-build-log', command)
+        os.system(command.encode(sys.getfilesystemencoding()))
+    else:
+        buildSilentPackage(obj,product,'mini',newNetInstallFile)
     command = 'del /Q /S ' + newNetInstallFile
     os.system(command.encode(sys.getfilesystemencoding()))
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj,product,'mini')
+        buildSupplyidPackage(obj,product,'mini',bSilent)
 
-def installNormalPackage(obj,product,bSupplyid = False):
+def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
     command = ''
     if product == 'bdm':
         command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
     elif product == 'bdkv':
         command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
-    obj.report('wk-build-log', command)
-    os.system(command.encode(sys.getfilesystemencoding()))
+    if not bSilent:
+        obj.report('wk-build-log', command)
+        os.system(command.encode(sys.getfilesystemencoding()))
+    else:
+        buildSilentPackage(obj,product,'normal')
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj,product,'normal')
+        buildSupplyidPackage(obj,product,'normal',bSilent)
 
-def installKvFullPackage(obj,product,bSupplyid = False):
+def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     #prepare
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
@@ -669,12 +719,15 @@ def installKvFullPackage(obj,product,bSupplyid = False):
     file_w .close()
     
     #install
-    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
-    os.system(command.encode(sys.getfilesystemencoding()))
+    if not bSilent:
+        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+        os.system(command.encode(sys.getfilesystemencoding()))
+    else:
+        buildSilentPackage(obj,product,'full','../../basic/tools/KVSetupScript/BDKV_setup_full.nsi')
     
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj,product,'full')
+        buildSupplyidPackage(obj,product,'full',bSilent)
         
     #clean
     command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
@@ -1553,17 +1606,17 @@ class Install(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self,'bdm',True)
+                installNormalPackage(self,'bdm',True,bInstallSilence)
             #if bInstallMini:
-                    #installMiniPackage(self,'bdm',True)
+                #installMiniPackage(self,'bdm',True,bInstallSilence)
             if (bInstall or bInstallMini) and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
-                    installNormalPackage(self,'bdm')
+                    installNormalPackage(self,'bdm',False,bInstallSilence)
                 #if bInstallMini:
-                    #installMiniPackage(self,'bdm')
+                    #installMiniPackage(self,'bdm',False,bInstallSilence)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_setup_path):
@@ -1616,21 +1669,21 @@ class KVInstall(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self,'bdkv',True)
+                installNormalPackage(self,'bdkv',True,bInstallSilence)
             if bInstallMini:
-                    installMiniPackage(self,'bdkv',True)
+                installMiniPackage(self,'bdkv',True,bInstallSilence)
             if bInstallFull:
-                installKvFullPackage(self,'bdkv',True)
+                installKvFullPackage(self,'bdkv',True,bInstallSilence)
             if (bInstall or bInstallMini or bInstallFull) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
-                    installNormalPackage(self,'bdkv')
+                    installNormalPackage(self,'bdkv',False,bInstallSilence)
                 if bInstallMini:
-                    installMiniPackage(self,'bdkv')
+                    installMiniPackage(self,'bdkv',False,bInstallSilence)
                 if bInstallFull:
-                    installKvFullPackage(self,'bdkv')
+                    installKvFullPackage(self,'bdkv',False,bInstallSilence)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):

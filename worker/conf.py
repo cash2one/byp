@@ -96,6 +96,9 @@ bdkv_nsifile_version="../../basic/Tools/KVSetupScript/BDKV_setup.nsi"
 bdkv_nsifile_partial="../../basic/Tools/KVSetupScript/BDKV_setup.nsi"
 bdkv_nsifile_buildline="../../basic/Tools/KVSetupScript/include/buildline.nsi"
 
+bdm_netinstall_file="../../basic/Tools/BDMNetInstall/BDMNetInstall.nsi"
+bdkv_netinstall_file="../../basic/Tools/KVNetInstall/KVNetInstall.nsi"
+
 fromaddr="liuheng@baidu.com"
 toaddr=["liuheng@baidu.com"]
 
