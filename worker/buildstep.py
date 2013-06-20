@@ -470,7 +470,7 @@ def getInstallOptions():
         bInstallMini = False if root.getAttribute('install_mini') == '0' else True
         bInstallFull = False if root.getAttribute('install_full') == '0' else True
         bInstallUpdate = False if root.getAttribute('install_update') == '0' else True
-        bInstallUpdate = False if root.getAttribute('install_silence') == '0' else True
+        bInstallSilence = False if root.getAttribute('install_silence') == '0' else True
         return (bInstall,bInstallMini,bInstallFull,bInstallUpdate,bInstallSilence)
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
@@ -486,41 +486,46 @@ def getViruslibVersion():
         logging.error(e)
 
 def buildSilentPackage(obj,product,type,file = ''):
+    silentNsiFile = ''
     nsiFile = ''
     if product == 'bdm':
         if type == 'mini':
-            nsiFile = conf.bdm_netinstall_file
+            silentNsiFile = conf.bdm_netinstall_silent_file
+            nsiFile = conf.bdm_netinstall_silent_file
         elif type == 'normal' or type == 'full':
+            silentNsiFile = conf.bdm_install_silent_file
             nsiFile = conf.bdm_nsifile_daily
     elif product == 'bdkv':
         if type == 'mini':
+            silentNsiFile = conf.bdkv_netinstall_silent_file
             nsiFile = conf.bdkv_netinstall_file
         elif type == 'normal' or type == 'full':
+            silentNsiFile = conf.bdkv_install_silent_file
             nsiFile = conf.bdkv_nsifile_daily
     if len(file) > 0:
         nsiFile = file
     if not os.path.exists(nsiFile):
         return
-    file_r = open(nsiFile)
+    file_r = open(silentNsiFile)
     lines = file_r.readlines()
     file_r.close()
     for index in range(len(lines)):
-        if lines[index].find('Strcpy $IsSlient  "1" #silent#')!= -1:
-            lines[index] = 'Strcpy $IsSlient  "1" #silent#\r\n'
-    file_w  = open(nsiFile,"w")
+        if lines[index].find('#silent#')!= -1:
+            lines[index] = 'Strcpy $varIsSilence "1"    #silent#\r\n'
+    file_w  = open(silentNsiFile,"w")
     file_w .writelines(lines)
     file_w .close()
     #do install
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
     os.system(command.encode(sys.getfilesystemencoding()))
     #clean
-    file_r = open(nsiFile)
+    file_r = open(silentNsiFile)
     lines = file_r.readlines()
     file_r.close()
     for index in range(len(lines)):
-        if lines[index].find('Strcpy $IsSlient  "1" #silent#')!= -1:
-            lines[index] = '#Strcpy $IsSlient  "1" #silent#\r\n'
-    file_w  = open(nsiFile,"w")
+        if lines[index].find('#silent#')!= -1:
+            lines[index] = '#Strcpy $varIsSilence "1"    #silent#\r\n'
+    file_w  = open(silentNsiFile,"w")
     file_w .writelines(lines)
     file_w .close()
 
@@ -567,6 +572,8 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
         if item in conf.default_installer_supplyid:
             continue
         token = '_sid_' + item[1:]
+        if bSilent:
+            token += '_silent'
         supplyid = item[1:]
         newInsFile = insFile[:-4] + '_sid_' + item[1:] + '.nsi'
         #nsis backup
@@ -578,7 +585,8 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
         for index in range(len(lines)):
             if lines[index].find('OutFile')!= -1:
                 if key == 'm':
-                    lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup%s.exe"\r\n' % token
+                    if bSilent:
+                        lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup%s.exe"\r\n' % token
                 elif key == 'n':
                     lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}%s.exe"\r\n' % token
                 elif key == 'f':
@@ -634,7 +642,10 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
     file_r.close()
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
-            lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup.exe"\r\n'
+            if bSilent:
+                lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup_silent.exe"\r\n'
+            else:
+                lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup.exe"\r\n'
     file_w  = open(newNetInstallFile,"w")
     file_w .writelines(lines)
     file_w .close()
@@ -652,16 +663,37 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
         buildSupplyidPackage(obj,product,'mini',bSilent)
 
 def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
-    command = ''
+    nsiFile = ''
     if product == 'bdm':
-        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+        nsiFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
     elif product == 'bdkv':
-        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+        nsiFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
     if not bSilent:
         obj.report('wk-build-log', command)
         os.system(command.encode(sys.getfilesystemencoding()))
     else:
-        buildSilentPackage(obj,product,'normal')
+        file_r = open(nsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        for index in range(len(lines)):
+            if lines[index].find('OutFile')!= -1:
+                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}_silent.exe"\r\n'
+        file_w  = open(nsiFile,"w")
+        file_w .writelines(lines)
+        file_w .close()
+        
+        buildSilentPackage(obj,product,'normal',nsiFile)
+        
+        file_r = open(nsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        for index in range(len(lines)):
+            if lines[index].find('OutFile')!= -1:
+                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}.exe"\r\n'
+        file_w  = open(nsiFile,"w")
+        file_w .writelines(lines)
+        file_w .close()
     #supplyid
     if bSupplyid:
         buildSupplyidPackage(obj,product,'normal',bSilent)
@@ -676,7 +708,10 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     file_r.close()
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
-            lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}.exe"\r\n'
+            if bSilent:
+                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}_silent.exe"\r\n'
+            else:
+                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}.exe"\r\n'
     file_w  = open(setupFile,"w")
     file_w .writelines(lines)
     file_w .close()
@@ -723,7 +758,7 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
         command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
         os.system(command.encode(sys.getfilesystemencoding()))
     else:
-        buildSilentPackage(obj,product,'full','../../basic/tools/KVSetupScript/BDKV_setup_full.nsi')
+        buildSilentPackage(obj,product,'full',conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
     
     #supplyid
     if bSupplyid:

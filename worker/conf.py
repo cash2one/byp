@@ -98,6 +98,10 @@ bdkv_nsifile_buildline="../../basic/Tools/KVSetupScript/include/buildline.nsi"
 
 bdm_netinstall_file="../../basic/Tools/BDMNetInstall/BDMNetInstall.nsi"
 bdkv_netinstall_file="../../basic/Tools/KVNetInstall/KVNetInstall.nsi"
+bdm_netinstall_silent_file="../../basic/Tools/BDMNetInstall/BDMNetInstall.nsi"
+bdkv_netinstall_silent_file="../../basic/Tools/KVNetInstall/KVNetInstall.nsi"
+bdm_install_silent_file="../../basic/Tools/SetupScript/include/BDM_Install.nsi"
+bdkv_install_silent_file="../../basic/Tools/KVSetupScript/include/KV_Install.nsi"
 
 fromaddr="liuheng@baidu.com"
 toaddr=["liuheng@baidu.com"]
