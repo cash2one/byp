@@ -94,7 +94,7 @@ bdkv_options = {
     'install_mini':['check','build','迷你下载器','同时生成迷你下载器（在线安装包）'],
 	'install_full':['check','build','全量包','同时生成带全量病毒库的安装包'],
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
-	'install_silence':['check','build','静默包','同时生成静默安装包'],
+	'install_silence':['check','build','静默包','生成静默安装包'],
 
 	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
@@ -144,7 +144,7 @@ bdm_options = {
 	
     'install_mini':['check','build','迷你下载器','同时生成迷你下载器（在线安装包）'],
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
-	'install_silence':['check','build','静默包','同时生成静默安装包'],
+	'install_silence':['check','build','静默包','生成静默安装包'],
 
 	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
