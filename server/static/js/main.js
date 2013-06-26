@@ -371,11 +371,15 @@ function updateUI(msg) {
             var nickname = $("#"+worker[1]).html();
             $("#"+worker[1]).remove();
             var node = String.format("<option id=\"{0}\" class=\"{1}\" value=\"{2}\">{3}</option>",worker[1],worker[2],ip,nickname);    
-            $("#ws-worker-select").append(node);
+            $("#ws-worker-select").prepend(node);
+            $("#"+worker[1]).attr('selected','selected');
+            $("#ws-worker-select").val(nickname);
         }
         else if (worker[0] == 'change') {
             var ctx = jsonMsg['content'].split('|');
-            $("#"+ctx[1]).selected = true;
+            var nickname = $("#"+worker[1]).html();
+            $("#"+ctx[1]).attr('selected','selected');
+            $("#ws-worker-select").val(nickname);
         }
         //处理默认选择
         updateWorkerStatus();
@@ -567,7 +571,7 @@ function onProjectSelect() {
     worker.postMessage(msg);
 }
 
-function updateWorkerStatus() {
+function updateWorkerStatus(bNotify) {
     $("#ws-worker-status").removeClass();
     $("#ws-worker-detail").removeClass();
 
@@ -597,11 +601,13 @@ function updateWorkerStatus() {
             $("#ws-worker-detail").addClass("label label-important");
             $("#ws-worker-detail").text("该编译机出现错误");
         }
-        var currentSel = $("#ws-worker-select option:selected").attr('id');
-        msg = formatMessage("ws-worker-select",currentSel);
-        worker.postMessage(msg);
-        msg = formatMessage("ws-query-buildlog","");
-        worker.postMessage(msg);
+        if (bNotify) {
+            var currentSel = $("#ws-worker-select option:selected").attr('id');
+            msg = formatMessage("ws-worker-select",currentSel);
+            worker.postMessage(msg);
+            msg = formatMessage("ws-query-buildlog","");
+            worker.postMessage(msg);
+        }
     }
 }
 
@@ -611,7 +617,7 @@ function onWorkerSelect() {
     $("#ws-build-log").empty();
     $("#ws-build-log2").empty();
 
-    updateWorkerStatus();
+    updateWorkerStatus(true);
 }
 
 
