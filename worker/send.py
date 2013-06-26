@@ -119,6 +119,7 @@ def main(argc, argv):
         os.mkdir(ftpPathDirName+conf.ftpPathNameLog)
     
     copyFiles(setupPath,conf.setupList,ftpPathDirName)
+    copyFiles(conf.verify_path,conf.logList,ftpPathDirName)
     copyFiles(debugPath,conf.binList,ftpPathDirName+conf.ftpPathNameD)
     copyFiles(binPath,conf.binList,ftpPathDirName+conf.ftpPathNameRR)
     copyFiles(logPath,conf.logList,ftpPathDirName+conf.ftpPathNameLog)

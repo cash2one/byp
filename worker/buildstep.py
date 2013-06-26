@@ -23,6 +23,7 @@ build_step_creator = {
                       'verify':'Verify',
                       'install':'Install',
                       'signinstaller':'SignInstaller',
+                      'installermd5':'CalcInstallerMd5',
                       'verifyinstaller':'VerifyInstaller',
                       'send':'Send',
                       'symadd':'SymAdd',
@@ -45,6 +46,7 @@ kvbuild_step_creator = {
                       'verify':'KVVerify',
                       'install':'KVInstall',
                       'signinstaller':'KVSignInstaller',
+                      'installermd5':'KVCalcInstallerMd5',
                       'verifyinstaller':'KVVerifyInstaller',
                       'send':'KVSend',
                       'symadd':'KVSymAdd',
@@ -54,7 +56,6 @@ kvbuild_step_creator = {
                       'sendmail':'KVSendMail',
                       'postbuild':'KVPostBuild',
                       }
-
 
 #始终拿到所有项目名称-和buildswitch中的文件名匹配
 def getSlns(product):
@@ -1810,6 +1811,50 @@ class KVSignInstaller(BuildStep):
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
             self.update_step(1)
+        BuildStep.act(self)
+    
+##############################################
+# 0,1
+
+class CalcInstallerMd5(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM calc installer md5"
+    
+    def act(self):
+        if self.value == 0:
+            self.report('wk-build-log', 'Passed')
+        elif self.value == 1:
+            #clean
+            command = 'del /Q /S ' + conf.verify_md5_file
+            os.system(command.encode(sys.getfilesystemencoding()))
+            #doit
+            command = 'python fileop.py md5 ..\\output\\setup\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(5,['fileop.py','md5','..\\output\\setup\\','*.exe',conf.verify_md5_file])
+            
+        BuildStep.act(self)
+    
+class KVCalcInstallerMd5(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV calc installer md5"
+    
+    def act(self):
+        if self.value == 0:
+            self.report('wk-build-log', 'Passed')
+        elif self.value == 1:
+            #clean
+            command = 'del /Q /S ' + conf.verify_md5_file
+            os.system(command.encode(sys.getfilesystemencoding()))
+            #doit
+            command = 'python fileop.py md5 ..\\output\\kvsetup\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(5,['fileop.py','md5','..\\output\\kvsetup\\','*.exe',conf.verify_md5_file])
         BuildStep.act(self)
     
 ##############################################
