@@ -336,8 +336,13 @@ def getMarkupCodeCommands(product,value):
                 elif name == 'trunk':
                     codeDir = '/trunk'
                 elif name == 'revision':
-                    codeDir = '/trunk'
-                    code_revision = node.getAttribute('value')
+                    tokens = node.getAttribute('value').split(';')
+                    if len(tokens) != 2:
+                        codeDir = '/trunk'
+                        code_revision = ''
+                    else:
+                        codeDir = '/' + tokens[0].strip('/ ')
+                        code_revision = tokens[1].strip(' ')
                 break
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
