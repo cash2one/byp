@@ -78,8 +78,8 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             if len(BuildServerHandler.workers) > 0:
                 for client in self.listeners:
                     client.notify('{"msrc":"ws-build-reset","content":""}')
-                    BuildServerHandler.workers[0].append(client)
-                    for content in worker[0].cachedBuildInfo:
+                    BuildServerHandler.workers[0].listeners.append(client)
+                    for content in BuildServerHandler.workers[0].cachedBuildInfo:
                         client.notify(content)
         #client断开，移除该client
         elif self.type == 'client':
