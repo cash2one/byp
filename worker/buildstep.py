@@ -1726,7 +1726,7 @@ class Install(BuildStep):
                     msg = 'failed to build installer, please check nsis script files'
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
-                if not bIngoreFault:
+                if not bIgnoreFault:
                     raise Exception(msg)
             command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
@@ -1793,7 +1793,7 @@ class KVInstall(BuildStep):
                     msg = 'failed to build installer, please check nsis script files'
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
-                if not bIngoreFault:
+                if not bIgnoreFault:
                     raise Exception(msg)
             #copy exe
             command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
