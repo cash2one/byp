@@ -207,6 +207,7 @@ bdm_conf_files = {
     'bd0001':'BD0001',
     'patcher':'BDMPatcher',
     'patcherplugin':'BDMPatcherPlugin',
+    'patcherexe':'Patcher.exe',
 }
 
 build_conf_files = {
