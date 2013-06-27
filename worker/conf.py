@@ -178,6 +178,7 @@ bdkv_conf_files = {
 	'bdkv':'BDKV',
 	'bd0001':'BD0001',
 	'defense':'SDWrench',
+    'repair':'baiduRepair'
 }
 
 bdm_conf_files = {
