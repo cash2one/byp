@@ -198,7 +198,7 @@ def SignBaidu(file,para):
         response = post_multipart(conf.cerf_addr,'/sign.php',fields,files,blanks)
         logging.info( response)
         iStart = response.find('href=') + 6
-        if iStart != -1:
+        if iStart != 5:
             part2 = response[iStart:]
             iStop = part2.find("'")
             if iStop != -1:
