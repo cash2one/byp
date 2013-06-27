@@ -55,7 +55,7 @@ def main(argc, argv):
 	#init constants
 	timeout_buildserver = 0
 	workerId = 'd160ad29-80d3-4b22-95a1-61535d14e8ac'
-	nickname = 'BDMTrunk'
+	nickname = 'BDMPatcher'
 	
 	while True:
 		ws_service = None
