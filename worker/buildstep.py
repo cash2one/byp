@@ -23,6 +23,7 @@ build_step_creator = {
                       'verify':'Verify',
                       'install':'Install',
                       'signinstaller':'SignInstaller',
+                      'installermd5':'CalcInstallerMd5',
                       'verifyinstaller':'VerifyInstaller',
                       'send':'Send',
                       'symadd':'SymAdd',
@@ -45,6 +46,7 @@ kvbuild_step_creator = {
                       'verify':'KVVerify',
                       'install':'KVInstall',
                       'signinstaller':'KVSignInstaller',
+                      'installermd5':'KVCalcInstallerMd5',
                       'verifyinstaller':'KVVerifyInstaller',
                       'send':'KVSend',
                       'symadd':'KVSymAdd',
@@ -54,7 +56,6 @@ kvbuild_step_creator = {
                       'sendmail':'KVSendMail',
                       'postbuild':'KVPostBuild',
                       }
-
 
 #始终拿到所有项目名称-和buildswitch中的文件名匹配
 def getSlns(product):
@@ -655,12 +656,31 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
     file_w .writelines(lines)
     file_w .close()
     #do it
-    if not bSilent:
-        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
-        obj.report('wk-build-log', command)
-        os.system(command.encode(sys.getfilesystemencoding()))
-    else:
-        buildSilentPackage(obj,product,'mini',newNetInstallFile)
+    #read supplyid list
+    confFile = './BuildSwitch/Misc.xml'
+    slist = []
+    try:
+        dom = xml.dom.minidom.parse(confFile)
+        root = dom.documentElement
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == 'supplyid':
+                value = node.getAttribute('value')
+                slist = value.split(',')
+                break
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
+    if 'm10001' in slist:
+        if not bSilent:
+            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
+            obj.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+        else:
+            buildSilentPackage(obj,product,'mini',newNetInstallFile)
+    #clean
     command = 'del /Q /S ' + newNetInstallFile
     os.system(command.encode(sys.getfilesystemencoding()))
     #supplyid
@@ -669,42 +689,76 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
 
 def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
     nsiFile = ''
+    #read supplyid list
+    confFile = './BuildSwitch/Misc.xml'
+    slist = []
+    try:
+        dom = xml.dom.minidom.parse(confFile)
+        root = dom.documentElement
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == 'supplyid':
+                value = node.getAttribute('value')
+                slist = value.split(',')
+                break
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
     if product == 'bdm':
         nsiFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
     elif product == 'bdkv':
         nsiFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
-    if not bSilent:
-        obj.report('wk-build-log', command)
-        os.system(command.encode(sys.getfilesystemencoding()))
-    else:
-        file_r = open(nsiFile)
-        lines = file_r.readlines()
-        file_r.close()
-        for index in range(len(lines)):
-            if lines[index].find('OutFile')!= -1:
-                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}_silent.exe"\r\n'
-        file_w  = open(nsiFile,"w")
-        file_w .writelines(lines)
-        file_w .close()
-        
-        buildSilentPackage(obj,product,'normal',nsiFile)
-        
-        file_r = open(nsiFile)
-        lines = file_r.readlines()
-        file_r.close()
-        for index in range(len(lines)):
-            if lines[index].find('OutFile')!= -1:
-                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}.exe"\r\n'
-        file_w  = open(nsiFile,"w")
-        file_w .writelines(lines)
-        file_w .close()
+    if 'n10000' in slist:
+        if not bSilent:
+            obj.report('wk-build-log', command)
+            os.system(command.encode(sys.getfilesystemencoding()))
+        else:
+            file_r = open(nsiFile)
+            lines = file_r.readlines()
+            file_r.close()
+            for index in range(len(lines)):
+                if lines[index].find('OutFile')!= -1:
+                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}_silent.exe"\r\n'
+            file_w  = open(nsiFile,"w")
+            file_w .writelines(lines)
+            file_w .close()
+            
+            buildSilentPackage(obj,product,'normal',nsiFile)
+            
+            file_r = open(nsiFile)
+            lines = file_r.readlines()
+            file_r.close()
+            for index in range(len(lines)):
+                if lines[index].find('OutFile')!= -1:
+                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}.exe"\r\n'
+            file_w  = open(nsiFile,"w")
+            file_w .writelines(lines)
+            file_w .close()
     #supplyid
     if bSupplyid:
         buildSupplyidPackage(obj,product,'normal',bSilent)
 
 def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     #prepare
+    confFile = './BuildSwitch/Misc.xml'
+    slist = []
+    try:
+        dom = xml.dom.minidom.parse(confFile)
+        root = dom.documentElement
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == 'supplyid':
+                value = node.getAttribute('value')
+                slist = value.split(',')
+                break
+    except Exception,e:
+        logging.error("error occers when parsing xml or run command:")
+        logging.error(e)
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
     setupFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
@@ -759,11 +813,12 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     file_w .close()
     
     #install
-    if not bSilent:
-        command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
-        os.system(command.encode(sys.getfilesystemencoding()))
-    else:
-        buildSilentPackage(obj,product,'full',conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
+    if 'f10015' in slist:
+        if not bSilent:
+            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+            os.system(command.encode(sys.getfilesystemencoding()))
+        else:
+            buildSilentPackage(obj,product,'full',conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
     
     #supplyid
     if bSupplyid:
@@ -1671,7 +1726,7 @@ class Install(BuildStep):
                     msg = 'failed to build installer, please check nsis script files'
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
-                if not bIngoreFault:
+                if not bIgnoreFault:
                     raise Exception(msg)
             command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
             self.report('wk-build-log', command)
@@ -1738,7 +1793,7 @@ class KVInstall(BuildStep):
                     msg = 'failed to build installer, please check nsis script files'
                 self.report('wk-build-log','------------------------------------------------------')
                 self.report('wk-build-log','<h5>'+msg+'</h5>')
-                if not bIngoreFault:
+                if not bIgnoreFault:
                     raise Exception(msg)
             #copy exe
             command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
@@ -1810,6 +1865,50 @@ class KVSignInstaller(BuildStep):
             self.report('wk-build-log', command)
             sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
             self.update_step(1)
+        BuildStep.act(self)
+    
+##############################################
+# 0,1
+
+class CalcInstallerMd5(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDM calc installer md5"
+    
+    def act(self):
+        if self.value == 0:
+            self.report('wk-build-log', 'Passed')
+        elif self.value == 1:
+            #clean
+            command = 'del /Q /S ' + conf.verify_md5_file
+            os.system(command.encode(sys.getfilesystemencoding()))
+            #doit
+            command = 'python fileop.py md5 ..\\output\\setup\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(5,['fileop.py','md5','..\\output\\setup\\','*.exe',conf.verify_md5_file])
+            
+        BuildStep.act(self)
+    
+class KVCalcInstallerMd5(BuildStep):
+    def __init__(self, n, v, o, w, p):
+        BuildStep.__init__(self, n, v, o, w, p)
+    
+    def __str__(self):
+        return "BDKV calc installer md5"
+    
+    def act(self):
+        if self.value == 0:
+            self.report('wk-build-log', 'Passed')
+        elif self.value == 1:
+            #clean
+            command = 'del /Q /S ' + conf.verify_md5_file
+            os.system(command.encode(sys.getfilesystemencoding()))
+            #doit
+            command = 'python fileop.py md5 ..\\output\\kvsetup\\ *.exe'
+            self.report('wk-build-log', command)
+            fileop.main(5,['fileop.py','md5','..\\output\\kvsetup\\','*.exe',conf.verify_md5_file])
         BuildStep.act(self)
     
 ##############################################

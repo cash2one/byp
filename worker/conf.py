@@ -38,6 +38,10 @@ kvverify_log_file = '..\\output\\verifylog\\KVBinVerify.txt'
 exist_verify_file = './verifylist/FileVerify.xml'
 kvexist_verify_file = './verifylist/KVFileVerify.xml'
 
+verify_md5_file = '..\\output\\verifylog\\installer_md5.txt'
+
+verify_path = '../output/verifylog/'
+
 checklog_file = "./conf/checklog.conf"
 kvchecklog_file = "./conf/kvchecklog.conf"
 
@@ -49,7 +53,7 @@ bin_path='../../basic/Output/binRelease/'
 kvbin_path='../../basic/KVOutput/binRelease/'
 binList=["*.exe","*.dll","plugins","res","*.xml","*.png"]
 pdbList=["*.pdb"]
-
+logList=["*.log","*.txt"]
 
 original_kvsetup_path = '../../basic/tools/kvsetup/'
 original_setup_path = '../../basic/tools/setup/'
@@ -59,7 +63,6 @@ setupList=["*.exe"]
 
 log_path="../output/err/"
 kvlog_path="../output/kverr/"
-logList=["*.log"]
 
 severDirName_daily="1.0.0.%d"
 severDirName_version="1.0.1.%d"
@@ -175,6 +178,7 @@ bdkv_conf_files = {
 	'bdkv':'BDKV',
 	'bd0001':'BD0001',
 	'defense':'SDWrench',
+    'repair':'baiduRepair'
 }
 
 bdm_conf_files = {
@@ -204,6 +208,7 @@ bdm_conf_files = {
     'bd0001':'BD0001',
     'patcher':'BDMPatcher',
     'patcherplugin':'BDMPatcherPlugin',
+    'patcherexe':'Patcher.exe',
 }
 
 build_conf_files = {

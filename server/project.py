@@ -27,6 +27,7 @@ bdkv_slns = [
 	['bdkv','杀毒主程序模块','易善鸿','module',1,[]],
 	['bd0001','驱动模块','曹杨','module',1,[]],
 	['defense','攻防模块','时永昌','module',1,[]],
+    ['repair','修复模块','时永昌','module',1,[]],
 ]
 
 bdm_slns = [
@@ -52,6 +53,7 @@ bdm_slns = [
     ['bd0001','驱动模块','曹杨','module',1,[]],
     ['patcher','漏洞修复模块','赵北宁','module',1,[]],
     ['patcherplugin','漏洞修复插件','赵北宁','module',1,[]],
+    ['patcherexe','漏洞修复模块Exe','赵俊博','module',1,[]],
 ]
 
 projects = {
@@ -95,6 +97,8 @@ bdkv_options = {
 	'install_full':['check','build','全量包','同时生成带全量病毒库的安装包'],
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包'],
+
+    'installermd5':['check','build','Md5校验','生成安装包的Md5校验信息'],
 
 	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
@@ -146,6 +150,8 @@ bdm_options = {
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包'],
 
+    'installermd5':['check','build','Md5校验','生成安装包的Md5校验信息'],
+
 	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
 	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
@@ -169,7 +175,7 @@ build_options = {
 }
 
 #支持的代码基依赖
-svn_codebase = [('Branch','基于特定Branch，输入Branch名称',1),('Tag','基于特定Tag，输入Tag名称',2),('Trunk','基于主线构造',3,'default'),('Revision','基于主线Revision，输入Revision号',4)]
+svn_codebase = [('Branch','基于特定Branch，输入Branch名称',1),('Tag','基于特定Tag，输入Tag名称',2),('Trunk','基于主线构造',3,'default'),('Revision','基于Revision，输入开发线;Revision号',4)]
 
 build_depends = {
 	'X光': svn_codebase,

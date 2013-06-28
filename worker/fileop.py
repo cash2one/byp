@@ -16,6 +16,7 @@
 
 import sys,os,glob,httplib,urllib,mimetypes,comm,conf,xml.dom.minidom,win32api,shutil
 import logging,userconf
+import io,hashlib
 
 def FileOperation(dir,op,fileType,excluded_dir=[]):
     #root dir
@@ -197,7 +198,7 @@ def SignBaidu(file,para):
         response = post_multipart(conf.cerf_addr,'/sign.php',fields,files,blanks)
         logging.info( response)
         iStart = response.find('href=') + 6
-        if iStart != -1:
+        if iStart != 5:
             part2 = response[iStart:]
             iStop = part2.find("'")
             if iStop != -1:
@@ -611,6 +612,28 @@ def GenFileVerify(path,ftype,product,conffile = ''):
     writer.write('</conf>')
     writer.close()
     
+def calcMd5(afile,para):
+    writer = para
+    m = hashlib.md5()
+    file = io.FileIO(afile,'r')
+    bytes = file.read(1024)
+    while(bytes != b''):
+        m.update(bytes)
+        bytes = file.read(1024)
+    file.close()
+    md5value = m.hexdigest()
+    str = afile[afile.rfind('\\')+1:] + ' ' + md5value + '\n'
+    writer.write(str)
+
+def CalcFileMd5(path,ftype,logFile = ''):
+    md5VerifyLog = ''
+    if logFile == '':
+        md5VerifyLog = conf.verify_md5_file
+    else:
+        md5VerifyLog = logFile
+    writer = open(md5VerifyLog,'w')
+    FileOperationWithExtraPara(path,calcMd5,writer,ftype)
+    writer.close()
 
 def main(argc, argv):
     if argc < 3:
@@ -697,6 +720,8 @@ gen_rc_list                           - generate rc list
         GenRCFile(argv[2],'bdm',GenRC,ftype)
     elif argv[1] == 'kv_gen_rc_list':
         GenRCFile(argv[2],'bdkv',GenRC,ftype)
+    elif argv[1] == 'md5':
+        CalcFileMd5(argv[2],ftype,extra_para1)
 
 if "__main__" == __name__:
     sys.exit(main(len(sys.argv),sys.argv))
