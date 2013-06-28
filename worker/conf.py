@@ -206,14 +206,12 @@ bdm_conf_files = {
     'drivermanager':'DriverManager',
     'avhips':'AVHips',
     'bd0001':'BD0001',
-    'patcher':'BDMPatcher',
-    'patcherplugin':'BDMPatcherPlugin',
-    'patcherexe':'Patcher.exe',
+    'patcher':'patcher',
 }
 
 build_conf_files = {
-	'X光': bdkv_conf_files,
-	'极光': bdm_conf_files,
+	'杀毒': bdkv_conf_files,
+	'卫士': bdm_conf_files,
 }
 
 default_installer_supplyid = ['m10001','n10000','n50000','f10015']

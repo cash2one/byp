@@ -23,9 +23,9 @@ class Worker(threading.Thread):
         ctx = msg['content']
         settings = ctx.split('|')
         self.projName = ''
-        if settings[1] == 'X光':
+        if settings[1] == '杀毒':
             self.projName = 'bdkv'
-        elif settings[1] == '极光':
+        elif settings[1] == '卫士':
             self.projName = 'bdm'
         self.slns = {}
         for item in settings[2].split(';'):

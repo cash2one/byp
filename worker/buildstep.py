@@ -427,10 +427,10 @@ def getBuildCommands(product,value):
         vcbuildAction = '/rebuild'#always rebuild
     
     bForce = False
-    if value == 1 or value == 3:
-        bForce = True
-    elif value == 2 or value == 4:
+    if value == 1 or value == 2:
         bForce = False
+    elif value == 3 or value == 4:
+        bForce = True
     
     commands = []
     slns = getSlns(product)

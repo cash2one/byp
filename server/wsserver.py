@@ -151,7 +151,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             content += '"}'
             self.notify(content)
             
-        #手动切换项目combobox时发送；提供当前project的slns
+        #手动切换项目combobox时发送；提供当前project的slns，以及默认版本号、默认supplyid、默认版本标记、默认打包原因和使用者email
         elif msg['msrc'] == 'ws-sln-select':
             projName = msg['content']
             try:
@@ -162,6 +162,35 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                     else:
                         content = '{"msrc":"ws-sln-select","content":"%s|%s|%s|%s"}' % (item[0],item[1],item[2],item[3])
                     self.notify(content)
+                
+                default_version = project.default_version[projName]
+                content = '{"msrc":"ws-installer-version","content":"%s"}' % default_version
+                self.notify(content)
+                
+                default_supplyid = project.default_supplyid[projName]
+                content = '{"msrc":"ws-installer-supplyid","content":"%s"}' % default_supplyid
+                self.notify(content)
+                
+                markup_detail = project.markup_details[projName]
+                content = '{"msrc":"ws-markup-detail","content":"%s"}' % markup_detail
+                self.notify(content)
+                
+                build_reason = project.default_build_reason[projName]
+                content = '{"msrc":"ws-build-reason","content":"%s"}' % build_reason
+                self.notify(content)
+                
+                user_email = project.default_user_email[projName]
+                content = '{"msrc":"ws-user-email","content":"%s"}' % user_email
+                self.notify(content)
+                
+                cb_detail = project.default_cbdetail[projName]
+                content = '{"msrc":"ws-cb-detail","content":"%s"}' % cb_detail
+                self.notify(content)
+                
+                archive_base = project.default_archive_base[projName]
+                content = '{"msrc":"ws-installer-archive","content":"%s"}' % archive_base
+                self.notify(content)
+                
             except KeyError,e:
                 logging.info('message error %s' % message)
                 

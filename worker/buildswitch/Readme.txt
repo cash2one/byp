@@ -1,22 +1,22 @@
 0.readme for xbuild by thomas
 
-1.¿ÉÄÜĞèÒª£¨ÊÓBuildStep.xmlÅäÖÃ¶ø¶¨£©svn°æ±¾¹ÜÀíÏµÍ³£¬vcbuild¹¹½¨ÏµÍ³ºÍPython2.XÖ§³Ö£¨X>=5£¬¿ÉÄÜĞèÒª°²×°pywin32À©Õ¹£©£¬Çë±£Ö¤%PATH%ÖĞ°üº¬svn.exe¡¢vcbuild.exe¡¢python.exe
+1.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½BuildStep.xmlï¿½ï¿½ï¿½Ã¶ï¿½svnï¿½æ±¾ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½vcbuildï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½Python2.XÖ§ï¿½Ö£ï¿½X>=5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½×°pywin32ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ï¿½ï¿½ë±£Ö¤%PATH%ï¿½Ğ°ï¿½svn.exeï¿½ï¿½vcbuild.exeï¿½ï¿½python.exe
 
-2.¼¸¸öºËĞÄÅäÖÃÎÄ¼ş£º
-	AutoBuild/checklog.conf			¼«¹âÏîÄ¿ÄÉÈë±àÒëÏµÍ³µÄsolutionÃûºÍÔğÈÎÈË
-	AutoBuild/kvchecklog.conf		X¹âÏîÄ¿ÄÉÈë±àÒëÏµÍ³µÄsolutionÃûºÍÔğÈÎÈË
-	AutoBuild/FileVerify.xml		¼«¹âÏîÄ¿ÎÄ¼şÍêÕûĞÔĞ£ÑéÁĞ±í
-	AutoBuild/KVFileVerify.xml		X¹âÏîÄ¿ÎÄ¼şÍêÕûĞÔĞ£ÑéÁĞ±í
-	BuildSwitch/%sln%.xml			Ã¿¸ö¿ÉÄÜĞèÒª±àÒëµÄsolutionÅäÖÃÎÄ¼ş
-	BuildSwitch/BuildStep.xml		±àÒëÀàĞÍºÍ±àÒë²½Öè¶¨Òå
-	BuildSwtich/KVSignature.xml		¹Ù·½Ç©ÃûÅäÖÃ
+2.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+	AutoBuild/checklog.conf			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½solutionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	AutoBuild/kvchecklog.conf		Xï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½solutionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	AutoBuild/FileVerify.xml		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½Ğ±ï¿½
+	AutoBuild/KVFileVerify.xml		Xï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½Ğ±ï¿½
+	BuildSwitch/%sln%.xml			Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½solutionï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
+	BuildSwitch/BuildStep.xml		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÍºÍ±ï¿½ï¿½ë²½ï¿½è¶¨ï¿½ï¿½
+	BuildSwtich/KVSignature.xml		ï¿½Ù·ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-3.¹ØÓÚBuildStep.xml£¬¸÷²½Öè¼üÖµ¶Ôº¬Òå£º
+3.ï¿½ï¿½ï¿½ï¿½BuildStep.xmlï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Ôºï¿½ï¿½å£º
 	prebuild				0-pass;1-simpleclean;2-fullclean
 	svn					0-pass;1-forceupdate;2-forcecheckout;3-optionalupdate;4-optionalcheckout
     	locksvn             			0-pass;1-lock
 	rewriteversion				0-pass;1-daily;2-version
-	build					0-pass;1-forcebuildrelease;2-optionalbuild;3-forcerebuildrelease;4-optionalrebuild//always rebuild
+	build					0-pass;1-optionalrebuildrelease;2-optionalrebuild;3-forcererebuildrelease;4-forcerebuild//always rebuild
 	pack					0-pass;1-packrelease
 	sign					0-pass;1-signrelease
 	verify					0-pass;1-doit
@@ -30,6 +30,6 @@
 	symadd					0-pass;1-add
 	postbuild				0-pass
 
-4.Ê¹ÓÃÇ°Çë¼ì²éBuildStep.xmlÖĞµÄÅäÖÃÊÇ·ñÂú×ãÄúµÄbuildĞèÇó
+4.Ê¹ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½BuildStep.xmlï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½buildï¿½ï¿½ï¿½ï¿½
 
-5.Èç¹û½øĞĞ±àÒë£¨build£©²½ÖèÇÒ³öÏÖÁË±àÒë´íÎó£¬½«²»ÔÙÏòÏÂ½øĞĞ£¬ÌáÊ¾²¢ÏìÁå
+5.ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½ï¿½ë£¨buildï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½Ë±ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½

@@ -6,7 +6,7 @@
 
 0. 为纪念[冰火第三季](http://zh.asoiaf.wikia.com/wiki/%E5%86%B0%E4%B8%8E%E7%81%AB%E4%B9%8B%E6%AD%8C%E4%B8%AD%E6%96%87%E7%BB%B4%E5%9F%BA)开播，以及更好的把精力投入到公共库的工作。
 
-1. 支持极光和X光两个项目的各种打包需求。未来可以很容易的扩展，比如增加其他项目、更改操作系统平台、版本构建工具和版本控制方式等。
+1. 支持卫士和杀毒两个项目的各种打包需求。未来可以很容易的扩展，比如增加其他项目、更改操作系统平台、版本构建工具和版本控制方式等。
 
 2. client端基于[realtime web](https://en.wikipedia.org/wiki/Real-time_web)，可实时同步编译机状态，用户界面UI基于[bootstrap](http://twitter.github.io/bootstrap/)和[jquery](http://jquery.com/)。支持chrome、safari等严格实现标准的浏览器（内网访问[http://172.17.180.61:13412/](http://172.17.180.61:13412/)），支持firefox开发版、ios safari，推荐用chrome浏览，或以chrome插件形式使用。
 

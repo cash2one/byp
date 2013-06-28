@@ -45,20 +45,18 @@ bdm_slns = [
 	#['somanager','软件优化管家','张凯','module',1,[]],
 	#['soshortcutplugin','软件优化快捷插件','张凯','module',1,[]],
 	['swmanager','软件管理模块','张凯','module',1,[]],
-	['main','极光主程序','杨彦召','module',1,[]],
+	['main','卫士主程序','杨彦召','module',1,[]],
     ['trojanscan','木马扫描','易善鸿','module',1,[]],
-    #['antivirusGJ','极光查杀合入模块','赵欣','module',1,[]],
+    #['antivirusGJ','卫士查杀合入模块','赵欣','module',1,[]],
     ['drivermanager','驱动管理模块','曹杨','module',1,[]],
     ['avhips','主动防御模块','曹杨','module',1,[]],
     ['bd0001','驱动模块','曹杨','module',1,[]],
     ['patcher','漏洞修复模块','赵北宁','module',1,[]],
-    ['patcherplugin','漏洞修复插件','赵北宁','module',1,[]],
-    ['patcherexe','漏洞修复模块Exe','赵俊博','module',1,[]],
 ]
 
 projects = {
-	'X光':bdkv_slns,
-	'极光':bdm_slns,
+	'杀毒':bdkv_slns,
+	'卫士':bdm_slns,
 }
 
 #选项名称，check还是radio，阶段，显示名称，tooltip名称，对应的值
@@ -69,15 +67,14 @@ bdkv_options = {
 	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
-	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
-	'rewriteversion':['radio','before',[('不更新版本','此次打包不更新版本','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+	'rewriteversion':['check','before','dailybuild','此次打包更新dailybuild号','default'],
     
-    'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
+    'locksvn':['check','before','锁定SVN','禁止SVN代码提交'],
 
     'rcgen':['check','before','修复版本RC','重新生成产品相关的版本信息','default'],
 
-	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
-	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
+	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default')]],
+	'build':['check','build','编译','选中工程全部重新编译','default'],
 
 	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2','default'),('all','全部进行编译','3')]],
 
@@ -90,21 +87,20 @@ bdkv_options = {
 	
     'rebase':['check','build','ImageBase修复','修改模块基地址并绑定以提高程序加载速度','default'],
 
-	'sign':['check','build','文件签名','对打包生成的文件进行签名','default'],
+	'sign':['check','build','二进制签名','对打包生成的二进制文件进行签名','default'],
 	'install':['check','build','安装包','生成安装包','default'],
 	
     'install_mini':['check','build','迷你下载器','同时生成迷你下载器（在线安装包）'],
 	'install_full':['check','build','全量包','同时生成带全量病毒库的安装包'],
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
-	'install_silence':['check','build','静默包','生成静默安装包'],
+	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
 
     'installermd5':['check','build','Md5校验','生成安装包的Md5校验信息'],
 
-	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
-	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
+	'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
 
-    'verify':['check','after','文件校验','校验生成的二进制文件的完整性、版本、签名等是否正确'],
+    'verify':['check','after','二进制校验','校验生成的二进制文件的完整性、版本、签名等是否正确'],
     'verifyinstaller':['check','after','安装包校验','校验安装包是否生成、版本、签名等是否正确'],
 
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
@@ -124,15 +120,14 @@ bdm_options = {
 	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
-	#'rewriteversion':['radio','before',[('Ignore','此次打包不更新版本号','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
-	'rewriteversion':['radio','before',[('不更新版本','此次打包不更新版本','0'),('dailybuild','此次打包更新dailybuild号','1','default'),('versionbuild','此次打包更新versionbuild号','2')]],
+	'rewriteversion':['check','before','dailybuild','此次打包更新dailybuild号','default'],
 
-    'locksvn':['check','before','锁定SVN','整个版本构建期间禁止代码提交'],
+    'locksvn':['check','before','锁定SVN','禁止SVN代码提交'],
 
     'rcgen':['check','before','修复版本RC','重新生成产品相关的版本信息','default'],
 
-	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default'),('rebuild','完全重新编译','4')]],
-	'build':['radio','build',[('不编译','不进行编译','0'),('编译','全部增量编译','2','default'),('重新编译','全部完全重新编译','4')]],
+	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default')]],
+	'build':['check','build','编译','选中工程全部重新编译','default'],
 
 	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2'),('all','全部进行编译','3','default')]],
 	
@@ -143,20 +138,19 @@ bdm_options = {
 	
     'rebase':['check','build','ImageBase修复','修改模块基地址并绑定以提高程序加载速度','default'],
 
-	'sign':['check','build','文件签名','对打包生成的文件进行签名','default'],
+	'sign':['check','build','二进制签名','对打包生成的二进制文件进行签名','default'],
 	'install':['check','build','安装包','生成安装包','default'],
 	
     'install_mini':['check','build','迷你下载器','同时生成迷你下载器（在线安装包）'],
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
-	'install_silence':['check','build','静默包','生成静默安装包'],
+	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
 
     'installermd5':['check','build','Md5校验','生成安装包的Md5校验信息'],
 
-	'send':['radio','after',[('不归档','安装包不发送往任何地方','0'),('dailybuild','安装包发送至dailybuild目录归档',1,'default'),('versionbuild','安装包发送至versionbuild目录归档',2),]],
-	#'send':['check','after','安装包归档','安装包发送至归档目录','default'],
+	'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
 
-    'verify':['check','after','文件校验','校验生成的二进制文件的完整性、版本、签名等是否正确'],
+    'verify':['check','after','二进制校验','校验生成的二进制文件的完整性、版本、签名等是否正确'],
     'verifyinstaller':['check','after','安装包校验','校验安装包是否生成、版本、签名等是否正确'],
 
 	'symadd':['check','after','符号归档','生成的符号文件进行归档','default'],
@@ -170,22 +164,86 @@ bdm_options = {
 }
 
 build_options = {
-	'X光': bdkv_options,
-	'极光': bdm_options,
+	'杀毒': bdkv_options,
+	'卫士': bdm_options,
 }
 
 #支持的代码基依赖
-svn_codebase = [('Branch','基于特定Branch，输入Branch名称',1),('Tag','基于特定Tag，输入Tag名称',2),('Trunk','基于主线构造',3,'default'),('Revision','基于Revision，输入开发线;Revision号',4)]
+bdkv_svn_codebase = [('Branch','基于特定Branch，输入Branch名称',1,'default'),('Tag','基于特定Tag，输入Tag名称',2),('Trunk','基于主线构造',3),('Revision','基于Revision，输入开发线;Revision号',4)]
+bdm_svn_codebase = [('Branch','基于特定Branch，输入Branch名称',1),('Tag','基于特定Tag，输入Tag名称',2),('Trunk','基于主线构造',3,'default'),('Revision','基于Revision，输入开发线;Revision号',4)]
 
 build_depends = {
-	'X光': svn_codebase,
-	'极光': svn_codebase,
+	'杀毒': bdkv_svn_codebase,
+	'卫士': bdm_svn_codebase,
 }
 
 #支持的版本标记选项
 svn_markup_code = [('None','不标记此版本',0,'default'),('+Branch','以此版本新建Branch',1),('+Tag','以此版本新建Tag',2),('-Branch','删除指定Branch',3),('-Tag','删除指定Tag',4)]
 
 markup_options = {
-	'X光': svn_markup_code,
-	'极光': svn_markup_code,
+	'杀毒': svn_markup_code,
+	'卫士': svn_markup_code,
+}
+
+#默认版本号
+bdkv_default_version = '1.1.0'
+bdm_default_version = '1.0.0'
+
+default_version = {
+	'杀毒':bdkv_default_version,
+	'卫士':bdm_default_version,
+}
+
+#默认supplyid
+bdkv_default_supplyid = 'm10001,n10000,f10015'
+bdm_default_supplyid = 'm10001,n10000,f10015'
+
+default_supplyid = {
+	'杀毒':bdkv_default_supplyid,
+	'卫士':bdm_default_supplyid,
+}
+
+#默认版本标记细节
+bdkv_svn_default_markup_details = 'bdkv_$r_$v_$t'
+bdm_svn_default_markup_details = 'bdm_$r_$v_$t'
+
+markup_details = {
+	'杀毒':bdkv_svn_default_markup_details,
+	'卫士':bdm_svn_default_markup_details,
+}
+
+#默认打包原因
+bdkv_default_build_reason = 'kv daily build'
+bdm_default_build_reason = 'daily build'
+
+default_build_reason = {
+	'杀毒':bdkv_default_build_reason,
+	'卫士':bdm_default_build_reason,
+}
+
+#默认使用者邮箱
+bdkv_default_user_email = 'sw_aq@baidu.com'
+bdm_default_user_email = 'sw_xt@baidu.com'
+
+default_user_email = {
+	'杀毒':bdkv_default_user_email,
+	'卫士':bdm_default_user_email,
+}
+
+#默认版本构造细节
+bdkv_default_cbdetail = '1.0beta3_dev'
+bdm_default_cbdetail = 'HEAD'
+
+default_cbdetail = {
+	'杀毒':bdkv_default_cbdetail,
+	'卫士':bdm_default_cbdetail,
+}
+
+#默认归档根目录
+bdkv_archive_base = '/public/'
+bdm_archive_base = '/public/'
+
+default_archive_base = {
+	'杀毒':bdkv_archive_base,
+	'极光':bdm_archive_base,
 }
