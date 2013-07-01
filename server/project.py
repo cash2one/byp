@@ -204,8 +204,8 @@ default_supplyid = {
 }
 
 #默认版本标记细节
-bdkv_svn_default_markup_details = 'bdkv_$r_$v_$t'
-bdm_svn_default_markup_details = 'bdm_$r_$v_$t'
+bdkv_svn_default_markup_details = 'bdkv_$revision_$version_$timestep'
+bdm_svn_default_markup_details = 'bdm_$revision_$version_$timestep'
 
 markup_details = {
 	'杀毒':bdkv_svn_default_markup_details,
@@ -213,8 +213,8 @@ markup_details = {
 }
 
 #默认打包原因
-bdkv_default_build_reason = 'kv daily build'
-bdm_default_build_reason = 'daily build'
+bdkv_default_build_reason = '杀毒每日编译'
+bdm_default_build_reason = '卫士每日编译'
 
 default_build_reason = {
 	'杀毒':bdkv_default_build_reason,
@@ -240,10 +240,10 @@ default_cbdetail = {
 }
 
 #默认归档根目录
-bdkv_archive_base = '/public/'
-bdm_archive_base = '/public/'
+bdkv_archive_base = '$share/public/kvdailybuild/$version'
+bdm_archive_base = '$share/public/dailybuild/$version'
 
 default_archive_base = {
 	'杀毒':bdkv_archive_base,
-	'极光':bdm_archive_base,
+	'卫士':bdm_archive_base,
 }
