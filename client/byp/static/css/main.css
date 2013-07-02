@@ -43,7 +43,7 @@ a {
   font-weight: bold;
 }
 
-#table-markup-code, #table-build-log, #table-build-log2, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
+#table-installer-info, #table-markup-code, #table-build-log, #table-build-log2, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
   width: 600px;
 }
 
@@ -52,7 +52,7 @@ a {
   vertical-align: middle;
 }
 
-#ws-build-reason, #ws-user-email, #ws-installer-supplyid, #ws-cb-detail, #ws-markup-detail {
+#ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-installer-archive, #ws-build-prefix, #ws-build-postfix, #ws-build-v1, #ws-build-v2, #ws-build-v3,#ws-build-v4, #ws-user-email, #ws-installer-supplyid, #ws-cb-detail, #ws-markup-detail {
   width: auto;
 }
 

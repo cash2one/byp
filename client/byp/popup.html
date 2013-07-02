@@ -12,6 +12,9 @@
 <body>
   <!-- tab配置 -->
   <ul class="nav nav-pills">
+      <li>
+        <a href="#tabTemplate" data-toggle="tab">Template</a>
+      </li>
       <li class="active">
         <a href="#tabMain" data-toggle="tab">Build</a>
       </li>
@@ -19,7 +22,10 @@
         <a href="#tabLog" data-toggle="tab">Log</a>
       </li>
       <li>
-        <a href="#tabTest" data-toggle="tab">Have a rest</a>
+        <a href="#tabHelp" data-toggle="tab">Help</a>
+      </li>
+      <li>
+        <a href="#tabTest" data-toggle="tab">Rest</a>
       </li>
       <li>
         <a href="#tabAbout" data-toggle="tab">About</a>
@@ -32,6 +38,12 @@
     <div class="tab-content">
 
       <!-- --------------------------------------------------------------------------------- -->
+
+      <!-- 第零页 -->
+      <div class="tab-pane" id="tabTemplate" style="height:550px">
+        Template页面，开发中。
+
+      </div>
 
       <!-- 第一页 -->
       <div class="tab-pane active" id="tabMain">
@@ -144,7 +156,7 @@
           <tr>
             <!-- branch or tag code -->
             <td class="td-form-title" width="12%">
-              <a href="#" rel="tooltip" title="标记这次打包的代码版本">标记版本</a>
+              <a href="#" rel="tooltip" title="标记这次打包的代码版本，目前用来加减Branch或Tag">标记版本</a>
             </td>
             <td>
               <div id="ws-markup-code" class="btn-group" data-toggle="buttons-radio">
@@ -152,32 +164,59 @@
             </td>
             <!-- markup detail -->
             <td class="td-form-title">
-              <a href="#" rel="tooltip" title="版本标记名称 [必选 30字符以内] ">版本标记细节</a>
+              <a href="#" rel="tooltip" title="要标记或删除的Branch或Tag名称">版本标记细节</a>
             </td>
-            <td id="td-markup-detail"><input type="text" id="ws-markup-detail" data-provide="typeahead" data-items="4" data-source="" value="byp_$r_$v_$t"></td>
+            <td id="td-markup-detail"><input type="text" id="ws-markup-detail" data-provide="typeahead" data-items="4" data-source="" value=""></td>
           </tr>
         </table>
 
         <!-- --------------------------------------------------------------------------------- -->
         
+        <!-- 归档地址和版本号表格 -->
+        <table id="table-installer-info">
+          <tr>
+            <!-- build version -->
+            <td class="td-form-title" width="12%">
+              <a href="#" rel="tooltip" title="此次打包生成的安装包版本规范，仅在 [版本更新] 被选中时生效，默认$prefix和$postfix为空，$auto为指定或约定的构造版本号。">版本名称</a>
+            </td>
+            <td id="td-installer-version">
+              <input type="text" style="width:45px" id="ws-build-prefix" data-provide="typeahead" value="$prefix">
+              <input type="text" style="width:8px" id="ws-build-v1" data-provide="typeahead" value="">.
+              <input type="text" style="width:8px" id="ws-build-v2" data-provide="typeahead" value="">.
+              <input type="text" style="width:8px" id="ws-build-v3" data-provide="typeahead" value="">.
+              <input type="text" style="width:35px" id="ws-build-v4" data-provide="typeahead" value="$auto">
+              <input type="text" style="width:50px" id="ws-build-postfix" data-provide="typeahead" value="$postfix">
+            </td>
+            <td class="td-form-title" width="12%">
+              <a href="#" rel="tooltip" title="合法且可访问的安装包归档目录,安装包将直接放到此目录下">归档目录</a>
+            </td>
+            <td id="td-installer-archive">
+              <input type="text" style="width:160px" id="ws-installer-archive" data-provide="typeahead" value="">
+            </td>
+          </tr>
+        </table>
+
+        <!-- --------------------------------------------------------------------------------- -->
+
         <!-- 打包原因及用户表格 -->
         <table id="table-build-info">
           <tr>
-            <!-- why start the build -->
+            <!-- build version -->
             <td class="td-form-title" width="12%">
               <a href="#" rel="tooltip" title="简述这次打包的原因 [必选 15字以内] ">打包原因</a>
             </td>
-            <td id="td-build-reason"><input type="text" style="width:80px" id="ws-build-reason" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]" value="daily build"></td>
-            <!-- user email -->
+            <td id="td-build-reason"><input type="text" style="width:80px" id="ws-build-reason" data-provide="typeahead" data-items="4" data-source="[\"Daily Build\";\"Weekly Build\";\"RC Build\"]" value=""></td>
+
             <td class="td-form-title">
               <a href="#" rel="tooltip" title="您的百度邮箱地址 [必选 30字符以内] ">百度邮箱</a>
             </td>
-            <td id="td-user-email"><input type="text" style="width:100px" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]" value="sw@baidu.com"></td>
+            <td id="td-user-email"><input type="text" style="width:100px" id="ws-user-email" data-provide="typeahead" data-items="4" data-source="[\"liuheng@baidu.com\"]" value=""></td>
+
             <!-- supplyid -->
             <td class="td-form-title">
               <a href="#" rel="tooltip" title="安装包渠道号（逗号分隔，如m10001,n10000,f10015）">渠道号</a>
             </td>
-            <td id="td-installer-supplyid"><input type="text" style="width:160px" id="ws-installer-supplyid" data-provide="typeahead" data-items="4" data-source="[\"m10001\";\"n10000\";\"f10015\"]" value="m10001,n10000,f10015"></td>
+            <td id="td-installer-supplyid"><input type="text" style="width:160px" id="ws-installer-supplyid" data-provide="typeahead" data-items="4" data-source="[\"m10001\";\"n10000\";\"f10015\"]" value=""></td>
           </tr>
         </table>
 
@@ -187,7 +226,7 @@
         <table id="table-build-depend">
           <tr><!-- start this build depends on specific revision -->
             <td class="td-form-title" width="12%">
-              <a href="#" rel="tooltip" title="指定打包所依赖的代码版本">构造版本</a>
+              <a href="#" rel="tooltip" title="指定此次打包所依赖的代码版本，仅在 [checkout] 被选定时生效">构造版本</a>
             </td>
             <td>
               <div id="ws-code-base" class="btn-group" data-toggle="buttons-radio">
@@ -195,9 +234,12 @@
             </td>
             <!-- build detail -->
             <td class="td-form-title">
-              <a href="#" rel="tooltip" title="版本构造名称 [必选 30字符以内] ">版本构造细节</a>
+              <a href="#" rel="tooltip" title="此次打包要采用的branch或tag名称，或使用主线，或指定revision,revision格式为:打包线;revision号。仅在 [checkout] 被选中时生效">版本构造细节</a>
             </td>
-            <td id="td-cb-detail"><input type="text" id="ws-cb-detail" data-provide="typeahead" data-items="4" data-source="[\"HEAD\";\"Tag Name\";\"Branch Name\"]" value="code base[optional]"></td>
+            <td id="td-cb-detail"><input type="text" id="ws-cb-detail" style="width:80px" data-provide="typeahead" data-items="4" data-source="[\"HEAD\";\"Tag Name\";\"Branch Name\"]" value=""></td>
+            
+            <!-- add model button -->
+            <td><button type="button" class="btn btn-small" id="ws-btn-model"><a href="#" rel="tooltip" title="以当前配置生成打包模版">Model</a></button></td>
             <!-- start build button -->
             <td><button type="button" class="btn btn-small" id="ws-btn-build"><a href="#" rel="tooltip" title="配置完毕，现在干活吧！">Build!!</a></button></td>
           </tr>
@@ -284,6 +326,11 @@
       <!-- --------------------------------------------------------------------------------- -->
       
       <!-- 第三页 -->
+      <div class="tab-pane" id="tabHelp">
+          Help页面，开发中。
+      </div>
+
+      <!-- 第四页 -->
       <div class="tab-pane" id="tabTest">
 
         <embed src="static/file/cat.swf" allowFullScreen="true" quality="high" width="600" height="540" align="middle" allowScriptAccess="always" wmode="transparent" type="application/x-shockwave-flash"></embed>
@@ -293,7 +340,7 @@
 
       <!-- --------------------------------------------------------------------------------- -->
       
-      <!-- 第四页 -->
+      <!-- 第五页 -->
       <div class="tab-pane" id="tabAbout">
         
         <h2>Build Yourown Project</h2>
@@ -304,7 +351,7 @@
         <p>为纪念<a target="_blank" href="http://zh.asoiaf.wikia.com/wiki/%E5%86%B0%E4%B8%8E%E7%81%AB%E4%B9%8B%E6%AD%8C%E4%B8%AD%E6%96%87%E7%BB%B4%E5%9F%BA">冰火第三季</a>开播，以及更好的把精力投入到公共库的工作。</p>
         </li>
         <li>
-        <p>支持极光和X光两个项目的各种打包需求。未来可以很容易的扩展，比如增加其他项目、更改操作系统平台、版本构建工具和版本控制方式等。</p>
+        <p>支持卫士和杀毒两个项目的各种打包需求。未来可以很容易的扩展，比如增加其他项目、更改操作系统平台、版本构建工具和版本控制方式等。</p>
         </li>
         <li>
         <p>client端基于<a target="_blank" href="https://en.wikipedia.org/wiki/Real-time_web">realtime web</a>，可实时同步编译机状态，用户界面UI基于<a target="_blank" href="http://twitter.github.io/bootstrap/">bootstrap</a>和<a target="_blank" href="http://jquery.com/">jquery</a>。支持chrome、safari等严格实现标准的浏览器（内网访问<a target="_blank" href="http://172.17.180.61:13412/">http://172.17.180.61:13412/</a>），支持firefox开发版、ios safari，推荐用chrome浏览，或以chrome插件形式使用。</p>
