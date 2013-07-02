@@ -46,13 +46,14 @@ function initUI() {
     var hTotal = $(window).height();
     if (hTotal < 595)
         hTotal = 595;
+    var h0 = $("#table-installer-info").height();
     var h1 = $("#table-build-config").height();
     var h2 = $("#table-build-info").height();
     var h3 = $("#table-build-depend").height();
     var h4 = $("#table-progress-info").height();
     var h5 = $("#table-status-info").height();
     var h6 = $("#table-markup-code").height();
-    $("#ws-build-log").height(hTotal - h1 - h2 - h3 - h4 - h5 - h6 - 65);
+    $("#ws-build-log").height(hTotal - h0 - h1 - h2 - h3 - h4 - h5 - h6 - 65);
 
 }
 
@@ -75,9 +76,9 @@ $(document).ready(function() {
     $('#ws-project-select').bind('change',onProjectSelect);
     $('#ws-worker-select').bind('change',onWorkerSelect);
     //绑定input text默认事件
-    $('#ws-cb-detail,#ws-build-reason,#ws-user-email,#ws-installer-supplyid,#ws-markup-detail').bind('click',onInputClick);
+    $('#ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-cb-detail,#ws-build-prefix,#ws-build-postfix,#ws-build-v1,#ws-build-v2,#ws-build-v3,#ws-build-v4,#ws-installer-supplyid,#ws-markup-detail').bind('click',onInputClick);
     //初始化typeahead
-    $('#ws-cb-detail,#ws-build-reason,#ws-user-email,#ws-installer-supplyid').typeahead();
+    $('#ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-cb-detail,#ws-build-prefix,#ws-build-postfix,#ws-build-v1,#ws-build-v2,#ws-build-v3,#ws-build-v4,#ws-installer-supplyid,#ws-markup-detail').typeahead();
     //初始化build按钮
     $("#ws-btn-build").bind('click',onBtnBuildClick);
     //初始化log-tab按下事件
@@ -167,6 +168,50 @@ function onBtnBuildClick() {
     })
     ctx += String.format("markupdetail,{0}",document.getElementById("ws-markup-detail").value);
     ctx += "|";
+
+    //build version
+    var prefix = document.getElementById("ws-build-prefix").value;
+    var v1 = document.getElementById("ws-build-v1").value;
+    if(!v1.match(/^[0-9]+$/)){
+        alert("版本号必须输入非负整数。");
+        $("#ws-build-v1").focus();
+        $("#ws-build-v1").select();
+        return;
+    }
+    var v2 = document.getElementById("ws-build-v2").value;
+    if(!v2.match(/^[0-9]+$/)){
+        alert("版本号必须输入非负整数。");
+        $("#ws-build-v2").focus();
+        $("#ws-build-v2").select();
+        return;
+    }
+    var v3 = document.getElementById("ws-build-v3").value;
+    if(!v3.match(/^[0-9]+$/)){
+        alert("版本号必须输入非负整数。");
+        $("#ws-build-v3").focus();
+        $("#ws-build-v3").select();
+        return;
+    }
+    var v4 = document.getElementById("ws-build-v4").value;
+    if(!v4.match(/^[0-9]+$/) && v4 != "$auto"){
+        alert("版本号必须输入非负整数。");
+        $("#ws-build-v4").focus();
+        $("#ws-build-v4").select();
+        return;
+    }
+    var postfix = document.getElementById("ws-build-postfix").value;
+
+    ctx += String.format("prefix,{0}|",prefix);
+    ctx += String.format("v1,{0}|",v1);
+    ctx += String.format("v2,{0}|",v2);
+    ctx += String.format("v3,{0}|",v3);
+    ctx += String.format("v4,{0}|",v4);
+    ctx += String.format("postfix,{0}|",postfix);
+
+    //installer archive
+    var archive = document.getElementById("ws-installer-archive").value;
+    ctx += String.format("archive,{0}|",archive)
+
     //build-reason and user-email
     var reason = document.getElementById("ws-build-reason").value;
     if (reason.length > 15) {
@@ -189,6 +234,7 @@ function onBtnBuildClick() {
     }
     ctx += String.format("reason,{0}|",reason);
     ctx += String.format("email,{0}|",email);
+
     //supplyid
     var supplyid = document.getElementById("ws-installer-supplyid").value;
     sids = supplyid.split(',');
@@ -449,6 +495,37 @@ function updateUI(msg) {
         content = String.format('<a href=\"#\" rel=\"tooltip\" title=\"{0}\"><font color=\"black\">{1}</font></a>',info,info);
         $("#ws-user-info").empty();
         $("#ws-user-info").append(content);
+    }
+    //更新默认版本号
+    else if (jsonMsg['msrc'] == 'ws-installer-version') {
+        ctx = jsonMsg['content'].split('.');
+        $("#ws-build-v1").val(ctx[0]);
+        $("#ws-build-v2").val(ctx[1]);
+        $("#ws-build-v3").val(ctx[2]);
+    }
+    //更新默认supplyid
+    else if (jsonMsg['msrc'] == 'ws-installer-supplyid') {
+        $("#ws-installer-supplyid").val(jsonMsg['content']);
+    }
+    //更新默认版本标记细节
+    else if (jsonMsg['msrc'] == 'ws-markup-detail') {
+        $("#ws-markup-detail").val(jsonMsg['content']);
+    }
+    //更新默认打包原因
+    else if (jsonMsg['msrc'] == 'ws-build-reason') {
+        $("#ws-build-reason").val(jsonMsg['content']);
+    }
+    //更新默认使用者email
+    else if (jsonMsg['msrc'] == 'ws-user-email') {
+        $("#ws-user-email").val(jsonMsg['content']);
+    }
+    //更新版本构造细节
+    else if (jsonMsg['msrc'] == 'ws-cb-detail') {
+        $("#ws-cb-detail").val(jsonMsg['content']);
+    }
+    //更新归档目录
+    else if (jsonMsg['msrc'] == 'ws-installer-archive') {
+        $("#ws-installer-archive").val(jsonMsg['content']);
     }
 }
 
