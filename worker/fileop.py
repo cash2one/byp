@@ -75,6 +75,42 @@ def FileOperationWithExtraPara(dir,op,para,fileType,excluded_dir=[]):
                     if not excluded:
                         op(file,para)
 
+def FolderOperation(dir,op,excluded_dir=[]):
+    for parent, dirnames, filenames in os.walk(dir):
+        for dirname in dirnames:
+            item = os.path.join(parent, dirname)
+            excluded = False
+            for exdir in excluded_dir:
+                if item.lower().find(exdir) != -1:
+                    excluded = True
+                    break
+            if not excluded:
+                op(item)
+    
+
+def FolderOperationWithExtraPara(dir,op,para,excluded_dir=[]):
+    for parent, dirnames, filenames in os.walk(dir):
+        for dirname in dirnames:
+            item = os.path.join(parent, dirname)
+            excluded = False
+            for exdir in excluded_dir:
+                if item.lower().find(exdir) != -1:
+                    excluded = True
+                    break
+            if not excluded:
+                op(item,para)
+
+def ZipFolder(dir):
+    dirName = dir[dir.rfind('SkinResources')+14:]
+    command = conf.byp_bin_path + 'MZip.exe -pack ' + dir + ' ' + conf.bin_path + 'Skins/Default/' + dirName + '.rdb'
+    #print command
+    os.system(command.encode(sys.getfilesystemencoding()))
+
+def KVZipFolder(dir):
+    dirName = dir[dir.rfind('SkinResources')+14:]
+    command = conf.byp_bin_path + 'MZip.exe -pack ' + dir + ' ' + conf.kvbin_path + 'Skins/Default/' + dirName + '.rdb'
+    #print command
+    os.system(command.encode(sys.getfilesystemencoding()))
 
 def Show(file):
     logging.info(file)
@@ -722,6 +758,12 @@ gen_rc_list                           - generate rc list
         GenRCFile(argv[2],'bdkv',GenRC,ftype)
     elif argv[1] == 'md5':
         CalcFileMd5(argv[2],ftype,extra_para1)
+    elif argv[1] == 'dirshow':
+        FolderOperation(argv[2],Show)
+    elif argv[1] == 'mzip_res':
+        FolderOperation(argv[2],ZipFolder)
+    elif argv[1] == 'kv_mzip_res':
+        FolderOperation(argv[2],KVZipFolder)
 
 if "__main__" == __name__:
     sys.exit(main(len(sys.argv),sys.argv))
