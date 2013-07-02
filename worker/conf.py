@@ -192,6 +192,7 @@ bdm_conf_files = {
 	'bdnd':'BDND',
 	'syscleaner':'SYSCleaner',
 	'sysaccelerator':'BDMSYSAccelerator',
+	'soacceleratorlib':'BDMSOAcceleratorLib',
 	'soacceleratorplugin':'BDMSOAcceleratorPlugin',
 	'socleanerplugin':'BDMSOCleanerPlugin',
 	'somanager':'BDMSOManager',
