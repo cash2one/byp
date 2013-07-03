@@ -310,10 +310,10 @@ def ExpendMarkupValue(product, str, code_revision, codeDir):
     if revision == '' or version == '':
         return (str,revision)
     else:
-        str = str.replace('$r', 'r'+revision)
-        str = str.replace('$v', 'v'+version)
+        str = str.replace('$revision', 'r'+revision)
+        str = str.replace('$version', 'v'+version)
         tst = '%f' % time.time()
-        str = str.replace('$t', 't'+tst)
+        str = str.replace('$timestamp', 't'+tst)
         return (str,revision)
 
 def getMarkupCodeCommands(product,value):
@@ -510,6 +510,8 @@ def buildSilentPackage(obj,product,type,file = ''):
             nsiFile = conf.bdkv_nsifile_daily
     if len(file) > 0:
         nsiFile = file
+        if type == 'mini':
+            silentNsiFile = file
     if not os.path.exists(nsiFile):
         return
     file_r = open(silentNsiFile)
@@ -539,19 +541,21 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
     insFile = ''
     vInstallFile = ''
     key = ''
+    installerPath = ''
     if len(type) > 0:
         key = type[0]
         
     if product == 'bdm':
         insFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
         vInstallFile = conf.sln_root + 'basic\\tools\\SetupScript\\include\\BDM_install.nsi'
+        installerPath = '..\\kvsetup\\'
     elif product == 'bdkv':
         if key == 'm':
             insFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi'
         else:
             insFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi'
-    
+        installerPath = '..\\setup\\'
     confFile = './BuildSwitch/Misc.xml'
     slist = []
     #read supplyid list
@@ -592,11 +596,11 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             if lines[index].find('OutFile')!= -1:
                 if key == 'm':
                     if bSilent:
-                        lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup%s.exe"\r\n' % token
+                        lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '%s.exe"\r\n' % token
                 elif key == 'n':
-                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}%s.exe"\r\n' % token
+                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '%s.exe"\r\n' % token
                 elif key == 'f':
-                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}%s.exe"\r\n' % token
+                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_Full%s.exe"\r\n' % token
         file_w  = open(newInsFile,"w")
         file_w .writelines(lines)
         file_w .close()
@@ -639,6 +643,11 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx)
 
 def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
+    installerPath = ''
+    if product == 'bdm':
+        installerPath = '..\\setup\\'
+    elif product == 'bdkv':
+        installerPath = '..\\kvsetup\\'
     #nsis backup
     newNetInstallFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall_Dummy.nsi'
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi' + ' ' + newNetInstallFile
@@ -649,9 +658,9 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
             if bSilent:
-                lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup_silent.exe"\r\n'
+                lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_silent.exe"\r\n'
             else:
-                lines[index] = 'OutFile "..\kvsetup\Baidusd_OnlineSetup.exe"\r\n'
+                lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '.exe"\r\n'
     file_w  = open(newNetInstallFile,"w")
     file_w .writelines(lines)
     file_w .close()
@@ -689,6 +698,8 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
 
 def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
     nsiFile = ''
+    bkOutput = ''
+    installerPath = ''
     #read supplyid list
     confFile = './BuildSwitch/Misc.xml'
     slist = []
@@ -708,35 +719,38 @@ def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
         logging.error(e)
     if product == 'bdm':
         nsiFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+        bkOutput = 'OutFile "..\setup\BaiduAn_Setup_${BUILD_BASELINE}.exe"\r\n'
+        installerPath = '..\\setup\\'
     elif product == 'bdkv':
         nsiFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
+        bkOutput = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}.exe"\r\n'
+        installerPath = '..\\kvsetup\\'
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
     if 'n10000' in slist:
-        if not bSilent:
-            obj.report('wk-build-log', command)
-            os.system(command.encode(sys.getfilesystemencoding()))
-        else:
-            file_r = open(nsiFile)
-            lines = file_r.readlines()
-            file_r.close()
-            for index in range(len(lines)):
-                if lines[index].find('OutFile')!= -1:
-                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}_silent.exe"\r\n'
-            file_w  = open(nsiFile,"w")
-            file_w .writelines(lines)
-            file_w .close()
-            
-            buildSilentPackage(obj,product,'normal',nsiFile)
-            
-            file_r = open(nsiFile)
-            lines = file_r.readlines()
-            file_r.close()
-            for index in range(len(lines)):
-                if lines[index].find('OutFile')!= -1:
-                    lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}.exe"\r\n'
-            file_w  = open(nsiFile,"w")
-            file_w .writelines(lines)
-            file_w .close()
+        file_r = open(nsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        for index in range(len(lines)):
+            if lines[index].find('OutFile')!= -1:
+                if bSilent:
+                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_silent.exe"\r\n'
+                else:
+                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '.exe"\r\n'
+        file_w  = open(nsiFile,"w")
+        file_w .writelines(lines)
+        file_w .close()
+        
+        buildSilentPackage(obj,product,'normal',nsiFile)
+        
+        file_r = open(nsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        for index in range(len(lines)):
+            if lines[index].find('OutFile')!= -1:
+                lines[index] = bkOutput
+        file_w  = open(nsiFile,"w")
+        file_w .writelines(lines)
+        file_w .close()
     #supplyid
     if bSupplyid:
         buildSupplyidPackage(obj,product,'normal',bSilent)
@@ -759,6 +773,8 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
+        
+    #only bdkv now
     command = 'copy /Y ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
     os.system(command.encode(sys.getfilesystemencoding()))
     setupFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
@@ -768,9 +784,9 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
             if bSilent:
-                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}_silent.exe"\r\n'
+                lines[index] = 'OutFile "..\\kvsetup\\"' + comm.getInstallerFullName(product) + '_silent.exe"\r\n'
             else:
-                lines[index] = 'OutFile "..\kvsetup\Baidusd_Setup_Full_${BUILD_BASELINE}.exe"\r\n'
+                lines[index] = 'OutFile "..\\kvsetup\\"' + comm.getInstallerFullName(product) + '.exe"\r\n'
     file_w  = open(setupFile,"w")
     file_w .writelines(lines)
     file_w .close()
@@ -955,6 +971,9 @@ def genSymbols(product):
         commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmantivirus\\*.dll','Release'))
         commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmsysrepair\\*.dll','Release'))
         commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\*.sys','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\x86\\*.sys','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\x64\\*.sys','Release'))
+        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\x64\\*.dll','Release'))
         commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\*.dll','Release'))
         commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkv\\*.dll','Release'))
         commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll','Release'))
@@ -1884,6 +1903,9 @@ class CalcInstallerMd5(BuildStep):
     def act(self):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
+            #clean
+            command = 'del /Q /S ' + conf.verify_md5_file
+            os.system(command.encode(sys.getfilesystemencoding()))
         elif self.value == 1:
             #clean
             command = 'del /Q /S ' + conf.verify_md5_file
@@ -1905,6 +1927,9 @@ class KVCalcInstallerMd5(BuildStep):
     def act(self):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
+            #clean
+            command = 'del /Q /S ' + conf.verify_md5_file
+            os.system(command.encode(sys.getfilesystemencoding()))
         elif self.value == 1:
             #clean
             command = 'del /Q /S ' + conf.verify_md5_file
@@ -1981,17 +2006,21 @@ class Send(BuildStep):
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
             commands = []
-            commands.append('net use \\\\192.168.10.242\\public')
+            cmd = 'net use ' + comm.getArchiveRoot('bdm')
+            commands.append(cmd)
             commands.append('python send.py bdm daily')
             for item in commands:
                 self.report('wk-build-log', item)
+            os.system(cmd.encode(sys.getfilesystemencoding()))
             send.main(3,['send.py','bdm','daily'])
         elif self.value == 2:
             commands = []
-            commands.append('net use \\\\192.168.10.242\\public')
+            cmd = 'net use ' + comm.getArchiveRoot('bdm')
+            commands.append(cmd)
             commands.append('python send.py bdm version')
             for item in commands:
                 self.report('wk-build-log', item)
+            os.system(cmd.encode(sys.getfilesystemencoding()))
             send.main(3,['send.py','bdm','version'])
         BuildStep.act(self)
     
@@ -2007,17 +2036,21 @@ class KVSend(BuildStep):
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
             commands = []
-            commands.append('net use \\\\192.168.10.242\\public')
+            cmd = 'net use ' + comm.getArchiveRoot('bdkv')
+            commands.append(cmd)
             commands.append('python send.py bdkv daily')
             for item in commands:
                 self.report('wk-build-log', item)
+            os.system(cmd.encode(sys.getfilesystemencoding()))
             send.main(3,['send.py','bdkv','daily'])
         elif self.value == 2:
             commands = []
-            commands.append('net use \\\\192.168.10.242\\public')
+            cmd = 'net use ' + comm.getArchiveRoot('bdkv')
+            commands.append(cmd)
             commands.append('python send.py bdkv version')
             for item in commands:
                 self.report('wk-build-log', item)
+            os.system(cmd.encode(sys.getfilesystemencoding()))
             send.main(3,['send.py','bdkv','version'])
         BuildStep.act(self)
     

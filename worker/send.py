@@ -58,8 +58,6 @@ def main(argc, argv):
         print 'usage:python send.py <product_shortname (bdm|bdkv)> <build_type (daily|force)>'
         return
     
-    buildIdFile = ''
-    ftpPathName = ''
     debugPath = ''
     binPath = ''
     logPath = ''
@@ -67,47 +65,32 @@ def main(argc, argv):
     svrDirName = ''
     if argv[1].lower() == 'bdm':
         if argv[2].lower() == 'daily':
-        	buildIdFile = conf.buildIdFile
-        	ftpPathName = conf.ftpPathNameR
-        	svrDirName = conf.severDirName_daily
+        	svrDirName = comm.getInstallerVersion('bdm')
         elif argv[2].lower() == 'version':
-        	buildIdFile = conf.versionBuildIdFile
-        	ftpPathName = conf.ftpVersionPathNameR
-        	svrDirName = conf.severDirName_version
+        	svrDirName = comm.getInstallerVersion('bdm')
         elif argv[2].lower() == 'partial':
-        	buildIdFile = conf.customBuildIdFile
-        	ftpPathName = conf.ftpCustomPathNameR
-        	svrDirName = conf.severDirName_partial
+        	svrDirName = comm.getInstallerVersion('bdm')
     	debugPath = conf.debug_path
     	binPath = conf.bin_path
     	logPath = conf.log_path
     	setupPath = conf.setup_path
     elif argv[1].lower() == 'bdkv':
         if argv[2].lower() == 'daily':
-        	buildIdFile = conf.kvBuildIdFile
-        	ftpPathName = conf.ftpKVPathNameR
-        	svrDirName = conf.severDirName_daily
+        	svrDirName = comm.getInstallerVersion('bdkv')
         elif argv[2].lower() == 'version':
-        	buildIdFile = conf.kvVersionBuildIdFile
-        	ftpPathName = conf.ftpVersionKVPathNameR
-        	svrDirName = conf.severDirName_version
+        	svrDirName = comm.getInstallerVersion('bdm')
         elif argv[2].lower() == 'partial':
-        	buildIdFile = conf.kvCustomBuildIdFile
-        	ftpPathName = conf.ftpCustomKVPathNameR
-        	svrDirName = conf.severDirName_partial
+        	svrDirName = comm.getInstallerVersion('bdm')
         debugPath = conf.kvdebug_path
         binPath = conf.kvbin_path
     	logPath = conf.kvlog_path
     	setupPath = conf.kvsetup_path
-    if not (buildIdFile and ftpPathName and debugPath and binPath and logPath and setupPath):
+    if not (debugPath and binPath and logPath and setupPath):
     	print 'configuration error,please check conf.py'
     	return
     
-    buildId=getBuildId(buildIdFile)
-    currTime=time.strftime("%Y-%m-%d")
-    filenames=os.listdir(setupPath)
-    ftpDirName=svrDirName%(buildId)
-    ftpPathDirName=ftpPathName+ftpDirName
+    #use custom ftppath
+    ftpPathDirName = comm.getArchiveFullPath(argv[1].lower())
     
     if not os.path.exists(ftpPathDirName):
         os.mkdir(ftpPathDirName)

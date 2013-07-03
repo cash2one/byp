@@ -42,7 +42,6 @@
       <!-- 第零页 -->
       <div class="tab-pane" id="tabTemplate" style="height:550px">
         Template页面，开发中。
-
       </div>
 
       <!-- 第一页 -->
@@ -177,7 +176,7 @@
           <tr>
             <!-- build version -->
             <td class="td-form-title" width="12%">
-              <a href="#" rel="tooltip" title="此次打包生成的安装包版本规范，仅在 [版本更新] 被选中时生效，默认$prefix和$postfix为空，$auto为指定或约定的构造版本号。">版本名称</a>
+              <a href="#" rel="tooltip" title="此次打包生成的安装包版本规范，仅在 [版本更新] 被选中时生效。默认$prefix和$postfix为空，$auto为指定或约定的构造版本号。">版本名称</a>
             </td>
             <td id="td-installer-version">
               <input type="text" style="width:45px" id="ws-build-prefix" data-provide="typeahead" value="$prefix">
@@ -188,7 +187,7 @@
               <input type="text" style="width:50px" id="ws-build-postfix" data-provide="typeahead" value="$postfix">
             </td>
             <td class="td-form-title" width="12%">
-              <a href="#" rel="tooltip" title="合法且可访问的安装包归档目录,安装包将直接放到此目录下">归档目录</a>
+              <a href="#" rel="tooltip" title="合法且可访问的安装包归档目录,安装包将直接放到此目录下。$share为默认归档机器，$version为指定的版本号。">归档目录</a>
             </td>
             <td id="td-installer-archive">
               <input type="text" style="width:160px" id="ws-installer-archive" data-provide="typeahead" value="">

@@ -200,8 +200,8 @@ default_supplyid = {
 }
 
 #默认版本标记细节
-bdkv_svn_default_markup_details = 'bdkv_$revision_$version_$timestep'
-bdm_svn_default_markup_details = 'bdm_$revision_$version_$timestep'
+bdkv_svn_default_markup_details = 'bdkv_$revision_$version_$timestamp'
+bdm_svn_default_markup_details = 'bdm_$revision_$version_$timestamp'
 
 markup_details = {
 	'杀毒':bdkv_svn_default_markup_details,
@@ -209,8 +209,8 @@ markup_details = {
 }
 
 #默认打包原因
-bdkv_default_build_reason = '杀毒每日编译'
-bdm_default_build_reason = '卫士每日编译'
+bdkv_default_build_reason = 'BaiduSd DB'
+bdm_default_build_reason = 'BaiduAn DB'
 
 default_build_reason = {
 	'杀毒':bdkv_default_build_reason,

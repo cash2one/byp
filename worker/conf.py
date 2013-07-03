@@ -64,9 +64,8 @@ setupList=["*.exe"]
 log_path="../output/err/"
 kvlog_path="../output/kverr/"
 
-severDirName_daily="1.0.0.%d"
-severDirName_version="1.0.1.%d"
-severDirName_partial="1.0.0.%d"
+ftp_default_archive = '\\\\192.168.10.242'
+
 ftpPathNameR= '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'DailyBuild' +'\\' 
 ftpKVPathNameR= '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'KVDailyBuild' +'\\' 
 ftpVersionPathNameR = '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'VersionBuild' +'\\'
