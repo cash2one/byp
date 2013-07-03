@@ -549,7 +549,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
     if product == 'bdm':
         insFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
         vInstallFile = conf.sln_root + 'basic\\tools\\SetupScript\\include\\BDM_install.nsi'
-        installerPath = '..\\kvsetup\\'
+        installerPath = '..\\setup\\'
     elif product == 'bdkv':
         if key == 'm':
             insFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi'
@@ -557,7 +557,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
         else:
             insFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi'
-        installerPath = '..\\setup\\'
+        installerPath = '..\\kvsetup\\'
     confFile = './BuildSwitch/Misc.xml'
     slist = []
     #read supplyid list
@@ -594,15 +594,22 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
         file_r = open(newInsFile)
         lines = file_r.readlines()
         file_r.close()
+        installerFullName = comm.getInstallerFullName(product)
+        installerVersion = comm.getInstallerVersion(product)
         for index in range(len(lines)):
             if lines[index].find('OutFile')!= -1:
                 if key == 'm':
-                    if bSilent:
-                        lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '%s.exe"\r\n' % token
+                    lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online%s.exe"\r\n' % token
                 elif key == 'n':
-                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '%s.exe"\r\n' % token
+                    lines[index] = 'OutFile "' + installerPath + installerFullName + '%s.exe"\r\n' % token
                 elif key == 'f':
-                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_Full%s.exe"\r\n' % token
+                    lines[index] = 'OutFile "' + installerPath + installerFullName + 'Full%s.exe"\r\n' % token
+            if lines[index].find('VIProductVersion') != -1:
+                lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
+            if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
+                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
+            if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
+                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
         file_w  = open(newInsFile,"w")
         file_w .writelines(lines)
         file_w .close()
@@ -625,7 +632,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             for index in range(len(lines)):
                 if lines[index].find('!define SUPPLYID "10001"')!= -1:
                     lines[index] = '!define SUPPLYID "%s"\r\n' % supplyid
-            file_w  = open(vInstallFile,"w")
+            file_w  = open(miniSilentFile,"w")
             file_w .writelines(lines)
             file_w .close()
 
@@ -658,7 +665,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             for index in range(len(lines)):
                 if lines[index].find('!define SUPPLYID')!= -1:
                     lines[index] = '!define SUPPLYID "10001"\r\n'
-            file_w  = open(vInstallFile,"w")
+            file_w  = open(miniSilentFile,"w")
             file_w .writelines(lines)
             file_w .close()
             comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx)
@@ -676,12 +683,20 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
     file_r = open(newNetInstallFile)
     lines = file_r.readlines()
     file_r.close()
+    installerFullName = comm.getInstallerFullName(product)
+    installerVersion = comm.getInstallerVersion(product)
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
             if bSilent:
-                lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_silent.exe"\r\n'
+                lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online_silent.exe"\r\n'
             else:
-                lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '.exe"\r\n'
+                lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online.exe"\r\n'
+        if lines[index].find('VIProductVersion') != -1:
+            lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
+        if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
+        if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
     file_w  = open(newNetInstallFile,"w")
     file_w .writelines(lines)
     file_w .close()
@@ -746,7 +761,6 @@ def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
         nsiFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
         bkOutput = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}.exe"\r\n'
         installerPath = '..\\kvsetup\\'
-    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
     if 'n10000' in slist:
         file_r = open(nsiFile)
         lines = file_r.readlines()
