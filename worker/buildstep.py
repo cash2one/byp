@@ -540,6 +540,7 @@ def buildSilentPackage(obj,product,type,file = ''):
 def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
     insFile = ''
     vInstallFile = ''
+    miniSilentFile = ''
     key = ''
     installerPath = ''
     if len(type) > 0:
@@ -552,6 +553,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
     elif product == 'bdkv':
         if key == 'm':
             insFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi'
+            miniSilentFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\include\\buildline.nsi'
         else:
             insFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi'
@@ -612,11 +614,21 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             file_r.close()
             for index in range(len(lines)):
                 if lines[index].find('StrCpy $SupplyID')!= -1:
-                    lines[index] = 'StrCpy $SupplyID "%s"\r\n' % item[1:]
+                    lines[index] = 'StrCpy $SupplyID "%s"\r\n' % supplyid
             file_w  = open(vInstallFile,"w")
             file_w .writelines(lines)
             file_w .close()
         else:
+            file_r = open(miniSilentFile)
+            lines = file_r.readlines()
+            file_r.close()
+            for index in range(len(lines)):
+                if lines[index].find('!define SUPPLYID "10001"')!= -1:
+                    lines[index] = '!define SUPPLYID "%s"\r\n' % supplyid
+            file_w  = open(vInstallFile,"w")
+            file_w .writelines(lines)
+            file_w .close()
+
             ctx = comm.getMsg(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini')
             ctx_new = ctx.replace('10001',item[1:])
             comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx_new)
@@ -640,6 +652,15 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             file_w .writelines(lines)
             file_w .close()
         else:
+            file_r = open(miniSilentFile)
+            lines = file_r.readlines()
+            file_r.close()
+            for index in range(len(lines)):
+                if lines[index].find('!define SUPPLYID')!= -1:
+                    lines[index] = '!define SUPPLYID "10001"\r\n'
+            file_w  = open(vInstallFile,"w")
+            file_w .writelines(lines)
+            file_w .close()
             comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx)
 
 def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
