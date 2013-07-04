@@ -46,7 +46,7 @@ var updater = {
     start: function() {
         //1. connect to server
         //console.log('connect to server');
-        var url = "ws://172.17.180.61:13413/buildserver";
+        var url = "ws://172.17.180.61:13412/buildserver";
         updater.socket = new WebSocket(url);
         
         //2 register callbacks
@@ -56,7 +56,7 @@ var updater = {
         updater.socket.onopen = function (event) {
             // handshaked, init ui
             //console.log('websocket server connected');
-            updater.send("{\"msrc\":\"ws-client-connect\",\"content\":\"17\"}");
+            updater.send("{\"msrc\":\"ws-client-connect\",\"content\":\"18\"}");
             updater.send("{\"msrc\":\"ws-project-select\",\"content\":\"\"}");
             updater.send("{\"msrc\":\"ws-worker-select\",\"content\":\"\"}");
             updater.send("{\"msrc\":\"ws-query-buildlog\",\"content\":\"\"}");
