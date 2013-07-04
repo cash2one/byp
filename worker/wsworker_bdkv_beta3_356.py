@@ -55,7 +55,7 @@ def main(argc, argv):
 	#init constants
 	timeout_buildserver = 0
 	workerId = '%s' % uuid.uuid4()
-	nickname = 'beta3_356'
+	nickname = 'beta3_369'
 	
 	while True:
 		ws_service = None
@@ -64,7 +64,7 @@ def main(argc, argv):
 			logging.info('try connectting to server')
 			opts = list()
 			opts.append('sid: %s' % workerId)
-			ws_service = websocketclt.create_connection("ws://172.17.180.61:13412/buildserver",
+			ws_service = websocketclt.create_connection("ws://172.17.180.61:13413/buildserver",
 								timeout = timeout_buildserver,
 								sockopt = ((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
 								header = opts)

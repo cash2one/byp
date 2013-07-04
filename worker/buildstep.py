@@ -583,11 +583,11 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             continue
         if item in conf.default_installer_supplyid:
             continue
-        token = '_sid_' + item[1:]
+        token = '_Sid_' + item[1:]
         if bSilent:
-            token += '_silent'
+            token += '_Silent'
         supplyid = item[1:]
-        newInsFile = insFile[:-4] + '_sid_' + item[1:] + '.nsi'
+        newInsFile = insFile[:-4] + '_Sid_' + item[1:] + '.nsi'
         #nsis backup
         command = 'copy /Y ' + insFile + ' ' + newInsFile
         os.system(command.encode(sys.getfilesystemencoding()))
@@ -603,7 +603,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
                 elif key == 'n':
                     lines[index] = 'OutFile "' + installerPath + installerFullName + '%s.exe"\r\n' % token
                 elif key == 'f':
-                    lines[index] = 'OutFile "' + installerPath + installerFullName + 'Full%s.exe"\r\n' % token
+                    lines[index] = 'OutFile "' + installerPath + installerFullName + '_Full%s.exe"\r\n' % token
             if lines[index].find('VIProductVersion') != -1:
                 lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
             if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
@@ -688,7 +688,7 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
             if bSilent:
-                lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online_silent.exe"\r\n'
+                lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online_Silent.exe"\r\n'
             else:
                 lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online.exe"\r\n'
         if lines[index].find('VIProductVersion') != -1:
@@ -768,7 +768,7 @@ def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
         for index in range(len(lines)):
             if lines[index].find('OutFile')!= -1:
                 if bSilent:
-                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_silent.exe"\r\n'
+                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_Silent.exe"\r\n'
                 else:
                     lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '.exe"\r\n'
         file_w  = open(nsiFile,"w")
@@ -819,9 +819,9 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     for index in range(len(lines)):
         if lines[index].find('OutFile')!= -1:
             if bSilent:
-                lines[index] = 'OutFile "..\\kvsetup\\"' + comm.getInstallerFullName(product) + '_silent.exe"\r\n'
+                lines[index] = 'OutFile "..\\kvsetup\\' + comm.getInstallerFullName(product) + '_Full_Silent.exe"\r\n'
             else:
-                lines[index] = 'OutFile "..\\kvsetup\\"' + comm.getInstallerFullName(product) + '.exe"\r\n'
+                lines[index] = 'OutFile "..\\kvsetup\\' + comm.getInstallerFullName(product) + '_Full.exe"\r\n'
     file_w  = open(setupFile,"w")
     file_w .writelines(lines)
     file_w .close()
