@@ -1280,7 +1280,11 @@ class RewriteVersion(BuildStep):
     
     def act(self):
         if self.value == 0:
-            self.report('wk-build-log', 'Passed')
+            self.report('wk-build-log', 'Adjusting buildversion')
+            comm.setBuildNumber('bdm','0',False)
+            command = 'python rewrite_version.py bdm daily'
+            self.report('wk-build-log', command)
+            rewrite_version.main(3,['rewrite_version.py','bdm','daily'])
         elif self.value == 1:
             command = 'python rewrite_version.py bdm daily'
             self.report('wk-build-log', command)
@@ -1301,7 +1305,11 @@ class KVRewriteVersion(BuildStep):
     
     def act(self):
         if self.value == 0:
-            self.report('wk-build-log', 'Passed')
+            self.report('wk-build-log', 'Adjusting buildversion')
+            comm.setBuildNumber('bdkv','0',False)
+            command = 'python rewrite_version.py bdkv daily'
+            self.report('wk-build-log', command)
+            rewrite_version.main(3,['rewrite_version.py','bdkv','daily'])
         elif self.value == 1:
             command = 'python rewrite_version.py bdkv daily'
             self.report('wk-build-log', command)

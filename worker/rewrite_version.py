@@ -147,7 +147,7 @@ def main(argc,argv):
     
     if buildIdFile and nsiFile:
         num = AddBuildId(buildIdFile)
-        comm.setBuildNumber(argv[1].lower())
+        num = comm.setBuildNumber(argv[1].lower(),num)
         severtime = time.strftime("%Y-%m-%d %I:%M:%S")
         update_nsis_build_info(nsiFile, '!define RELEASE_VERSION', '!define BUILD_TIME',num,severtime)
         update_buildver(num)

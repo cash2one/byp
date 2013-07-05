@@ -502,6 +502,7 @@ function updateUI(msg) {
         $("#ws-build-v1").val(ctx[0]);
         $("#ws-build-v2").val(ctx[1]);
         $("#ws-build-v3").val(ctx[2]);
+        $("#ws-build-v4").val(ctx[3]);
     }
     //更新默认supplyid
     else if (jsonMsg['msrc'] == 'ws-installer-supplyid') {
