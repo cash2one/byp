@@ -23,7 +23,7 @@ buildver_definefile = "../../basic/include/CommonInclude/BDMVersion.h"
 
 cerf_addr='m1-scm-cluster-test03.m1.baidu.com:8111'
 #cerf_addr='m1-win2003k32-scm-winbuild05.vm.baidu.com'
-#cerf_addr='sign.baidu.com'
+cerf_addr='sign.baidu.com'
 cerf_login_server='uuap.baidu.com'
 
 sign_file_exts='*.exe,*.dll'

@@ -188,12 +188,12 @@ def post_multipart(host, selector, fields, files, blanks):
     h.putrequest('POST', selector)
     h.putheader('content-type', content_type)
     h.putheader('content-length', str(len(body)))
-    #h.putheader('Connection','keep-alive')
-    #h.putheader('Cache-Control','max-age=0')
-    #h.putheader('Host','sign.baidu.com')
-    #h.putheader('origin','http://sign.baidu.com')
-    #h.putheader('Referer','http://sign.baidu.com/')
-    #h.putheader('Cookie',userconf.sign_cookie)
+    h.putheader('Connection','keep-alive')
+    h.putheader('Cache-Control','max-age=0')
+    h.putheader('Host','sign.baidu.com')
+    h.putheader('origin','http://sign.baidu.com')
+    h.putheader('Referer','http://sign.baidu.com/')
+    h.putheader('Cookie',userconf.sign_cookie)
     h.endheaders()
     h.send(body)
     errcode, errmsg, headers = h.getreply()
@@ -215,17 +215,17 @@ def SignBaidu(file,para):
     fields.append(('desc',sign_product))
     fields.append(('cert',signType))
     
-    files.append(('f1',file,comm.getFileBuf(file)))
+    #files.append(('f1',file,comm.getFileBuf(file)))
     #blanks = ['f2','f3','f4','f5','f6','f7','f8','f9']
-    #files.append(('file[]',file,comm.getFileBuf(file)))
+    files.append(('file[]',file,comm.getFileBuf(file)))
     #blanks = ['file[]','file[]','file[]','file[]']
     
     blanks = []
     
     digitalSign = ''
-    if signType == '1':
+    if signType == '2':
         digitalSign = 'baidu_cn'
-    elif signType == '2':
+    elif signType == '1':
         digitalSign = 'baidu_bj_netcom'
     elif signType == '3':
         digitalSign = 'baidu_jp'
@@ -280,9 +280,9 @@ def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
                 continue
             type = node.getAttribute('type')
             if type == 'baidu_cn':
-                signId = '1'
-            elif type == 'baidu_bj_netcom':
                 signId = '2'
+            elif type == 'baidu_bj_netcom':
+                signId = '1'
             elif type == 'baidu_jp':
                 signId = '3'
             #node.setAttribute('sign','0')
