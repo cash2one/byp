@@ -122,7 +122,8 @@ kv_rclist_file = './conf/kvrcdef.xml'
 svn_remote_info_file = '../output/svn/svn_remote.info'
 
 mgr_official_sign_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
-								'..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',]
+								'..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',
+                                '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',]
 
 kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
@@ -131,10 +132,12 @@ kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
                                 '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',]
 
 kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
-                      '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
+                      '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',
+                      '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',]
 
 kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
-                          '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',]
+                          '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',
+                          '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',]
 
 mgr_verify_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
 						  '..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',
