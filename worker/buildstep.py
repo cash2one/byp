@@ -6,9 +6,9 @@
     express build mode class library
 """
 
-import sys,os,conf,xml.dom.minidom,datetime,comm
-import rewrite_version,sign,fileop,rcgen,send
-import logging,time
+import sys, os, conf, xml.dom.minidom, datetime, comm
+import rewrite_version, sign, fileop, rcgen, send
+import logging, time
 
 build_step_creator = {
                       'prebuild':'PreBuild',
@@ -66,14 +66,14 @@ def getSlns(product):
         checklogFile = conf.kvchecklog_file
     
     slns = []
-    fileObj = open(checklogFile,'r')
+    fileObj = open(checklogFile, 'r')
     try:
         try:
             for line in fileObj.readlines():
                 slns.append(line[0:line.find(' ')])
         finally:
             fileObj.close()
-    except Exception,e:
+    except Exception, e:
         logging.error(e)
         logging.error(e)
     
@@ -91,7 +91,7 @@ def genSvnLockActions(product, action, value):
             actValue = True
         else:
             actValue = False
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     #noaction then return
@@ -101,7 +101,7 @@ def genSvnLockActions(product, action, value):
     commands = []
     slns = getSlns(product)
     for item in slns:
-        confFile = './BuildSwitch/'+item+'.xml'
+        confFile = './BuildSwitch/' + item + '.xml'
         try:
             dom = xml.dom.minidom.parse(confFile)
             root = dom.documentElement
@@ -115,7 +115,7 @@ def genSvnLockActions(product, action, value):
                     continue
                 commands.append(conf.sln_root + dir)
                 break
-        except Exception,e:
+        except Exception, e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
     commands.append(conf.sln_root + 'basic')
@@ -125,7 +125,7 @@ def genSvnLockActions(product, action, value):
     cmd_details = []
     ecode = sys.getfilesystemencoding()
     for item in commands:
-        infoFile = '..\\output\\svn\\' + item[item.rfind('\\')+1:] + '.info'
+        infoFile = '..\\output\\svn\\' + item[item.rfind('\\') + 1:] + '.info'
         command = 'svn list --non-interactive --no-auth-cache --username buildbot --password 123456 -R ' + item + ' > ' + infoFile
         os.system(command.encode(sys.getfilesystemencoding()))
         fh = open(infoFile)
@@ -180,7 +180,7 @@ def getSvnCommands(product, value):
                     codeDir = '/trunk'
                     revision = node.getAttribute('value')
                 break
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     
@@ -190,7 +190,7 @@ def getSvnCommands(product, value):
     commands = []
     slns = getSlns(product)
     for item in slns:
-        confFile = './BuildSwitch/'+item+'.xml'
+        confFile = './BuildSwitch/' + item + '.xml'
         try:
             dom = xml.dom.minidom.parse(confFile)
             root = dom.documentElement
@@ -208,15 +208,15 @@ def getSvnCommands(product, value):
                 if svnAction == 'checkout':
                     command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.sln_root + dir
                 elif svnAction == 'update':
-                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " "  + conf.sln_root + dir
+                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + dir
                 commands.append(command)
                 break
-        except Exception,e:
+        except Exception, e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
     if svnAction == 'update':
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " "  + conf.sln_root + "basic")
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " "  + conf.sln_root + "stable_proj")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "basic")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "stable_proj")
     elif svnAction == 'checkout':
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
@@ -231,7 +231,7 @@ def GetRemoteRevision():
     for line in svn_info_lines:
         index = line.find(': ')
         if index != -1:
-            secondPart = line[index+2:]
+            secondPart = line[index + 2:]
             secondPart = secondPart.strip(' \r\n')
             bFit = True
             for i in secondPart:
@@ -257,7 +257,7 @@ def ExpendMarkupValue(product, str, code_revision, codeDir):
         for line in svn_info_lines:
             index = line.find(': ')
             if index != -1:
-                secondPart = line[index+2:]
+                secondPart = line[index + 2:]
                 secondPart = secondPart.strip(' \r\n')
                 bFit = True
                 for i in secondPart:
@@ -299,24 +299,24 @@ def ExpendMarkupValue(product, str, code_revision, codeDir):
     for line in version_lines:
         index = line.find('!define RELEASE_VERSION  ')
         if index != -1:
-            secondPart = line[index+25:]
+            secondPart = line[index + 25:]
             version = secondPart.strip('" \r\n')
             if code_revision != '':
                 try:
                     version = '%d' % (int(version) + 1)
-                except Exception,e:
+                except Exception, e:
                     print e
             break
     if revision == '' or version == '':
-        return (str,revision)
+        return (str, revision)
     else:
-        str = str.replace('$revision', 'r'+revision)
-        str = str.replace('$version', 'v'+version)
+        str = str.replace('$revision', 'r' + revision)
+        str = str.replace('$version', 'v' + version)
         tst = '%f' % time.time()
-        str = str.replace('$timestamp', 't'+tst)
-        return (str,revision)
+        str = str.replace('$timestamp', 't' + tst)
+        return (str, revision)
 
-def getMarkupCodeCommands(product,value):
+def getMarkupCodeCommands(product, value):
     #codebase must be considered
     codeDir = ''
     revision = ''
@@ -345,7 +345,7 @@ def getMarkupCodeCommands(product,value):
                         codeDir = '/' + tokens[0].strip('/ ')
                         code_revision = tokens[1].strip(' ')
                 break
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     
@@ -363,7 +363,7 @@ def getMarkupCodeCommands(product,value):
             if name == markupType:
                 markupValue = node.getAttribute('value')
                 break
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     
@@ -372,7 +372,7 @@ def getMarkupCodeCommands(product,value):
         return []
     else:
         actType = markupType
-        (markupValue,revision) = ExpendMarkupValue(product, markupValue, code_revision, codeDir)
+        (markupValue, revision) = ExpendMarkupValue(product, markupValue, code_revision, codeDir)
         if markupType == '+branch' or markupType == '-branch':
             markupType = '/branches/'
         elif markupType == '+tag' or markupType == '-tag':
@@ -384,7 +384,7 @@ def getMarkupCodeCommands(product,value):
             msg = 'bypbuild delete %s' % datetime.datetime.now()
         slns = getSlns(product)
         for item in slns:
-            confFile = './BuildSwitch/'+item+'.xml'
+            confFile = './BuildSwitch/' + item + '.xml'
             try:
                 dom = xml.dom.minidom.parse(confFile)
                 root = dom.documentElement
@@ -397,7 +397,7 @@ def getMarkupCodeCommands(product,value):
                 elif actType[0] == '-':
                     command = "svn delete " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
                 commands.append(command)
-            except Exception,e:
+            except Exception, e:
                 logging.error("error occers when parsing xml or run command:")
                 logging.error(e)
         #add basic and stable
@@ -410,7 +410,7 @@ def getMarkupCodeCommands(product,value):
         commands = list(set(commands))
         return commands
     
-def getBuildCommands(product,value):
+def getBuildCommands(product, value):
     checklogFile = ''
     errDir = ''
     if product == 'bdm':
@@ -435,7 +435,7 @@ def getBuildCommands(product,value):
     commands = []
     slns = getSlns(product)
     for item in slns:
-        confFile = './BuildSwitch/'+item+'.xml'
+        confFile = './BuildSwitch/' + item + '.xml'
         try:
             dom = xml.dom.minidom.parse(confFile)
             root = dom.documentElement
@@ -458,10 +458,10 @@ def getBuildCommands(product,value):
                 command = "vcbuild " + vcbuildAction + " /time /M1 /errfile:" + errDir + item + logName + ".log " + conf.sln_root \
                  + dir + "\\Projects\\" + item + ".sln \"" + type + "\""
                 commands.append(command)
-            writer = open(confFile,'w')
+            writer = open(confFile, 'w')
             dom.writexml(writer)
             writer.close()
-        except Exception,e:
+        except Exception, e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
     return commands
@@ -477,8 +477,8 @@ def getInstallOptions():
         bInstallFull = False if root.getAttribute('install_full') == '0' else True
         bInstallUpdate = False if root.getAttribute('install_update') == '0' else True
         bInstallSilence = False if root.getAttribute('install_silence') == '0' else True
-        return (bInstall,bInstallMini,bInstallFull,bInstallUpdate,bInstallSilence)
-    except Exception,e:
+        return (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence)
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
         
@@ -487,11 +487,11 @@ def getViruslibVersion():
     try:
         ctx = comm.getMsg(vlibVersionFile)
         return ctx
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when getting vlib version")
         logging.error(e)
 
-def buildSilentPackage(obj,product,type,file = ''):
+def buildSilentPackage(obj, product, type, file=''):
     silentNsiFile = ''
     nsiFile = ''
     if product == 'bdm':
@@ -518,9 +518,9 @@ def buildSilentPackage(obj,product,type,file = ''):
     lines = file_r.readlines()
     file_r.close()
     for index in range(len(lines)):
-        if lines[index].find('#silent#')!= -1:
+        if lines[index].find('#silent#') != -1:
             lines[index] = 'Strcpy $varIsSilence "1"    #silent#\r\n'
-    file_w  = open(silentNsiFile,"w")
+    file_w = open(silentNsiFile, "w")
     file_w .writelines(lines)
     file_w .close()
     #do install
@@ -531,13 +531,13 @@ def buildSilentPackage(obj,product,type,file = ''):
     lines = file_r.readlines()
     file_r.close()
     for index in range(len(lines)):
-        if lines[index].find('#silent#')!= -1:
+        if lines[index].find('#silent#') != -1:
             lines[index] = '#Strcpy $varIsSilence "1"    #silent#\r\n'
-    file_w  = open(silentNsiFile,"w")
+    file_w = open(silentNsiFile, "w")
     file_w .writelines(lines)
     file_w .close()
 
-def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
+def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
     insFile = ''
     vInstallFile = ''
     miniSilentFile = ''
@@ -572,7 +572,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
                 value = node.getAttribute('value')
                 slist = value.split(',')
                 break
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     #do it
@@ -597,7 +597,7 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
         installerFullName = comm.getInstallerFullName(product)
         installerVersion = comm.getInstallerVersion(product)
         for index in range(len(lines)):
-            if lines[index].find('OutFile')!= -1:
+            if lines[index].find('OutFile') != -1:
                 if key == 'm':
                     lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online%s.exe"\r\n' % token
                 elif key == 'n':
@@ -605,12 +605,12 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
                 elif key == 'f':
                     lines[index] = 'OutFile "' + installerPath + installerFullName + '_Full%s.exe"\r\n' % token
             if lines[index].find('VIProductVersion') != -1:
-                lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
+                lines[index] = 'VIProductVersion "%s"' % installerVersion
             if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
+                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
             if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
-        file_w  = open(newInsFile,"w")
+                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+        file_w = open(newInsFile, "w")
         file_w .writelines(lines)
         file_w .close()
         #nsis backup again
@@ -620,9 +620,9 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             lines = file_r.readlines()
             file_r.close()
             for index in range(len(lines)):
-                if lines[index].find('StrCpy $SupplyID')!= -1:
+                if lines[index].find('StrCpy $SupplyID') != -1:
                     lines[index] = 'StrCpy $SupplyID "%s"\r\n' % supplyid
-            file_w  = open(vInstallFile,"w")
+            file_w = open(vInstallFile, "w")
             file_w .writelines(lines)
             file_w .close()
         else:
@@ -630,21 +630,21 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             lines = file_r.readlines()
             file_r.close()
             for index in range(len(lines)):
-                if lines[index].find('!define SUPPLYID "10001"')!= -1:
+                if lines[index].find('!define SUPPLYID "10001"') != -1:
                     lines[index] = '!define SUPPLYID "%s"\r\n' % supplyid
-            file_w  = open(miniSilentFile,"w")
+            file_w = open(miniSilentFile, "w")
             file_w .writelines(lines)
             file_w .close()
 
             ctx = comm.getMsg(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini')
-            ctx_new = ctx.replace('10001',item[1:])
-            comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx_new)
+            ctx_new = ctx.replace('10001', item[1:])
+            comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini', ctx_new)
         #do install
         if not bSilent:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newInsFile
             os.system(command.encode(sys.getfilesystemencoding()))
         else:
-            buildSilentPackage(obj,product,type,newInsFile)
+            buildSilentPackage(obj, product, type, newInsFile)
         #clean
         command = 'del /Q /S ' + newInsFile
         os.system(command)
@@ -653,9 +653,9 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             lines = file_r.readlines()
             file_r.close()
             for index in range(len(lines)):
-                if lines[index].find('StrCpy $SupplyID')!= -1:
+                if lines[index].find('StrCpy $SupplyID') != -1:
                     lines[index] = 'StrCpy $SupplyID "10000"\r\n'
-            file_w  = open(vInstallFile,"w")
+            file_w = open(vInstallFile, "w")
             file_w .writelines(lines)
             file_w .close()
         else:
@@ -663,14 +663,14 @@ def buildSupplyidPackage(obj,product,type,bSilent):#type: mini, normal, full
             lines = file_r.readlines()
             file_r.close()
             for index in range(len(lines)):
-                if lines[index].find('!define SUPPLYID')!= -1:
+                if lines[index].find('!define SUPPLYID') != -1:
                     lines[index] = '!define SUPPLYID "10001"\r\n'
-            file_w  = open(miniSilentFile,"w")
+            file_w = open(miniSilentFile, "w")
             file_w .writelines(lines)
             file_w .close()
-            comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini',ctx)
+            comm.saveFile(conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\config.ini', ctx)
 
-def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
+def installMiniPackage(obj, product, bSupplyid=False, bSilent=False):
     installerPath = ''
     if product == 'bdm':
         installerPath = '..\\setup\\'
@@ -686,18 +686,18 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
     installerFullName = comm.getInstallerFullName(product)
     installerVersion = comm.getInstallerVersion(product)
     for index in range(len(lines)):
-        if lines[index].find('OutFile')!= -1:
+        if lines[index].find('OutFile') != -1:
             if bSilent:
                 lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online_Silent.exe"\r\n'
             else:
                 lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online.exe"\r\n'
         if lines[index].find('VIProductVersion') != -1:
-            lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
+            lines[index] = 'VIProductVersion "%s"' % installerVersion
         if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
-            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
+            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
         if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
-            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
-    file_w  = open(newNetInstallFile,"w")
+            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+    file_w = open(newNetInstallFile, "w")
     file_w .writelines(lines)
     file_w .close()
     #do it
@@ -715,7 +715,7 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
                 value = node.getAttribute('value')
                 slist = value.split(',')
                 break
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     if 'm10001' in slist:
@@ -724,15 +724,15 @@ def installMiniPackage(obj,product,bSupplyid = False,bSilent = False):
             obj.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         else:
-            buildSilentPackage(obj,product,'mini',newNetInstallFile)
+            buildSilentPackage(obj, product, 'mini', newNetInstallFile)
     #clean
     command = 'del /Q /S ' + newNetInstallFile
     os.system(command.encode(sys.getfilesystemencoding()))
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj,product,'mini',bSilent)
+        buildSupplyidPackage(obj, product, 'mini', bSilent)
 
-def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
+def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
     nsiFile = ''
     bkOutput = ''
     installerPath = ''
@@ -750,7 +750,7 @@ def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
                 value = node.getAttribute('value')
                 slist = value.split(',')
                 break
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     if product == 'bdm':
@@ -765,32 +765,40 @@ def installNormalPackage(obj,product,bSupplyid = False,bSilent = False):
         file_r = open(nsiFile)
         lines = file_r.readlines()
         file_r.close()
+        installerFullName = comm.getInstallerFullName(product)
+        installerVersion = comm.getInstallerVersion(product)
         for index in range(len(lines)):
-            if lines[index].find('OutFile')!= -1:
+            if lines[index].find('OutFile') != -1:
                 if bSilent:
-                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '_Silent.exe"\r\n'
+                    lines[index] = 'OutFile "' + installerPath + installerFullName + '_Silent.exe"\r\n'
                 else:
-                    lines[index] = 'OutFile "' + installerPath + comm.getInstallerFullName(product) + '.exe"\r\n'
-        file_w  = open(nsiFile,"w")
+                    lines[index] = 'OutFile "' + installerPath + installerFullName + '.exe"\r\n'
+            if lines[index].find('VIProductVersion') != -1:
+                lines[index] = 'VIProductVersion "%s"' % installerVersion
+            if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
+                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
+            if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
+                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+        file_w = open(nsiFile, "w")
         file_w .writelines(lines)
         file_w .close()
         
-        buildSilentPackage(obj,product,'normal',nsiFile)
+        buildSilentPackage(obj, product, 'normal', nsiFile)
         
         file_r = open(nsiFile)
         lines = file_r.readlines()
         file_r.close()
         for index in range(len(lines)):
-            if lines[index].find('OutFile')!= -1:
+            if lines[index].find('OutFile') != -1:
                 lines[index] = bkOutput
-        file_w  = open(nsiFile,"w")
+        file_w = open(nsiFile, "w")
         file_w .writelines(lines)
         file_w .close()
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj,product,'normal',bSilent)
+        buildSupplyidPackage(obj, product, 'normal', bSilent)
 
-def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
+def installKvFullPackage(obj, product, bSupplyid=False, bSilent=False):
     #prepare
     confFile = './BuildSwitch/Misc.xml'
     slist = []
@@ -805,7 +813,7 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
                 value = node.getAttribute('value')
                 slist = value.split(',')
                 break
-    except Exception,e:
+    except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
         
@@ -816,13 +824,21 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     file_r = open(setupFile)
     lines = file_r.readlines()
     file_r.close()
+    installerFullName = comm.getInstallerFullName(product)
+    installerVersion = comm.getInstallerVersion(product)
     for index in range(len(lines)):
-        if lines[index].find('OutFile')!= -1:
+        if lines[index].find('OutFile') != -1:
             if bSilent:
-                lines[index] = 'OutFile "..\\kvsetup\\' + comm.getInstallerFullName(product) + '_Full_Silent.exe"\r\n'
+                lines[index] = 'OutFile "..\\kvsetup\\' + installerFullName + '_Full_Silent.exe"\r\n'
             else:
-                lines[index] = 'OutFile "..\\kvsetup\\' + comm.getInstallerFullName(product) + '_Full.exe"\r\n'
-    file_w  = open(setupFile,"w")
+                lines[index] = 'OutFile "..\\kvsetup\\' + installerFullName + '_Full.exe"\r\n'
+        if lines[index].find('VIProductVersion') != -1:
+            lines[index] = 'VIProductVersion "%s"' % installerVersion
+        if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
+        if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+    file_w = open(setupFile, "w")
     file_w .writelines(lines)
     file_w .close()
     
@@ -844,9 +860,9 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
         lines = file_r.readlines()
         file_r.close()
         for index in range(len(lines)):
-            if lines[index].find('MACRO_ANTIVIRUS_UPDATETIME')!= -1:
+            if lines[index].find('MACRO_ANTIVIRUS_UPDATETIME') != -1:
                 lines[index] = '!define MACRO_ANTIVIRUS_UPDATETIME      "%s"\r\n' % vlibVersion
-        file_w  = open(vInstallFile,"w")
+        file_w = open(vInstallFile, "w")
         file_w .writelines(lines)
         file_w .close()
         
@@ -857,9 +873,9 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
     lines = file_r.readlines()
     file_r.close()
     for index in range(len(lines)):
-        if lines[index].find('StrCpy $SupplyID')!= -1:
+        if lines[index].find('StrCpy $SupplyID') != -1:
             lines[index] = 'StrCpy $SupplyID "10015"\r\n'
-    file_w  = open(vInstallFile,"w")
+    file_w = open(vInstallFile, "w")
     file_w .writelines(lines)
     file_w .close()
     
@@ -869,11 +885,11 @@ def installKvFullPackage(obj,product,bSupplyid = False,bSilent = False):
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
             os.system(command.encode(sys.getfilesystemencoding()))
         else:
-            buildSilentPackage(obj,product,'full',conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
+            buildSilentPackage(obj, product, 'full', conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
     
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj,product,'full',bSilent)
+        buildSupplyidPackage(obj, product, 'full', bSilent)
         
     #clean
     command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
@@ -906,7 +922,7 @@ def updatePackage(product):
         buildType = 'daily'
     elif ctx.find('1') != -1:
         builtType = 'version'
-    rewrite_version.main(3,['rewrite_version.py',product,buildType])
+    rewrite_version.main(3, ['rewrite_version.py', product, buildType])
     
 def genMailMsg(product):
     mailFile = ''
@@ -925,7 +941,7 @@ def genMailMsg(product):
         buildIdFile = conf.kvBuildIdFile
         logDir = conf.kvlog_path
         verify_log_file = conf.kvverify_log_file
-    fp = open(mailFile,'w')
+    fp = open(mailFile, 'w')
     #fp.write('<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>')
     fp.write('Dailybuild notification mail\r\n\r\n')
     fp.write('\r\nBuilding Log(s):\r\n----------------------------------------------------------------------------------------\r\n')
@@ -952,7 +968,7 @@ def genMailMsg(product):
     #fp.write('</body></html>')
     fp.close()
 
-def makeBinplace(product,files,buildtype):
+def makeBinplace(product, files, buildtype):
     if product == 'bdm':
         return conf.byp_bin_path + 'binplace.exe -e -a -x -s .\\Stripped -n ' + conf.sln_root + 'basic\\Output\\Symbols\\' + buildtype + '\\Full -r ' + conf.sln_root + 'basic\\Output\\Symbols\\' + buildtype + '\\ -:DEST BDM ' + conf.sln_root + files
     elif product == 'bdkv':
@@ -962,78 +978,78 @@ def genSymbols(product):
     commands = []
     if product == 'bdm':
         #release
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\*.exe','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\bdmantivirus\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\FTSOManager\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\FTSWManager\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmkvscanplugin\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmsomanagerplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmswmanagerplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmtrayplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\rtpplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmpatcherplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinRelease\\plugins\\bdmsafeplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\*.exe', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\bdmantivirus\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\FTSOManager\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\FTSWManager\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmkvscanplugin\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmsomanagerplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmswmanagerplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmtrayplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\rtpplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmpatcherplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmsafeplugins\\*.dll', 'Release'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Release\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
         #debug
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\*.exe','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\bdmantivirus\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\FTSOManager\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\FTSWManager\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmkvscanplugin\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmhomepageplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmmainframeplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmsomanagerplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmswmanagerplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmtrayplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\rtpplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BibDebug\\plugins\\bdmpatcherplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdm','basic\\Output\\BinDebug\\plugins\\bdmsafeplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\*.exe', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\bdmantivirus\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\FTSOManager\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\FTSWManager\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmkvscanplugin\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmhomepageplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmmainframeplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmsomanagerplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmswmanagerplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmtrayplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\rtpplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BibDebug\\plugins\\bdmpatcherplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmsafeplugins\\*.dll', 'Debug'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Debug\\Full\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\Output\\Symbols\\Debug\\Stripped\\BDM\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "BDM"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "THIRD"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "THIRD"')
     elif product == 'bdkv':
         #release
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.exe','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\*.dll','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmantivirus\\*.dll','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\bdmsysrepair\\*.dll','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\*.sys','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\x86\\*.sys','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\x64\\*.sys','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\drivers\\x64\\*.dll','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkv\\*.dll','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll','Release'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll','Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\*.exe', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\bdmantivirus\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\bdmsysrepair\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\drivers\\*.sys', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\drivers\\x86\\*.sys', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\drivers\\x64\\*.sys', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\drivers\\x64\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\plugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\plugins\\bdkv\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\plugins\\bdkvtrayplugins\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinRelease\\plugins\\bdkvrtpplugins\\*.dll', 'Release'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Full\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "BDKV"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Release\\Stripped\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "BDKV"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Release /t "THIRD"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Release\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Release /t "THIRD"')
         #debug
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\*.exe','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\*.dll','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\bdmantivirus\\*.dll','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\bdmsysrepair\\*.dll','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\drivers\\*.sys','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\bdkv\\*.dll','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\bdkvtrayplugins\\*.dll','Debug'))
-        commands.append(makeBinplace('bdkv','basic\\KVOutput\\BinDebug\\plugins\\bdkvrtpplugins\\*.dll','Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\*.exe', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\bdmantivirus\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\bdmsysrepair\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\drivers\\*.sys', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\plugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\plugins\\bdkv\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\plugins\\bdkvtrayplugins\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdkv', 'basic\\KVOutput\\BinDebug\\plugins\\bdkvrtpplugins\\*.dll', 'Debug'))
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Debug\\Full\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "BDKV"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'basic\\KVOutput\\Symbols\\Debug\\Stripped\\BDKV\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "BDKV"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Full\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Full\\Debug /t "THIRD"')
         commands.append('symstore add /r /f ' + conf.sln_root + 'stable_proj\\Symbols\\Stripped\\Debug\\*.pdb /s \\\\192.168.10.242\\public\\Symbols\\Stripped\\Debug /t "THIRD"')
     return commands
 
-def genPrebuildActions(product,value):
+def genPrebuildActions(product, value):
     commands = []
     if value == 1 or value == 2:
         commands.append('del /Q ' + conf.sln_root + 'basic\\include\\CommonInclude\\BDMVersion.h')
@@ -1072,7 +1088,7 @@ def genPrebuildActions(product,value):
 class BuildStep:
     g_t_weight = 0
     g_c_weight = 0
-    def __init__(self,n,v,o,w,p):
+    def __init__(self, n, v, o, w, p):
         self.name = n
         self.value = v
         self.order = o
@@ -1085,7 +1101,7 @@ class BuildStep:
         pass
     
     def act(self):
-        self.update_step(0, bFinish = True)
+        self.update_step(0, bFinish=True)
     
     def report(self, msrc, msg):
         if len(self.para) == 0:
@@ -1094,16 +1110,16 @@ class BuildStep:
             sid = self.para[1]
             ws = self.para[2]
             #整饰特殊字符
-            msg = msg.replace('\\','/')
-            msg = msg.replace('"',' ')
-            msg = msg.replace('\'',' ')
-            msg = msg.replace('\r',' ')
-            msg = msg.replace('\n',' ')
+            msg = msg.replace('\\', '/')
+            msg = msg.replace('"', ' ')
+            msg = msg.replace('\'', ' ')
+            msg = msg.replace('\r', ' ')
+            msg = msg.replace('\n', ' ')
             content = '{"msrc":"%s","content":"%s"}' % (msrc, msg)
-            logging.info('send message from worker, sid:%s, message:%s' % (sid,content))
+            logging.info('send message from worker, sid:%s, message:%s' % (sid, content))
             ws.send(content)
     
-    def update_step(self, w, bFinish = False):
+    def update_step(self, w, bFinish=False):
         if self.cweight == self.weight:
             pass
         elif self.cweight + w >= self.weight or bFinish:
@@ -1111,15 +1127,15 @@ class BuildStep:
             self.cweight = self.weight
             percentage = float(BuildStep.g_c_weight) / float(BuildStep.g_t_weight) * 100
             msg = '%d' % percentage
-            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
-            self.report('wk-build-progress',msg)
+            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d', self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
+            self.report('wk-build-progress', msg)
         else:
             BuildStep.g_c_weight += w
             self.cweight += w
             percentage = float(BuildStep.g_c_weight) / float(BuildStep.g_t_weight) * 100
             msg = '%d' % percentage
-            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d',self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
-            self.report('wk-build-progress',msg)
+            logging.info('cweight : %d, weight : %d, g_c_weight : %d, g_t_weight : %d, w : %d', self.cweight, self.weight, BuildStep.g_c_weight, BuildStep.g_t_weight, w)
+            self.report('wk-build-progress', msg)
 
 ##############################################
 # 0
@@ -1135,9 +1151,9 @@ class PreBuild(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            commands = genPrebuildActions('bdm',self.value)
+            commands = genPrebuildActions('bdm', self.value)
             for item in commands:
-                self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
                 self.update_step(1)
         BuildStep.act(self)
@@ -1153,9 +1169,9 @@ class KVPreBuild(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            commands = genPrebuildActions('bdkv',self.value)
+            commands = genPrebuildActions('bdkv', self.value)
             for item in commands:
-                self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
                 self.update_step(1)
         BuildStep.act(self)
@@ -1176,7 +1192,7 @@ class Svn(BuildStep):
         else:
             command = 'svn info --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
             os.system(command)
-            commands = getSvnCommands('bdm',self.value)
+            commands = getSvnCommands('bdm', self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No svn commands')
             else:
@@ -1189,10 +1205,10 @@ class Svn(BuildStep):
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
                         os.system(command.encode(sys.getfilesystemencoding()))
-                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     else:
-                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(3)
         BuildStep.act(self)
@@ -1210,7 +1226,7 @@ class KVSvn(BuildStep):
         else:
             command = 'svn info --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
             os.system(command)
-            commands = getSvnCommands('bdkv',self.value)
+            commands = getSvnCommands('bdkv', self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No svn commands')
             else:
@@ -1223,10 +1239,10 @@ class KVSvn(BuildStep):
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
                         os.system(command.encode(sys.getfilesystemencoding()))
-                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     else:
-                        self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(3)
         BuildStep.act(self)
@@ -1245,7 +1261,7 @@ class LockSvn(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            commands = genSvnLockActions('bdm','lock',self.value)
+            commands = genSvnLockActions('bdm', 'lock', self.value)
             for item in commands:
                 #self.report('wk-build-log', item.replace('123456','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
@@ -1262,7 +1278,7 @@ class KVLockSvn(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            commands = genSvnLockActions('bdkv','lock',self.value)
+            commands = genSvnLockActions('bdkv', 'lock', self.value)
             for item in commands:
                 #self.report('wk-build-log', item.replace('123456','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
@@ -1281,18 +1297,18 @@ class RewriteVersion(BuildStep):
     def act(self):
         if self.value == 0:
             self.report('wk-build-log', 'Adjusting buildversion')
-            comm.setBuildNumber('bdm','0',False)
+            comm.setBuildNumber('bdm', '0', False)
             command = 'python rewrite_version.py bdm daily'
             self.report('wk-build-log', command)
-            rewrite_version.main(3,['rewrite_version.py','bdm','daily'])
+            rewrite_version.main(3, ['rewrite_version.py', 'bdm', 'daily'])
         elif self.value == 1:
             command = 'python rewrite_version.py bdm daily'
             self.report('wk-build-log', command)
-            rewrite_version.main(3,['rewrite_version.py','bdm','daily'])
+            rewrite_version.main(3, ['rewrite_version.py', 'bdm', 'daily'])
         elif self.value == 2:
             command = 'python rewrite_version.py bdm version'
             self.report('wk-build-log', command)
-            rewrite_version.main(3,['rewrite_version.py','bdm','version'])
+            rewrite_version.main(3, ['rewrite_version.py', 'bdm', 'version'])
         BuildStep.act(self)
 
     
@@ -1306,18 +1322,18 @@ class KVRewriteVersion(BuildStep):
     def act(self):
         if self.value == 0:
             self.report('wk-build-log', 'Adjusting buildversion')
-            comm.setBuildNumber('bdkv','0',False)
+            comm.setBuildNumber('bdkv', '0', False)
             command = 'python rewrite_version.py bdkv daily'
             self.report('wk-build-log', command)
-            rewrite_version.main(3,['rewrite_version.py','bdkv','daily'])
+            rewrite_version.main(3, ['rewrite_version.py', 'bdkv', 'daily'])
         elif self.value == 1:
             command = 'python rewrite_version.py bdkv daily'
             self.report('wk-build-log', command)
-            rewrite_version.main(3,['rewrite_version.py','bdkv','daily'])
+            rewrite_version.main(3, ['rewrite_version.py', 'bdkv', 'daily'])
         elif self.value == 2:
             command = 'python rewrite_version.py bdkv version'
             self.report('wk-build-log', command)
-            rewrite_version.main(3,['rewrite_version.py','bdkv','version'])
+            rewrite_version.main(3, ['rewrite_version.py', 'bdkv', 'version'])
         BuildStep.act(self)
     
 ##############################################
@@ -1336,7 +1352,7 @@ class Rcgen(BuildStep):
         else:
             command = 'python rcgen.py bdm'
             self.report('wk-build-log', command)
-            rcgen.main(2,['rcgen.py','bdm'])
+            rcgen.main(2, ['rcgen.py', 'bdm'])
         BuildStep.act(self)
     
 class KVRcgen(BuildStep):
@@ -1352,7 +1368,7 @@ class KVRcgen(BuildStep):
         else:
             command = 'python rcgen.py bdkv'
             self.report('wk-build-log', command)
-            rcgen.main(2,['rcgen.py','bdkv'])
+            rcgen.main(2, ['rcgen.py', 'bdkv'])
         BuildStep.act(self)
         
 ##############################################
@@ -1369,7 +1385,7 @@ class Build(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            commands = getBuildCommands('bdm',self.value)
+            commands = getBuildCommands('bdm', self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No build commands')
             else:
@@ -1383,8 +1399,8 @@ class Build(BuildStep):
                 if file[-3:] == 'log':
                     errLog = comm.getMsg(conf.log_path + file)
                     if errLog != '' and errLog.find('error PRJ0002') != -1 and errLog.find('Error result 31 returned from') != -1 and errLog.find('mt.exe') != -1:#just be careful
-                        self.report('wk-build-log','<h5>PRJ0002 error found, try rebuilding specific solution<h5>')
-                        self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                        self.report('wk-build-log', '<h5>PRJ0002 error found, try rebuilding specific solution<h5>')
+                        self.report('wk-build-log', '<h5>------------------------------------------------------------------------------------------------------------</h5>')
                         bReCompiler = False
                         for item in commands:
                             if item.find(conf.log_path + file) != -1:
@@ -1413,28 +1429,28 @@ class Build(BuildStep):
                         if name == 'ignorefault' and node.getAttribute('value') == '1':
                             bIgnoreFault = True
                             break
-                except Exception,e:
+                except Exception, e:
                     logging.error("error occers when parsing xml or run command:")
                     logging.error(e)
                 if bIgnoreFault:
                     msg = '<h5>Build error(s) found, xbuild continues, please handle these error(s) below later : </h5>'
-                    self.report('wk-build-log',msg)
+                    self.report('wk-build-log', msg)
                 else:
                     msg = '<h5>Build error(s) found, xbuild quit, please handle these error(s) below : </h5>'
                     self.report('wk-status-change', 'error')
-                    self.report('wk-build-log',msg)
+                    self.report('wk-build-log', msg)
                 for file in os.listdir(conf.log_path):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.log_path + file)
                         if errLog != '':
-                            self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
-                            self.report('wk-build-log','<h5>' + file + '</h5>')
+                            self.report('wk-build-log', '<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                            self.report('wk-build-log', '<h5>' + file + '</h5>')
                             fp = open(conf.log_path + file)
                             lines = fp.readlines()
                             fp.close()
                             for line in lines:
-                                self.report('wk-build-log',line)
-                self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                                self.report('wk-build-log', line)
+                self.report('wk-build-log', '<h5>------------------------------------------------------------------------------------------------------------</h5>')
                 if not bIgnoreFault:
                     raise Exception(msg)
         BuildStep.act(self)
@@ -1450,7 +1466,7 @@ class KVBuild(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            commands = getBuildCommands('bdkv',self.value)
+            commands = getBuildCommands('bdkv', self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No build commands')
             else:
@@ -1464,8 +1480,8 @@ class KVBuild(BuildStep):
                 if file[-3:] == 'log':
                     errLog = comm.getMsg(conf.kvlog_path + file)
                     if errLog != '' and errLog.find('error PRJ0002') != -1 and errLog.find('Error result 31 returned from') != -1 and errLog.find('mt.exe') != -1:#just be careful
-                        self.report('wk-build-log','<h5>PRJ0002 error found, try rebuilding specific solution<h5>')
-                        self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                        self.report('wk-build-log', '<h5>PRJ0002 error found, try rebuilding specific solution<h5>')
+                        self.report('wk-build-log', '<h5>------------------------------------------------------------------------------------------------------------</h5>')
                         bReCompiler = False
                         for item in commands:
                             if item.find(conf.kvlog_path + file) != -1:
@@ -1494,28 +1510,28 @@ class KVBuild(BuildStep):
                         if name == 'ignorefault' and node.getAttribute('value') == '1':
                             bIgnoreFault = True
                             break
-                except Exception,e:
+                except Exception, e:
                     logging.error("error occers when parsing xml or run command:")
                     logging.error(e)
                 if bIgnoreFault:
                     msg = '<h5>Build error(s) found, xbuild continues, please handle these error(s) below later : </h5>'
-                    self.report('wk-build-log',msg)
+                    self.report('wk-build-log', msg)
                 else:
                     msg = '<h5>Build error(s) found, xbuild quit, please handle these error(s) below : </h5>'
                     self.report('wk-status-change', 'error')
-                    self.report('wk-build-log',msg)
+                    self.report('wk-build-log', msg)
                 for file in os.listdir(conf.kvlog_path):
                     if file[-3:] == 'log':
                         errLog = comm.getMsg(conf.kvlog_path + file)
                         if errLog != '':
-                            self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
-                            self.report('wk-build-log','<h5>' + file + '</h5>')
+                            self.report('wk-build-log', '<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                            self.report('wk-build-log', '<h5>' + file + '</h5>')
                             fp = open(conf.kvlog_path + file)
                             lines = fp.readlines()
                             fp.close()
                             for line in lines:
-                                self.report('wk-build-log',line)
-                self.report('wk-build-log','<h5>------------------------------------------------------------------------------------------------------------</h5>')
+                                self.report('wk-build-log', line)
+                self.report('wk-build-log', '<h5>------------------------------------------------------------------------------------------------------------</h5>')
                 if not bIgnoreFault:
                     raise Exception(msg)
         BuildStep.act(self)
@@ -1612,28 +1628,28 @@ class Sign(BuildStep):
         elif self.value == 1:
             command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\Output\\BinDebug\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\Output\\BinDebug\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign', conf.sln_root + 'basic\\Output\\BinDebug\\', '*.exe'])
             command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe'])
 
             command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\Output\\BinDebug\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\Output\\BinDebug\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign_kav', conf.sln_root + 'basic\\Output\\BinDebug\\', '*.exe'])
             command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign_kav', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe'])
 
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             self.report('wk-build-log', command)
-            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Output\\BinRelease\\'])
+            sign.main(3, ['sign.py', 'bdm', conf.sln_root + 'basic\\Output\\BinRelease\\'])
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'
-            self.report('wk-build-log',command)
-            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
+            self.report('wk-build-log', command)
+            sign.main(3, ['sign.py', 'bdm', conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
             
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Tools\\SetupScript\\res\\'
-            self.report('wk-build-log',command)
-            sign.main(3,['sign.py','bdm',conf.sln_root + 'basic\\Tools\\SetupScript\\res\\'])
+            self.report('wk-build-log', command)
+            sign.main(3, ['sign.py', 'bdm', conf.sln_root + 'basic\\Tools\\SetupScript\\res\\'])
             
         BuildStep.act(self)
     
@@ -1650,31 +1666,31 @@ class KVSign(BuildStep):
         elif self.value == 1:
             command = 'python fileop.py kvsign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.exe'])
             self.update_step(14)
             
             command = 'python fileop.py kvsign_kav ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign_kav',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign_kav', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.exe'])
             self.update_step(14)
             
             command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\'
             self.report('wk-build-log', command)
-            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
+            sign.main(3, ['sign.py', 'bdkv', conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])
             self.update_step(14)
 
             command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'
             self.report('wk-build-log', command)
-            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
+            sign.main(3, ['sign.py', 'bdkv', conf.sln_root + 'basic\\Tools\\NSIS\\Plugins\\'])
             self.update_step(30)
 
             command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'
-            self.report('wk-build-log',command)
-            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'])
+            self.report('wk-build-log', command)
+            sign.main(3, ['sign.py', 'bdkv', conf.sln_root + 'basic\\Tools\\KVSetupScript\\res\\'])
 
             command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\Tools\\KVNetInstall\\res\\'
-            self.report('wk-build-log',command)
-            sign.main(3,['sign.py','bdkv',conf.sln_root + 'basic\\Tools\\KVNetInstall\\res\\'])
+            self.report('wk-build-log', command)
+            sign.main(3, ['sign.py', 'bdkv', conf.sln_root + 'basic\\Tools\\KVNetInstall\\res\\'])
             
         BuildStep.act(self)
     
@@ -1700,11 +1716,11 @@ class Verify(BuildStep):
             commands.append('python fileop.py verify_baidu_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.exe,*.dll,*.sys')
             for item in commands:
                 self.report('wk-build-log', item)
-            fileop.main(4,['fileop.py','verify_file_exist',conf.sln_root + 'basic\\Output\\BinRelease\\','*.*'])
-            fileop.main(4,['fileop.py','verify_file_version',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
-            fileop.main(4,['fileop.py','verify_driver_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
-            fileop.main(4,['fileop.py','verify_kav_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe'])
-            fileop.main(4,['fileop.py','verify_baidu_sign',conf.sln_root + 'basic\\Output\\BinRelease\\','*.exe,*.dll,*.sys'])
+            fileop.main(4, ['fileop.py', 'verify_file_exist', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.*'])
+            fileop.main(4, ['fileop.py', 'verify_file_version', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe,*.dll,*.sys'])
+            fileop.main(4, ['fileop.py', 'verify_driver_sign', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'verify_kav_sign', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'verify_baidu_sign', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe,*.dll,*.sys'])
         BuildStep.act(self)
     
 class KVVerify(BuildStep):
@@ -1726,11 +1742,11 @@ class KVVerify(BuildStep):
             commands.append('python fileop.py kvverify_baidu_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ .exe,*.dll,*.sys')
             for item in commands:
                 self.report('wk-build-log', item)
-            fileop.main(4,['fileop.py','kvverify_file_exist',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.*'])
-            fileop.main(4,['fileop.py','kvverify_file_version',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','.exe,*.dll,*.sys'])
-            fileop.main(4,['fileop.py','kvverify_driver_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_kav_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_baidu_sign',conf.sln_root + 'basic\\KVOutput\\BinRelease\\','*.exe,*.dll,*.sys'])
+            fileop.main(4, ['fileop.py', 'kvverify_file_exist', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.*'])
+            fileop.main(4, ['fileop.py', 'kvverify_file_version', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '.exe,*.dll,*.sys'])
+            fileop.main(4, ['fileop.py', 'kvverify_driver_sign', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'kvverify_kav_sign', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'kvverify_baidu_sign', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.exe,*.dll,*.sys'])
         BuildStep.act(self)
 
 ##############################################
@@ -1759,7 +1775,7 @@ class Install(BuildStep):
                     if name == 'ignorefault' and node.getAttribute('value') == '1':
                         bIgnoreFault = True
                         break
-            except Exception,e:
+            except Exception, e:
                 logging.error("error occers when parsing xml or run command:")
                 logging.error(e)
             #first update all files in basic and accept mine if ignorefault
@@ -1769,13 +1785,13 @@ class Install(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self,'bdm',True,bInstallSilence)
+                installNormalPackage(self, 'bdm', True, bInstallSilence)
             #if bInstallMini:
                 #installMiniPackage(self,'bdm',True,bInstallSilence)
             if (bInstall or bInstallMini) and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
-                    installNormalPackage(self,'bdm',False,bInstallSilence)
+                    installNormalPackage(self, 'bdm', False, bInstallSilence)
                 #if bInstallMini:
                     #installMiniPackage(self,'bdm',False,bInstallSilence)
             #check installer
@@ -1790,11 +1806,11 @@ class Install(BuildStep):
                     msg = 'failed to build installer, xbuild continues, please check nsis script files later'
                 else:
                     msg = 'failed to build installer, please check nsis script files'
-                self.report('wk-build-log','------------------------------------------------------')
-                self.report('wk-build-log','<h5>'+msg+'</h5>')
+                self.report('wk-build-log', '------------------------------------------------------')
+                self.report('wk-build-log', '<h5>' + msg + '</h5>')
                 if not bIgnoreFault:
                     raise Exception(msg)
-            command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
+            command = 'xcopy /Y ' + conf.original_setup_path.replace('/', '\\') + '*.exe ' + conf.setup_path.replace('/', '\\')
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
@@ -1822,7 +1838,7 @@ class KVInstall(BuildStep):
                     if name == 'ignorefault' and node.getAttribute('value') == '1':
                         bIgnoreFault = True
                         break
-            except Exception,e:
+            except Exception, e:
                 logging.error("error occers when parsing xml or run command:")
                 logging.error(e)
             #first update all files in basic and accept mine if ignore fault
@@ -1832,19 +1848,19 @@ class KVInstall(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self,'bdkv',True,bInstallSilence)
+                installNormalPackage(self, 'bdkv', True, bInstallSilence)
             if bInstallMini:
-                installMiniPackage(self,'bdkv',True,bInstallSilence)
+                installMiniPackage(self, 'bdkv', True, bInstallSilence)
             if bInstallFull:
-                installKvFullPackage(self,'bdkv',True,bInstallSilence)
+                installKvFullPackage(self, 'bdkv', True, bInstallSilence)
             if (bInstall or bInstallMini or bInstallFull) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
-                    installNormalPackage(self,'bdkv',False,bInstallSilence)
+                    installNormalPackage(self, 'bdkv', False, bInstallSilence)
                 if bInstallMini:
-                    installMiniPackage(self,'bdkv',False,bInstallSilence)
+                    installMiniPackage(self, 'bdkv', False, bInstallSilence)
                 if bInstallFull:
-                    installKvFullPackage(self,'bdkv',False,bInstallSilence)
+                    installKvFullPackage(self, 'bdkv', False, bInstallSilence)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):
@@ -1857,12 +1873,12 @@ class KVInstall(BuildStep):
                     msg = 'failed to build installer, xbuild continues, please check nsis script files later'
                 else:
                     msg = 'failed to build installer, please check nsis script files'
-                self.report('wk-build-log','------------------------------------------------------')
-                self.report('wk-build-log','<h5>'+msg+'</h5>')
+                self.report('wk-build-log', '------------------------------------------------------')
+                self.report('wk-build-log', '<h5>' + msg + '</h5>')
                 if not bIgnoreFault:
                     raise Exception(msg)
             #copy exe
-            command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
+            command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/', '\\') + '*.exe ' + conf.kvsetup_path.replace('/', '\\')
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
@@ -1881,24 +1897,24 @@ class SignInstaller(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = 'xcopy /Y ' + conf.original_setup_path.replace('/','\\') + '*.exe ' + conf.setup_path.replace('/','\\')
+            command = 'xcopy /Y ' + conf.original_setup_path.replace('/', '\\') + '*.exe ' + conf.setup_path.replace('/', '\\')
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(1)
 
             command = 'python fileop.py sign ..\\output\\setup\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign','..\\output\\setup\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign', '..\\output\\setup\\', '*.exe'])
             self.update_step(1)
             
             command = 'python fileop.py kvsign_kav ..\\output\\setup\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign_kav','..\\output\\setup\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign_kav', '..\\output\\setup\\', '*.exe'])
             self.update_step(1)
 
             command = 'python sign.py bdm ..\\output\\setup\\'
             self.report('wk-build-log', command)
-            sign.main(3,['sign.py','bdm','..\\output\\setup\\'])
+            sign.main(3, ['sign.py', 'bdm', '..\\output\\setup\\'])
         BuildStep.act(self)
     
 class KVSignInstaller(BuildStep):
@@ -1912,24 +1928,24 @@ class KVSignInstaller(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/','\\') + '*.exe ' + conf.kvsetup_path.replace('/','\\')
+            command = 'xcopy /Y ' + conf.original_kvsetup_path.replace('/', '\\') + '*.exe ' + conf.kvsetup_path.replace('/', '\\')
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(1)
 
             command = 'python fileop.py sign ..\\output\\kvsetup\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign', '..\\output\\kvsetup\\', '*.exe'])
             self.update_step(1)
             
             command = 'python fileop.py kvsign_kav ..\\output\\kvsetup\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(4,['fileop.py','kvsign_kav','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvsign_kav', '..\\output\\kvsetup\\', '*.exe'])
             self.update_step(1)
             
             command = 'python sign.py bdkv ..\\output\\kvsetup\\'
             self.report('wk-build-log', command)
-            sign.main(3,['sign.py','bdkv','..\\output\\kvsetup\\'])
+            sign.main(3, ['sign.py', 'bdkv', '..\\output\\kvsetup\\'])
             self.update_step(1)
         BuildStep.act(self)
     
@@ -1956,7 +1972,7 @@ class CalcInstallerMd5(BuildStep):
             #doit
             command = 'python fileop.py md5 ..\\output\\setup\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(5,['fileop.py','md5','..\\output\\setup\\','*.exe',conf.verify_md5_file])
+            fileop.main(5, ['fileop.py', 'md5', '..\\output\\setup\\', '*.exe', conf.verify_md5_file])
             
         BuildStep.act(self)
     
@@ -1980,7 +1996,7 @@ class KVCalcInstallerMd5(BuildStep):
             #doit
             command = 'python fileop.py md5 ..\\output\\kvsetup\\ *.exe'
             self.report('wk-build-log', command)
-            fileop.main(5,['fileop.py','md5','..\\output\\kvsetup\\','*.exe',conf.verify_md5_file])
+            fileop.main(5, ['fileop.py', 'md5', '..\\output\\kvsetup\\', '*.exe', conf.verify_md5_file])
         BuildStep.act(self)
     
 ##############################################
@@ -2004,10 +2020,10 @@ class VerifyInstaller(BuildStep):
             commands.append('python fileop.py verify_baidu_sign ..\\output\\setup\\ *.exe')
             for item in commands:
                 self.report('wk-build-log', item)
-            fileop.main(4,['fileop.py','verify_file_version','..\\output\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','verify_driver_sign','..\\output\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','verify_kav_sign','..\\output\\setup\\','*.exe'])
-            fileop.main(4,['fileop.py','verify_baidu_sign','..\\output\\setup\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'verify_file_version', '..\\output\\setup\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'verify_driver_sign', '..\\output\\setup\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'verify_kav_sign', '..\\output\\setup\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'verify_baidu_sign', '..\\output\\setup\\', '*.exe'])
         BuildStep.act(self)
     
 class KVVerifyInstaller(BuildStep):
@@ -2028,10 +2044,10 @@ class KVVerifyInstaller(BuildStep):
             commands.append('python fileop.py kvverify_baidu_sign ..\\output\\kvsetup\\ *.exe')
             for item in commands:
                 self.report('wk-build-log', item)
-            fileop.main(4,['fileop.py','kvverify_file_version','..\\output\\kvsetup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_driver_sign','..\\output\\kvsetup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_kav_sign','..\\output\\kvsetup\\','*.exe'])
-            fileop.main(4,['fileop.py','kvverify_baidu_sign','..\\output\\kvsetup\\','*.exe'])
+            fileop.main(4, ['fileop.py', 'kvverify_file_version', '..\\output\\kvsetup\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'kvverify_driver_sign', '..\\output\\kvsetup\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'kvverify_kav_sign', '..\\output\\kvsetup\\', '*.exe'])
+            fileop.main(4, ['fileop.py', 'kvverify_baidu_sign', '..\\output\\kvsetup\\', '*.exe'])
         BuildStep.act(self)
 
 ##############################################
@@ -2055,7 +2071,7 @@ class Send(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
             os.system(cmd.encode(sys.getfilesystemencoding()))
-            send.main(3,['send.py','bdm','daily'])
+            send.main(3, ['send.py', 'bdm', 'daily'])
         elif self.value == 2:
             commands = []
             cmd = 'net use ' + comm.getArchiveRoot('bdm')
@@ -2064,7 +2080,7 @@ class Send(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
             os.system(cmd.encode(sys.getfilesystemencoding()))
-            send.main(3,['send.py','bdm','version'])
+            send.main(3, ['send.py', 'bdm', 'version'])
         BuildStep.act(self)
     
 class KVSend(BuildStep):
@@ -2085,7 +2101,7 @@ class KVSend(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
             os.system(cmd.encode(sys.getfilesystemencoding()))
-            send.main(3,['send.py','bdkv','daily'])
+            send.main(3, ['send.py', 'bdkv', 'daily'])
         elif self.value == 2:
             commands = []
             cmd = 'net use ' + comm.getArchiveRoot('bdkv')
@@ -2094,7 +2110,7 @@ class KVSend(BuildStep):
             for item in commands:
                 self.report('wk-build-log', item)
             os.system(cmd.encode(sys.getfilesystemencoding()))
-            send.main(3,['send.py','bdkv','version'])
+            send.main(3, ['send.py', 'bdkv', 'version'])
         BuildStep.act(self)
     
 ##############################################
@@ -2155,7 +2171,7 @@ class Commit(BuildStep):
             self.update_step(5)
             msg = 'xbuild commit %s' % datetime.datetime.now()
             command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            self.report('wk-build-log', command.replace('123456','XXXXXX'))
+            self.report('wk-build-log', command.replace('123456', 'XXXXXX'))
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(10)
         BuildStep.act(self)
@@ -2172,12 +2188,12 @@ class KVCommit(BuildStep):
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
             command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
-            self.report('wk-build-log', command.replace('123456','XXXXXX'))
+            self.report('wk-build-log', command.replace('123456', 'XXXXXX'))
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(5)
             msg = 'xbuild commit %s' % datetime.datetime.now()
             command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            self.report('wk-build-log', command.replace('123456','XXXXXX'))
+            self.report('wk-build-log', command.replace('123456', 'XXXXXX'))
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(10)
         BuildStep.act(self)
@@ -2195,12 +2211,12 @@ class MarkupCode(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            commands = getMarkupCodeCommands('bdm',self.value)
+            commands = getMarkupCodeCommands('bdm', self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No markup code commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                    self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                     os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(1)
         BuildStep.act(self)
@@ -2216,12 +2232,12 @@ class KVMarkupCode(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            commands = getMarkupCodeCommands('bdkv',self.value)
+            commands = getMarkupCodeCommands('bdkv', self.value)
             if len(commands) == 0:
                 self.report('wk-build-log', 'No markup code commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                    self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
                     os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(1)
         BuildStep.act(self)
@@ -2240,7 +2256,7 @@ class UnlockSvn(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            commands = genSvnLockActions('bdm','unlock',self.value)
+            commands = genSvnLockActions('bdm', 'unlock', self.value)
             for item in commands:
                 #self.report('wk-build-log', item.replace('123456','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
@@ -2257,7 +2273,7 @@ class KVUnlockSvn(BuildStep):
         if self.value == 0:
              self.report('wk-build-log', 'Passed')
         else:
-            commands = genSvnLockActions('bdkv','unlock',self.value)
+            commands = genSvnLockActions('bdkv', 'unlock', self.value)
             for item in commands:
                 #self.report('wk-build-log', item.replace('123456','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
