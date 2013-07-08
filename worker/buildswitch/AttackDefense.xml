@@ -1,0 +1,4 @@
+<?xml version="1.0" ?><conf dir="AttackDefense.sln">
+	<item build="0" type="KVDebug|Win32"/>
+	<item build="1" type="KVRelease|Win32"/>
+</conf>
