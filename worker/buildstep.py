@@ -605,11 +605,11 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
                 elif key == 'f':
                     lines[index] = 'OutFile "' + installerPath + installerFullName + '_Full%s.exe"\r\n' % token
             if lines[index].find('VIProductVersion') != -1:
-                lines[index] = 'VIProductVersion "%s"' % installerVersion
+                lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
             if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
+                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
             if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
         file_w = open(newInsFile, "w")
         file_w .writelines(lines)
         file_w .close()
@@ -692,11 +692,11 @@ def installMiniPackage(obj, product, bSupplyid=False, bSilent=False):
             else:
                 lines[index] = 'OutFile "' + installerPath + installerFullName + '_Online.exe"\r\n'
         if lines[index].find('VIProductVersion') != -1:
-            lines[index] = 'VIProductVersion "%s"' % installerVersion
+            lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
         if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
-            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
+            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
         if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
-            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
     file_w = open(newNetInstallFile, "w")
     file_w .writelines(lines)
     file_w .close()
@@ -774,11 +774,11 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
                 else:
                     lines[index] = 'OutFile "' + installerPath + installerFullName + '.exe"\r\n'
             if lines[index].find('VIProductVersion') != -1:
-                lines[index] = 'VIProductVersion "%s"' % installerVersion
+                lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
             if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
+                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
             if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
         file_w = open(nsiFile, "w")
         file_w .writelines(lines)
         file_w .close()
@@ -833,11 +833,11 @@ def installKvFullPackage(obj, product, bSupplyid=False, bSilent=False):
             else:
                 lines[index] = 'OutFile "..\\kvsetup\\' + installerFullName + '_Full.exe"\r\n'
         if lines[index].find('VIProductVersion') != -1:
-            lines[index] = 'VIProductVersion "%s"' % installerVersion
+            lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
         if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
-            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % installerVersion
+            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
         if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
-            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % installerVersion
+            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
     file_w = open(setupFile, "w")
     file_w .writelines(lines)
     file_w .close()
