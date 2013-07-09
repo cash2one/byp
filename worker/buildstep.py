@@ -1554,9 +1554,9 @@ class Pack(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = 'cscript pack.vbs bdm'
+            command = 'python fileop.py mzip_res ' + conf.sln_root + 'basic\\Output\\SkinResources'
             self.report('wk-build-log', command)
-            os.system(command.encode(sys.getfilesystemencoding()))
+            fileop.main(3,['fileop.py','mzip_res',conf.sln_root + 'basic\\Output\\SkinResources'])
         BuildStep.act(self)
     
 class KVPack(BuildStep):
