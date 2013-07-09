@@ -783,7 +783,11 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
         file_w .writelines(lines)
         file_w .close()
         
-        buildSilentPackage(obj, product, 'normal', nsiFile)
+        if not bSilent:
+            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
+            os.system(command.encode(sys.getfilesystemencoding()))
+        else:
+            buildSilentPackage(obj, product, 'normal', nsiFile)
         
         file_r = open(nsiFile)
         lines = file_r.readlines()
