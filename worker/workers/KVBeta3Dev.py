@@ -8,8 +8,8 @@
 @brief
      
 """
-
 import sys,os,time
+sys.path.append("..")
 import logging
 import socket
 import websocketclt
@@ -54,8 +54,8 @@ def main(argc, argv):
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '%s' % uuid.uuid4()
-	nickname = 'beta3_369'
+	workerId = '72beef83-8fc8-43b6-aebc-f2b473dd1653'
+	nickname = 'KVBeta3Dev'
 	
 	while True:
 		ws_service = None
@@ -64,7 +64,7 @@ def main(argc, argv):
 			logging.info('try connectting to server')
 			opts = list()
 			opts.append('sid: %s' % workerId)
-			ws_service = websocketclt.create_connection("ws://172.17.180.61:13413/buildserver",
+			ws_service = websocketclt.create_connection("ws://172.17.180.61:13412/buildserver",
 								timeout = timeout_buildserver,
 								sockopt = ((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
 								header = opts)

@@ -43,16 +43,20 @@ a {
   font-weight: bold;
 }
 
-#table-installer-info, #table-markup-code, #table-build-log, #table-build-log2, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
+#table-modal-activate, #table-modal-show, #table-modal-detail, #table-installer-info, #table-markup-code, #table-build-log, #table-build-log2, #table-build-config, #table-build-depend, #table-build-info, #table-progress-info, #table-status-info{
   width: 600px;
 }
 
-#td-build-reason, #td-user-email, #td-cb-detail, #td-markup-detail, #td-markup-revision {
+#table-modal-popup {
+  width: 540px; 
+}
+
+#td-model-category, #td-model-name, #td-model-description, #td-model-remark, #td-build-reason, #td-user-email, #td-cb-detail, #td-markup-detail, #td-markup-revision {
   text-align: left;
   vertical-align: middle;
 }
 
-#ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-installer-archive, #ws-build-prefix, #ws-build-postfix, #ws-build-v1, #ws-build-v2, #ws-build-v3,#ws-build-v4, #ws-user-email, #ws-installer-supplyid, #ws-cb-detail, #ws-markup-detail {
+#ws-model-show-description, #ws-model-show-remark, #ws-model-category, #ws-model-name, #ws-model-description, #ws-model-remark, #ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-installer-archive, #ws-build-prefix, #ws-build-postfix, #ws-build-v1, #ws-build-v2, #ws-build-v3,#ws-build-v4, #ws-user-email, #ws-installer-supplyid, #ws-cb-detail, #ws-markup-detail {
   width: auto;
 }
 
@@ -109,10 +113,18 @@ a {
 #ws-build-progress-container {
   position: relative;
   z-index: 1;
+  margin-top:-15px;
+  margin-bottom:5px;
+  
 }
 
 #ws-user-info {
   position: relative;
-  top: 20px;
+  top: 6px;
   z-index: 2;
+}
+
+#ws-worker-select, #ws-worker-status, #ws-worker-detail, #ws-worker-number, #ws-build-prefix, #ws-build-v1, #ws-build-v2, #ws-build-v3, #ws-build-v4, #ws-build-postfix, #ws-installer-archive, #ws-build-reason, #ws-user-email, #ws-installer-supplyid, #ws-markup-code, #ws-markup-detail, #ws-code-base, #ws-cb-detail, #ws-btn-model, #ws-btn-build {
+  margin-top:1px;
+  margin-bottom:1px;
 }

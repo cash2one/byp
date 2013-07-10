@@ -1,4 +1,4 @@
-# coding=UTF-8
+﻿# coding=UTF-8
 """
 @author thomas
 @date    2013-03-31
@@ -8,8 +8,8 @@
 @brief
      
 """
-
 import sys,os,time
+sys.path.append("..")
 import logging
 import socket
 import websocketclt
@@ -54,8 +54,8 @@ def main(argc, argv):
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '%s' % uuid.uuid4()
-	nickname = 'KVBeta2Test'
+	workerId = 'e6732598-c67c-4190-bc36-5b12ff247276'
+	nickname = 'KVBeta3Pub351'
 	
 	while True:
 		ws_service = None

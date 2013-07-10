@@ -19,6 +19,7 @@ import sys,os.path
 import uuid
 import time
 import project
+import xml.dom.minidom
 
 from tornado.options import define, options
 
@@ -106,7 +107,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
         #client连接时发送；增加client
         if msg['msrc'] == 'ws-client-connect':
             #更新检查机制
-            current_crx_version = 18
+            current_crx_version = 19
             if msg['content'] != '':
                 if current_crx_version > int(msg['content']):
                     content = '{"msrc":"ws-crx-update","content":"http://172.17.180.61:13412/byp.crx"}'
@@ -191,9 +192,38 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 content = '{"msrc":"ws-installer-archive","content":"%s"}' % archive_base
                 self.notify(content)
                 
+                modelFile = './model.xml'
+                categories = ''
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    categories += node.getAttribute('name')
+                    categories += '|'
+                categories = categories[:-1]
+                content = '{"msrc":"ws-model-category","content":"%s"}' % categories
+                self.notify(content)
+                
             except KeyError,e:
                 logging.info('message error %s' % message)
-                
+        #client查询models时发送（切换到tabTemplate），发送所有models
+        elif msg['msrc'] == 'ws-update-category':
+            try:
+                modelFile = './model.xml'
+                categories = ''
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    categories += node.getAttribute('name')
+                    categories += '|'
+                categories = categories[:-1]
+                content = '{"msrc":"ws-update-category","content":"%s"}' % categories
+                self.notify(content)
+            except Exception, e:
+                logging.error(e)
         #手动切换项目combobox时发送；提供当前project的buildoptions
         elif msg['msrc'] == 'ws-build-options':
             projName = msg['content']
@@ -362,6 +392,173 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             for client in self.listeners:
                 client.notify(content)
 
+        #收到建模消息，增加新模板，并把这个新增发送给所有client
+        elif msg['msrc'] == 'ws-btn-model':
+            try:
+                modelFile = './model.xml'
+                sep = msg['content'].find('^')
+                infos = msg['content'][0:sep].split('|')
+                ctx = msg['content'][sep+1:]
+                product = infos[0]
+                category = infos[1]
+                name = infos[2]
+                description = infos[3]
+                remark = infos[4]
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    if node.getAttribute('name') == category.decode('utf-8'):
+                        newModel = dom.createElement('model')
+                        newModel.setAttribute('product', product)
+                        newModel.setAttribute('name', name)
+                        newModel.setAttribute('description', description)
+                        newModel.setAttribute('remark', remark)
+                        newModel.setAttribute('command', ctx)
+                        node.appendChild(newModel)
+                        break
+                writer = open(modelFile, 'w')
+                dom.writexml(writer)
+                writer.close()
+                
+                #update clients
+
+                categories = ''
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    categories += node.getAttribute('name')
+                    categories += '|'
+                categories = categories[:-1]
+                content = '{"msrc":"ws-model-category","content":"%s"}' % categories
+                for client in BuildServerHandler.clients:
+                    client.notify(content)
+            except Exception, e:
+                logging.error(e)
+                
+        #收到模板类别切换消息，发送所有属于此类别的模板名集合给该client
+        elif msg['msrc'] == 'ws-category-select':
+            try:
+                category = msg['content']
+                models = ''
+                modelFile = './model.xml'
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    if node.getAttribute('name') == category.decode('utf-8'):
+                        for item in node.childNodes:
+                            if item.nodeType != node.ELEMENT_NODE:
+                                continue
+                            models += '%s;%s' % (item.getAttribute('product'), item.getAttribute('name'))
+                            models += '|'
+                        models = models[:-1]
+                        break
+                content = '{"msrc":"ws-category-select","content":"%s"}' % models;
+                self.notify(content)
+            except Exception, e:
+                logging.error(e)
+        #收到模板切换消息，发送模板描述和注意事项给该client
+        elif msg['msrc'] == 'ws-model-select':
+            try:
+                info = msg['content'].split('|')
+                category = info[0]
+                model = info[1]
+                modelFile = './model.xml'
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    if node.getAttribute('name') == category.decode('utf-8'):
+                        for item in node.childNodes:
+                            if item.nodeType != node.ELEMENT_NODE:
+                                continue
+                            if item.getAttribute('name') == model.decode('utf-8'):
+                                content = '{"msrc":"ws-model-select","content":"%s|%s"}' % (item.getAttribute('description'),item.getAttribute('remark'));
+                                self.notify(content)
+                                break
+                        break
+            except Exception, e:
+                logging.error(e)
+        elif msg['msrc'] == 'ws-model-delete':
+            try:
+                info = msg['content'].split('|')
+                category = info[0]
+                model = info[1]
+                modelFile = './model.xml'
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    if node.getAttribute('name') == category.decode('utf-8'):
+                        for item in node.childNodes:
+                            if item.nodeType != node.ELEMENT_NODE:
+                                continue
+                            if item.getAttribute('name') == model.decode('utf-8'):
+                                node.removeChild(item)
+                                break
+                        bEmptyCate = True
+                        for item in node.childNodes:
+                            if item.nodeType != node.ELEMENT_NODE:
+                                continue
+                            else:
+                                bEmptyCate = False
+                        if bEmptyCate:
+                            root.removeChild(node)
+                        break
+                writer = open(modelFile, 'w')
+                dom.writexml(writer)
+                writer.close()
+                
+                #udpate clients
+                
+                categories = ''
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    categories += node.getAttribute('name')
+                    categories += '|'
+                categories = categories[:-1]
+                content1 = '{"msrc":"ws-model-category","content":"%s"}' % categories
+                content2 = '{"msrc":"ws-update-category","content":"%s"}' % categories
+                for client in BuildServerHandler.clients:
+                    client.notify(content1)
+                    client.notify(content2)
+            except Exception, e:
+                logging.error(e)
+        
+        #收到模板激活请求，将模板内容发给指定client
+        elif msg['msrc'] == 'ws-model-activate':
+            try:
+                #首先发送工程切换消息，激活一系列同步工作
+                info = msg['content'].split('|')
+                category = info[0]
+                model = info[1]
+                modelFile = './model.xml'
+                dom = xml.dom.minidom.parse(modelFile)
+                root = dom.documentElement
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    if node.getAttribute('name') == category.decode('utf-8'):
+                        for item in node.childNodes:
+                            if item.nodeType != node.ELEMENT_NODE:
+                                continue
+                            if item.getAttribute('name') == model.decode('utf-8'):
+                                content = '{"msrc":"ws-model-activate","content":"%s"}' % item.getAttribute('command')
+                                self.notify(content)
+                                break
+                        break
+            except Exception, e:
+                logging.error(e)
         #收到不知道是什么
         else:
             pass
@@ -379,7 +576,8 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
 def main():
     #init logging system, it's told logging is threadsafe, so do NOT need to sync
     logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
-    
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
     tornado.options.parse_command_line()
     app = Application()
     app.listen(options.port)

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
   <head>
@@ -12,22 +12,22 @@
 <body>
   <!-- tab配置 -->
   <ul class="nav nav-pills">
-      <li>
+      <li id="tabTemplate-title">
         <a href="#tabTemplate" data-toggle="tab">Template</a>
       </li>
-      <li class="active">
+      <li class="active" id="tabMain-title">
         <a href="#tabMain" data-toggle="tab">Build</a>
       </li>
-      <li>
+      <li id="tabLog-title">
         <a href="#tabLog" data-toggle="tab">Log</a>
       </li>
-      <li>
+      <li id="tabHelp-title">
         <a href="#tabHelp" data-toggle="tab">Help</a>
       </li>
-      <li>
+      <li id="tabTest-title">
         <a href="#tabTest" data-toggle="tab">Rest</a>
       </li>
-      <li>
+      <li id="tabAbout-title">
         <a href="#tabAbout" data-toggle="tab">About</a>
       </li>
     </ul>
@@ -40,9 +40,108 @@
       <!-- --------------------------------------------------------------------------------- -->
 
       <!-- 第零页 -->
-      <div class="tab-pane" id="tabTemplate" style="height:550px">
-        Template页面，开发中。
+      <!-- 确认开始打包 -->
+      <div id="deleteConfirmModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">请求确认：</h3><h4>当前选中的打包模板将被全局删除</h4>
+        </div>
+        <div class="modal-body">
+          只是确认你不是不小心点到了Delete按钮。
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+          <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-delete-model-confirm">确认删除</button>
+        </div>
       </div>
+
+      <div class="tab-pane" id="tabTemplate">
+        <!-- 类别和名称选择表格 -->
+        <table id="table-modal-show">
+          <tr>
+            <td width="12%">
+              <a href="#" rel="tooltip" title="要使用的打包模板类别">模版类别</a>
+            </td>
+            <td id="td-model-show-category">
+              <a href="#" rel="tooltip" title="选择要使用的模版类别">
+                <select id="ws-model-category-select" class="combobox-container" style="width:auto">
+                </select>
+              </a>
+            </td>
+
+            <td width="12%">
+              <a href="#" rel="tooltip" title="要使用的打包模板名称">模版名称</a>
+            </td>
+            <td id="td-model-show-name">
+              <a href="#" rel="tooltip" title="选择要使用的模版名称">
+                <select id="ws-model-name-select" class="combobox-container" style="width:auto">
+                </select>
+              </a>
+            </td>
+          </tr>
+        </table>
+
+        <!-- 描述和注意事项表格 -->
+        <table id="table-modal-detail">
+          <tr>
+            <td width="12%">
+              <a href="#" rel="tooltip" title="关于这个打包模版能做什么的简要描述">模版功能</a>
+            </td>
+            <td id="td-model-show-description">
+              <textarea rows="10" cols="78" readonly="readonly" id="ws-model-show-description"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td width="12%">
+              <a href="#" rel="tooltip" title="使用这个打包模版的注意事项">注意事项</a>
+            </td>
+            <td id="td-model-show-remark">
+              <textarea rows="10" cols="78" readonly="readonly" id="ws-model-show-remark"></textarea>
+            </td>
+          </tr>
+        </table>
+
+        <!-- 模版激活表格 -->
+        <table id="table-modal-activate">
+          <tr>
+            <td id="model-worker-select" width="10%">
+              <a href="#" rel="tooltip" title="选择应用此编译模板的编译机">
+                <select id="ws-model-worker-select" class="combobox-container" style="width:auto">
+                </select>
+              </a>
+            </td>
+            <td width="15%"><span id="ws-model-worker-status" class="label label-warning"></span></td>
+            <td><span id="ws-model-worker-detail" class="label label-warning"></span></td>
+            <td>
+              <div class="btn-toolbar">
+                <div class="btn-group">
+                  <button class="btn btn-mini">
+                    <a id="ws-worker-running-model" href="#" rel="tooltip" title="正在干活的编译机数">0</a>
+                  </button>
+                  <button class="btn btn-mini">
+                    <a id="ws-worker-idle-model" href="#" rel="tooltip" title="空闲的编译机数">0</a>
+                  </button>
+                  <button class="btn btn-mini">
+                    <a id="ws-worker-error-model" href="#" rel="tooltip" title="打包出错的编译机数">0</a>
+                  </button>
+                </div>
+              </div>
+            </td>
+            <td>
+              <button type="button" id="btn-model-delete" class="btn btn-mini" class-toggle="btn-inverse">
+                <a href="#" rel="tooltip" title="删除此编译模版">Delete</a>
+              </button>
+            </td>
+            <td>
+              <button type="button" id="btn-model-activate" class="btn btn-mini" class-toggle="btn-inverse">
+                <a href="#" rel="tooltip" title="在Build选项卡中激活此编译模版">Activate!!</a>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- --------------------------------------------------------------------------------- -->
 
       <!-- 第一页 -->
       <div class="tab-pane active" id="tabMain">
@@ -68,8 +167,8 @@
             <h3 id="myModalLabel">警告：</h3><h4>你更改了默认选项</h4>
           </div>
           <div class="modal-body">
-            <li>更改要编译的项目可能会导致版本完整性问题；</li>
-            <li>更改打包选项将可能导致某些操作不能成功完成；</li>
+            <li>部分编译可能会导致版本完整性问题；</li>
+            <li>更改打包选项可能导致某些操作不能成功完成；</li>
             <li>更改编译所依赖的代码版本将可能导致更严重的问题。</li>
             <br>
             <h4>请确认你知道这些选项的含义，并且确认要这么做。</h4>
@@ -93,7 +192,58 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
             <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-common-build-confirm">确认打包</button>
           </div>
-        </div>      
+        </div>
+
+        <!-- 确认加入模板 -->
+        <div id="modelAddConfirm" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">请求确认：</h3><h4>将以所选配置建立打包模型</h4>
+          </div>
+          <div class="modal-body">
+            <table id="table-modal-popup">
+              <tr>
+                <td width="12%">
+                  <a href="#" rel="tooltip" data-placement="right" title="所要建立的打包模板类别[必选 15字以内]">模版归类</a>
+                </td>
+                <td id="td-model-category">
+                  <select id="ws-model-category" class="combobox-container" style="width:auto">
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td width="12%">
+                  <a href="#" rel="tooltip" data-placement="right" title="简要描述模板名称[必选 15字以内]">模版名称</a>
+                </td>
+                <td id="td-model-name">
+                  <input type="text" id="ws-model-name" style="width:440px" data-provide="typeahead" data-items="4" data-source="" value="">
+                </td>
+              </tr>
+              <tr>
+                <td width="12%">
+                  <a href="#" rel="tooltip" data-placement="right" title="关于这个打包模版能做什么的简要描述">模版功能</a>
+                </td>
+                <td id="td-model-description">
+                  <textarea rows="3" cols="71" id="ws-model-description"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td width="12%">
+                  <a href="#" rel="tooltip" data-placement="right" title="使用这个打包模版的注意事项">注意事项</a>
+                </td>
+                <td id="td-model-remark">
+                  <textarea rows="3" cols="71" id="ws-model-remark"></textarea>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-model-confirm">确认建模</button>
+          </div>
+        </div>  
+
+        <!-- --------------------------------------------------------------------------------- -->
 
         <!-- 功能选择表格 -->
         <table id="table-build-config">
@@ -130,10 +280,12 @@
               <button type="button" id="btn-options-default" class="btn btn-mini">
                 <a href="#" rel="tooltip" title="重置为默认打包选项">Default</a>
               </button>
+              <!--
               <br>
               <button type="button" id="btn-options-switch" class="btn btn-mini" class-toggle="btn-inverse">
                 <a href="#" rel="tooltip" title="所有当前配置项置反/关闭/切换到默认">Switch</a>
               </button>
+              -->
             </td>
             <td id="ws-build-options-before">
             </td>
@@ -145,27 +297,6 @@
           <tr>
             <td id="ws-build-options-after">
             </td>
-          </tr>
-        </table>
-
-        <!-- --------------------------------------------------------------------------------- -->
-        
-        <!-- 是否打branch或者tag表格 -->
-        <table id="table-markup-code">
-          <tr>
-            <!-- branch or tag code -->
-            <td class="td-form-title" width="12%">
-              <a href="#" rel="tooltip" title="标记这次打包的代码版本，目前用来加减Branch或Tag">标记版本</a>
-            </td>
-            <td>
-              <div id="ws-markup-code" class="btn-group" data-toggle="buttons-radio">
-              </div>
-            </td>
-            <!-- markup detail -->
-            <td class="td-form-title">
-              <a href="#" rel="tooltip" title="要标记或删除的Branch或Tag名称">版本标记细节</a>
-            </td>
-            <td id="td-markup-detail"><input type="text" id="ws-markup-detail" data-provide="typeahead" data-items="4" data-source="" value=""></td>
           </tr>
         </table>
 
@@ -220,6 +351,27 @@
         </table>
 
         <!-- --------------------------------------------------------------------------------- -->
+        
+        <!-- 是否打branch或者tag表格 -->
+        <table id="table-markup-code">
+          <tr>
+            <!-- branch or tag code -->
+            <td class="td-form-title" width="12%">
+              <a href="#" rel="tooltip" title="标记这次打包的代码版本，目前用来加减Branch或Tag">标记版本</a>
+            </td>
+            <td>
+              <div id="ws-markup-code" class="btn-group" data-toggle="buttons-radio">
+              </div>
+            </td>
+            <!-- markup detail -->
+            <td class="td-form-title">
+              <a href="#" rel="tooltip" title="要标记或删除的Branch或Tag名称">版本标记细节</a>
+            </td>
+            <td id="td-markup-detail"><input type="text" id="ws-markup-detail" data-provide="typeahead" data-items="4" data-source="" value=""></td>
+          </tr>
+        </table>
+
+        <!-- --------------------------------------------------------------------------------- -->
 
         <!-- 基于那个版本打包表格 -->
         <table id="table-build-depend">
@@ -240,7 +392,7 @@
             <!-- add model button -->
             <td><button type="button" class="btn btn-small" id="ws-btn-model"><a href="#" rel="tooltip" title="以当前配置生成打包模版">Model</a></button></td>
             <!-- start build button -->
-            <td><button type="button" class="btn btn-small" id="ws-btn-build"><a href="#" rel="tooltip" title="配置完毕，现在干活吧！">Build</a></button></td>
+            <td><button type="button" class="btn btn-small" id="ws-btn-build"><a href="#" rel="tooltip" title="配置完毕，现在干活吧！">Build!!</a></button></td>
           </tr>
         </table>
         
@@ -253,7 +405,7 @@
               <a href="#" rel="tooltip" title="当前打包任务的进度">打包进度</a>
             </td>
             <td width="75.6%">
-              <div id="ws-user-info"></div>
+              <div id="ws-user-info">&nbsp;</div>
               <div class="progress progress-striped active" id="ws-build-progress-container">
                 <div id="ws-build-progress" class="bar" style="width: 0%;"></div>
               </div>
@@ -289,8 +441,7 @@
             <td width="15%"><span id="ws-worker-status" class="label label-warning"></span></td>
             <td><span id="ws-worker-detail" class="label label-warning"></span></td>
             <td>
-              <div class="btn-toolbar">
-                <div class="btn-group">
+                <div class="btn-group" id="ws-worker-number">
                   <button class="btn btn-mini">
                     <a id="ws-worker-running" href="#" rel="tooltip" title="正在干活的编译机数">0</a>
                   </button>
@@ -301,7 +452,6 @@
                     <a id="ws-worker-error" href="#" rel="tooltip" title="打包出错的编译机数">0</a>
                   </button>
                 </div>
-              </div>
             </td>
           </tr>
         </table>
@@ -326,8 +476,198 @@
       
       <!-- 第三页 -->
       <div class="tab-pane" id="tabHelp">
-          Help页面，开发中。
+        <div id="myCarousel" class="carousel slide">
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+            <li data-target="#myCarousel" data-slide-to="3"></li>
+            <li data-target="#myCarousel" data-slide-to="4"></li>
+            <li data-target="#myCarousel" data-slide-to="5"></li>
+            <li data-target="#myCarousel" data-slide-to="6"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="item active">
+              <img src="static/img/build_options_1.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>产品和要编译的解决方案</h4>
+                <p>
+                  ① 选择打包方案要应用到的产品。
+                  <br>
+                  ② 选择这次打包要编译的解决方案，当且仅当【编译】按钮被选中，这里选中的解决方案才会被编译。解决方案选中与否只影响编译，【标记版本】、【构造版本】及【SVN选项】选项针对整个产品进行，不受这里影响。
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/build_options_2.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>打包选项一（打包前选项）</h4>
+                <p>
+                  【锁定SVN】打包开始时对产品相关的所有SVN目录加锁，以禁止代码提交。只应单独使用而不应该在常规流程中使用。如需打包结束时解除锁定，需要同时选中【释放SVN】按钮。
+                  <br>
+                  【dailybuild】构造版本号在默认构造版本基础上加1，【版本名称】选项的显式指定会被优先处理，并且会改写默认构造版本号。
+                  <br>
+                  【修复版本RC】以服务器默认配置改写二进制文件版本信息。推荐与【编译】选项同时选中或不选。
+                  <br>
+                  【SVN选项】SVN操作。是否更新或者重新签出代码。注意【update】只针对选中解决方案、basic_proj和stable_proj进行，而【checkout】针对整个产品进行。
+                  <br>
+                  【清理选项】指如何处理上次打包生成的文件。【不清理】不做任何操作，推荐增量编译时使用，【清理】只清理上次生成的安装包，推荐只打安装包时使用，【完全清理】清理所有二进制生成文件和中间文件，推荐【编译】被选中时使用。
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/build_options_3.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>打包选项二（构造选项）</h4>
+                <p>
+                  【编译】二进制文件重新编译
+                  <br>
+                  【ImageBase修复】对二进制生成文件进行rebase和bind操作，以加快模块加载速度。推荐与【编译】选项同时选中或不选。
+                  <br>
+                  【编译选项】是否重新编译debug、release或全部，推荐选中【release】。
+                  <br>
+                  【打包资源】重新打包UI资源，推荐选中。
+                  <br>
+                  【安装包】生成常规安装包。
+                  <br>
+                  【迷你下载器】生成在线安装包（迷你下载器）。
+                  <br>
+                  【升级测试包】生成升级测试安装包。
+                  <br>
+                  【全量包】生成带全量病毒库的安装包。
+                  <br>
+                  【静默包】生成的安装包是静默安装的。
+                  <br>
+                  【无人值守】无视编译和打包错误，走完整个编译流程。一般用于凌晨自动编译。
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/build_options_4.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>打包选项三（打包后选项）</h4>
+                <p>
+                  【安装包签名】对生成安装包进行签名。
+                  <br>
+                  【二进制校验】对生成二进制文件的完整性、版本信息、驱动签名、卡巴签名、百度签名等进行校验，校验结果默认在本地，当且仅当【邮件通知】被选中时会发送给特定邮件组。
+                  <br>
+                  【安装包校验】类似【二进制校验】，对生成的安装包进行。
+                  <br>
+                  【安装包Md5】生成安装包md5信息，用于渠道包。
+                  <br>
+                  【释放SVN】对产品相关的所有SVN目录解锁，并允许代码提交。只应单独使用而不应该在常规流程中使用。
+                  <br>
+                  【符号归档】将打包生成的符号添加至符号服务器。
+                  <br>
+                  【安装包归档】将生成的安装包送至归档目录。
+                  <br>
+                  【邮件通知】将打包过程摘要发送给特定邮件组。
+                  <br>
+                  【提交basic】提交basic目录至SVN服务器。
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/extra_options_1.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>附加选项一：版本与归档</h4>
+                <p>
+                  【版本名称】指定生成的安装包版本和名称，指定名称前面将根据产品拼接BaiduSd_Setup、BaiduAn_Setup_、Baidusd_OnlineSetup_、BaiduAn_OnlineSetup_等，指定名称后面将拼接.exe。$prefix和$postfix默认为空，$auto默认为当前构造版本号。
+                  <br>
+                  【归档目录】安装包默认归档到的目录，安装包将直接放到这个目录下，请保证这个目录的有效性和可访问性。$share为服务器默认归档ip，$version为安装包版本。
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/extra_options_2.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>附加选项二：打包信息</h4>
+                <p>
+                  【打包原因】请输入简要的打包原因。
+                  <br>
+                  【百度邮箱】请输入使用者的百度邮箱地址。
+                  <br>
+                  【渠道号】安装包渠道号信息。m开头的渠道号代表迷你下载器（mini），n开头的渠道号代表常规安装包（normal），f开头的渠道号代表全量病毒库包（full）。
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/extra_options_3.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>附加选项三：标记版本</h4>
+                <p>
+                  【标记版本】不进行任何操作，或添加或删除SVN Branch、Tag。
+                  <br>
+                  【标记版本细节】要添加或删除的SVN Branch或Tag名称。若为添加，代码线版本需要在【构造版本】和【构造版本细节】中指定；若为删除，仅输入要删除的Branch或Tag名称即可。$revision为所选代码线的SVN Revision号，$version为所选代码线当前默认构造版本号，$timestamp为当前时间戳。
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/extra_options_4.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>附加选项四：构造版本选项、建模和开始工作</h4>
+                <p>
+                  【构造版本】本次打包采用的代码线版本。可选主线、任意Branch或Tag、任意开发线上的特定 Revision代码。
+                  <br>
+                  【构造版本细节】取决于【构造版本】选项如何选择：若为Trunk，此域被忽略（HEAD）；若为Branch或Tag，需要指定所选Branch或Tag名称；若为Revision，需要指定开发线名称；Revision号，e.g.若要采用杀毒beta3分支14171 revision代码，输入branches/1.0beta3_dev;14171。注意：为防止误操作，当且仅当【SVN选项】的【checkout】选中时，此域才生效。此选项的作用域为整个产品相关的所有代码。
+                  <br>
+                  【Model】以当前打包配置生成一个打包模板。
+                  <br>
+                  【Build!!】使用当前配置开始打包。
+                </p>
+              </div>
+            </div>
+            <div class="item">
+              <img src="static/img/extra_options_5.jpg" alt="">
+              <div class="carousel-caption">
+                <h4>编译机信息：进度、日志和工作状态</h4>
+                <p>
+                  【使用者信息】该编译机当前的打包原因、使用者Email和打包进度。
+                  <br>
+                  【打包日志】编译系统日志信息
+                  <br>
+                  【编译机信息】选择编译机来产看它的工作状态，分运行、闲置、出错三种状态。
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                </p>
+              </div>
+            </div>
+          </div>
+          <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+          <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+        </div>
       </div>
+
+      <!-- --------------------------------------------------------------------------------- -->
 
       <!-- 第四页 -->
       <div class="tab-pane" id="tabTest">

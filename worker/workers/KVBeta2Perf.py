@@ -8,8 +8,8 @@
 @brief
      
 """
-
 import sys,os,time
+sys.path.append("..")
 import logging
 import socket
 import websocketclt
@@ -54,8 +54,8 @@ def main(argc, argv):
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '%s' % uuid.uuid4()
-	nickname = 'BDMTrunkDev'
+	workerId = '3c52ad21-5dc9-4f35-9266-c14f7b444d20'
+	nickname = 'KVBeta2Perf'
 	
 	while True:
 		ws_service = None

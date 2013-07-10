@@ -53,8 +53,9 @@ function initUI() {
     var h4 = $("#table-progress-info").height();
     var h5 = $("#table-status-info").height();
     var h6 = $("#table-markup-code").height();
-    $("#ws-build-log").height(hTotal - h0 - h1 - h2 - h3 - h4 - h5 - h6 - 65);
 
+    var left = hTotal - h0 - h1 - h2 - h3 - h4 - h5 - h6 - 65;
+    $("#ws-build-log").height(left);
 }
 
 $(document).ready(function() {
@@ -75,14 +76,28 @@ $(document).ready(function() {
     //绑定默认project和worker选择事件
     $('#ws-project-select').bind('change',onProjectSelect);
     $('#ws-worker-select').bind('change',onWorkerSelect);
+
+    //绑定model页worker切换事件
+    $('#ws-model-worker-select').bind('change',onModelWorkerSelect);
+
+    //绑定model-select切换和model-name-select事件
+    $('#ws-model-category-select').bind('change',onModelCategorySelect);
+    $('#ws-model-name-select').bind('change',onModelNameSelect);
+    
     //绑定input text默认事件
-    $('#ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-cb-detail,#ws-build-prefix,#ws-build-postfix,#ws-build-v1,#ws-build-v2,#ws-build-v3,#ws-build-v4,#ws-installer-supplyid,#ws-markup-detail').bind('click',onInputClick);
+    $('#ws-model-name,#ws-model-description,#ws-model-remark,#ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-cb-detail,#ws-build-prefix,#ws-build-postfix,#ws-build-v1,#ws-build-v2,#ws-build-v3,#ws-build-v4,#ws-installer-supplyid,#ws-markup-detail').bind('click',onInputClick);
     //初始化typeahead
     $('#ws-installer-archive,#ws-build-reason,#ws-user-email,#ws-cb-detail,#ws-build-prefix,#ws-build-postfix,#ws-build-v1,#ws-build-v2,#ws-build-v3,#ws-build-v4,#ws-installer-supplyid,#ws-markup-detail').typeahead();
     //初始化build按钮
     $("#ws-btn-build").bind('click',onBtnBuildClick);
+    //初始化model按钮
+    $("#ws-btn-model").bind('click',onBtnModelClick);
     //初始化log-tab按下事件
     $('a[data-toggle="tab"]').bind('shown', onLogTabClick)
+    //模版删除按钮事件
+    $("#btn-model-delete").bind('click',onBtnModelDelete);
+    //模板激活按钮事件
+    $("#btn-model-activate").bind('click',onBtnModelActivate);
 
     //start backend communication worker
     worker = new Worker("static/js/worker.js");
@@ -92,18 +107,55 @@ $(document).ready(function() {
     
 });
 
+function onBtnModelDelete() {
+    var modelMsg = "";
+    var modelCategory = $("#ws-model-category-select option:selected").text();
+    modelMsg += String.format("{0}|",modelCategory);
+    var modelName = $("#ws-model-name-select option:selected").text();
+    modelMsg += String.format("{0}",modelName);
+
+    g_bFirstDelete = true;
+    $("#btn-delete-model-confirm").bind('click',function() {
+        if (g_bFirstDelete) {
+            //alert(modelMsg);
+            var msg = formatMessage("ws-model-delete",modelMsg);
+            worker.postMessage(msg);
+            g_bFirstBuild = false;   
+        }
+    })
+    $("#deleteConfirmModal").modal();
+}
+
+function onBtnModelActivate() {
+    var modelMsg = "";
+    var modelCategory = $("#ws-model-category-select option:selected").text();
+    modelMsg += String.format("{0}|",modelCategory);
+    var modelName = $("#ws-model-name-select option:selected").text();
+    modelMsg += String.format("{0}",modelName);
+    
+    var msg = formatMessage("ws-model-activate",modelMsg);
+    worker.postMessage(msg);
+}
+
 function onLogTabClick(e) {
     if ($(e.target).attr('href') == '#tabLog') {
         $("#ws-build-log2").scrollTop(document.getElementById('ws-build-log2').scrollHeight)
     }
+    else if ($(e.target).attr('href') == '#tabTemplate') {
+        var msg = formatMessage("ws-update-category","");
+        worker.postMessage(msg);
+    }
+    else if ($(e.target).attr('href') == '#tabMain') {
+        initUI();
+    }
 }
 
-function onBtnBuildClick() {
+function getConfiguration() {
     var idleWorker = $("#ws-worker-idle").text()
     var errorWorker = $("#ws-worker-error").text()
     if (idleWorker == '0' && errorWorker == '0') {
         alert("~当前没有空闲编译机，请等待当前打包完成~");
-        return;
+        return ["",false,false,false];
     }
 
     ctx = "";
@@ -176,28 +228,28 @@ function onBtnBuildClick() {
         alert("版本号必须输入非负整数。");
         $("#ws-build-v1").focus();
         $("#ws-build-v1").select();
-        return;
+        return ["",false,false,false];
     }
     var v2 = document.getElementById("ws-build-v2").value;
     if(!v2.match(/^[0-9]+$/)){
         alert("版本号必须输入非负整数。");
         $("#ws-build-v2").focus();
         $("#ws-build-v2").select();
-        return;
+        return ["",false,false,false];
     }
     var v3 = document.getElementById("ws-build-v3").value;
     if(!v3.match(/^[0-9]+$/)){
         alert("版本号必须输入非负整数。");
         $("#ws-build-v3").focus();
         $("#ws-build-v3").select();
-        return;
+        return ["",false,false,false];
     }
     var v4 = document.getElementById("ws-build-v4").value;
     if(!v4.match(/^[0-9]+$/) && v4 != "$auto"){
         alert("版本号必须输入非负整数。");
         $("#ws-build-v4").focus();
         $("#ws-build-v4").select();
-        return;
+        return ["",false,false,false];
     }
     var postfix = document.getElementById("ws-build-postfix").value;
 
@@ -220,7 +272,7 @@ function onBtnBuildClick() {
     if(reason == ''){
         alert("请输入打包原因。");
         $("#ws-build-reason").focus();
-        return;
+        return ["",false,false,false];
     }
     var email = document.getElementById("ws-user-email").value
     if (email.length > 30) {
@@ -230,7 +282,7 @@ function onBtnBuildClick() {
         alert("百度邮箱格式不正确，请重新输入。");
         $("#ws-user-email").focus();
         $("#ws-user-email").select();
-        return;
+        return ["",false,false,false];
     }
     ctx += String.format("reason,{0}|",reason);
     ctx += String.format("email,{0}|",email);
@@ -243,7 +295,7 @@ function onBtnBuildClick() {
             alert("supplyid格式不正确，请重新输入。")
             $("#ws-installer-supplyid").focus();
             $("#ws-installer-supplyid").select();
-            return;
+            return ["",false,false,false];
         };
     }
     ctx += String.format("supplyid,{0}|",supplyid);
@@ -257,16 +309,71 @@ function onBtnBuildClick() {
         }
     })
     ctx += String.format("cbdetail,{0}",document.getElementById("ws-cb-detail").value);
-    g_bFirst = true;
-    $("#btn-build-confirm, #btn-common-build-confirm").bind('click',function() {
-        if (g_bFirst) {
-            //alert(ctx);
-            var msg = formatMessage("ws-btn-build",ctx);
+    return [ctx,defaultProjChanged,defaultOptionChanged,defaultCbChanged];
+}
+
+function onBtnModelClick() {
+    ctx = getConfiguration();
+    if (ctx[0] == "") {
+        return;
+    }
+    g_bFirstModel = true;
+    $("#btn-model-confirm").bind('click',function() {
+        if (g_bFirstModel) {
+            var modelMsg = "";
+            var product = $("#ws-project-select option:selected").text();
+            modelMsg += String.format("{0}|",product);
+            if ($("#ws-model-category option:selected").hasClass("default")) {
+                alert("必须选择模板类别");
+                return;
+            }
+            var modelCategory = $("#ws-model-category option:selected").text();
+            modelMsg += String.format("{0}|",modelCategory);
+            var modelName = $("#ws-model-name").val();
+            if (modelName == "") {
+                alert("必须输入模板名称。");
+                $("#ws-model-name").focus();
+                $("#ws-model-name").select();
+                return;
+            }
+            var reg=new RegExp("\n","g");
+            modelMsg += String.format("{0}|",modelName);
+            modelMsg += String.format("{0}|",$("#ws-model-description").val().replace(reg,"<br>"));
+            modelMsg += String.format("{0}^",$("#ws-model-remark").val().replace(reg,"<br>"));
+            modelMsg += String.format("{0}",ctx[0]);
+            //alert(modelMsg);
+            var msg = formatMessage("ws-btn-model",modelMsg);
             worker.postMessage(msg);
-            g_bFirst = false;   
+
+            //切换到模板页
+            $(".nav-pills").children().removeClass("active");
+            $(".tab-content").children().removeClass("active");
+            $("#tabTemplate-title").addClass("active");
+            $("#tabTemplate").addClass("active");
+            var msg = formatMessage("ws-update-category","");
+            worker.postMessage(msg);
+            
+            g_bFirstModel = false;   
         }
     })
-    if (defaultProjChanged || defaultOptionChanged || defaultCbChanged) {
+    $("#modelAddConfirm").modal();
+}
+
+function onBtnBuildClick() {
+    ctx = getConfiguration();
+    if (ctx[0] == "") {
+        return;
+    }
+    g_bFirstBuild = true;
+    $("#btn-build-confirm, #btn-common-build-confirm").bind('click',function() {
+        if (g_bFirstBuild) {
+            //alert(ctx[0]);
+            var msg = formatMessage("ws-btn-build",ctx[0]);
+            worker.postMessage(msg);
+            g_bFirstBuild = false;   
+        }
+    })
+    if (ctx[1] || ctx[2] || ctx[3]) {
         $("#defaultOptionChangedModal").modal();
     }
     else {
@@ -406,29 +513,37 @@ function updateUI(msg) {
     else if (jsonMsg['msrc'] == 'ws-worker-select') {
         var worker = jsonMsg['content'].split("|");
         if (worker[0] == 'add') {
-            var node = String.format("<option id=\"{0}\" class=\"{1}\" value=\"{2}\">{3}</option>",worker[1],worker[3],worker[4],worker[2]);    
+            var node = String.format("<option id=\"{0}\" class=\"{1}\" ip=\"{2}\" value=\"{3}\">{4}</option>",worker[1],worker[3],worker[4],worker[2],worker[2]);    
             $("#ws-worker-select").append(node);
+            node = String.format("<option id=\"{0}\" class=\"{1}\" ip=\"{2}\" value=\"{3}\">{4}</option>","model-"+worker[1],worker[3],worker[4],worker[2],worker[2]);
+            $("#ws-model-worker-select").append(node);
         }
         else if (worker[0] == 'remove') {
             $("#"+worker[1]).remove();
+            $("#model-"+worker[1]).remove();
         }
         else if (worker[0] == 'update') {
             var ip = $("#"+worker[1]).attr('value');
             var nickname = $("#"+worker[1]).html();
             $("#"+worker[1]).remove();
-            var node = String.format("<option id=\"{0}\" class=\"{1}\" value=\"{2}\">{3}</option>",worker[1],worker[2],ip,nickname);    
+            var node = String.format("<option id=\"{0}\" class=\"{1}\" ip=\"{2}\" value=\"{3}\">{4}</option>",worker[1],worker[2],ip,nickname,nickname);    
             $("#ws-worker-select").prepend(node);
+            node = String.format("<option id=\"{0}\" class=\"{1}\" ip=\"{2}\" value=\"{3}\">{4}</option>","model-"+worker[1],worker[2],ip,nickname,nickname);    
+            $("#ws-model-worker-select").prepend(node);
             $("#"+worker[1]).attr('selected','selected');
             $("#ws-worker-select").val(nickname);
+            $("#ws-model-worker-select").val(nickname);
         }
         else if (worker[0] == 'change') {
             var ctx = jsonMsg['content'].split('|');
             var nickname = $("#"+worker[1]).html();
             $("#"+ctx[1]).attr('selected','selected');
             $("#ws-worker-select").val(nickname);
+            $("#ws-model-worker-select").val(nickname);
         }
         //处理默认选择
         updateWorkerStatus();
+        updateModelWorkerStatus();
     }
     //更新worker状态
     else if (jsonMsg['msrc'] == 'ws-worker-running' || jsonMsg['msrc'] == 'ws-worker-idle' || jsonMsg['msrc'] == 'ws-worker-error') {
@@ -441,8 +556,19 @@ function updateUI(msg) {
         }
         $("#"+jsonMsg['msrc']).html(currentVal.toString());
         
+        currentVal = parseInt($("#"+jsonMsg['msrc'] + "-model").html());
+        if (jsonMsg['content'] == "+") {
+            currentVal += 1;
+        }
+        else if (jsonMsg['content'] == "-") {
+            currentVal -= 1;
+        }
+        $("#"+jsonMsg['msrc'] + "-model").html(currentVal.toString());
+        
+
         //处理默认选择
         updateWorkerStatus();
+        updateModelWorkerStatus();
     }
     //通知client重新注册ui
     else if (jsonMsg['msrc'] == 'ws-client-update') {
@@ -502,6 +628,7 @@ function updateUI(msg) {
         $("#ws-build-v1").val(ctx[0]);
         $("#ws-build-v2").val(ctx[1]);
         $("#ws-build-v3").val(ctx[2]);
+        $("#ws-build-v4").val(ctx[3]);
     }
     //更新默认supplyid
     else if (jsonMsg['msrc'] == 'ws-installer-supplyid') {
@@ -526,6 +653,156 @@ function updateUI(msg) {
     //更新归档目录
     else if (jsonMsg['msrc'] == 'ws-installer-archive') {
         $("#ws-installer-archive").val(jsonMsg['content']);
+    }
+    //更新所有模版类别
+    else if (jsonMsg['msrc'] == 'ws-model-category') {
+        $("#ws-model-category").empty();
+        var cates = jsonMsg['content'].split("|");
+        $("#ws-model-category").append("<option class=\"default\" value=\"请选择编译模板的类别\">请选择编译模板的类别</option>");
+        for (var index in cates) {
+            var node = String.format("<option value=\"{0}\">{1}</option>",cates[index],cates[index]);
+            $("#ws-model-category").append(node);
+        }
+    }
+    //更新模板页的模板类别
+    else if (jsonMsg['msrc'] == 'ws-update-category') {
+        $("#ws-model-category-select").empty();
+        $("#ws-model-name-select").empty();
+        $("#ws-model-show-description").val("");
+        $("#ws-model-show-remark").val("");
+
+        var cates = jsonMsg['content'].split("|");
+        $("#ws-model-category-select").append("<option class=\"default\" value=\"请选择编译模板的类别\">请选择编译模板的类别</option>");
+        for (var index in cates) {
+            var node = String.format("<option value=\"{0}\">{1}</option>",cates[index],cates[index]);
+            $("#ws-model-category-select").append(node);
+        }
+    }
+    //更新某模板类别下的模版
+    else if (jsonMsg['msrc'] == 'ws-category-select') {
+        $("#ws-model-name-select").empty();
+        var models = jsonMsg['content'].split("|");
+        for (var index in models) {
+            var info = models[index].split(';');
+            var node = String.format("<option product=\"{0}\" value=\"{1}\">{2}</option>",info[0],info[1],info[1]);
+            $("#ws-model-name-select").append(node);
+        }
+        $("#ws-model-name-select").change();
+    }
+    //更新模板功能说明和注意事项
+    else if (jsonMsg['msrc'] == 'ws-model-select') {
+        var infos = jsonMsg['content'].split("|");
+        var reg=new RegExp("<br>","g");
+        $("#ws-model-show-description").val(infos[0].replace(reg,"\n"));
+        $("#ws-model-show-remark").val(infos[1].replace(reg,"\n"));
+    }
+    //activate模板化实例
+    else if (jsonMsg['msrc'] == 'ws-model-activate') {
+        //将模板内容应用到Build页
+        var ctx = jsonMsg['content'].split('|');
+        var worker = ctx[0];
+        var product = ctx[1];
+        var slns = ctx[2];
+        var build_options = ctx[3];
+        var markupcode = ctx[4];
+        var markupdetail = ctx[5];
+        var prefix = ctx[6];
+        var v1 = ctx[7];
+        var v2 = ctx[8];
+        var v3 = ctx[9];
+        var v4 = ctx[10];
+        var postfix = ctx[11];
+        var archive = ctx[12];
+        var reason = ctx[13];
+        var email = ctx[14];
+        var supplyid = ctx[15];
+        var codebase = ctx[16];
+        var cbdetail = ctx[17];
+
+        //应用解决方案配置
+        var items = slns.split(";");
+        for (var i in items) {
+            var item = items[i];
+            var info = item.split(",");
+            $(".btn[id^='ws-btn-slnselect-']").each( function() {
+                if ($(this).children().html() == info[0]) {
+                    if($(this).hasClass("active") ^ info[1] == "1") {
+                        $(this).click();
+                    }
+                }
+            })
+        }
+        //应用打包选项
+        items = build_options.split(";");
+        for (var i in items) {
+            var item = items[i];
+            var info = item.split(",");
+            $(".btn[id^='ws-btn-option-']").each( function() {
+                if ($(this).children().attr("name") == info[0]) {
+                    if($(this).parent().hasClass("btn-group")) {
+                        if ($(this).children().attr("value") == info[1]) {
+                            $(this).click();
+                        }
+                    }
+                    else {
+                        if($(this).hasClass("active") ^ info[1] == "1") {
+                            $(this).click();
+                        }
+                    }
+                }
+            })   
+        }
+        //应用额外选项
+        items = prefix.split(",");
+        $("#ws-build-prefix").val(items[1]);
+        items = v1.split(",");
+        $("#ws-build-v1").val(items[1]);
+        items = v2.split(",");
+        $("#ws-build-v2").val(items[1]);
+        items = v3.split(",");
+        $("#ws-build-v3").val(items[1]);
+        items = v4.split(",");
+        $("#ws-build-v4").val(items[1]);
+        items = postfix.split(",");
+        $("#ws-build-postfix").val(items[1]);
+        items = archive.split(",");
+        $("#ws-installer-archive").val(items[1]);
+        items = reason.split(",");
+        $("#ws-build-reason").val(items[1]);
+        items = email.split(",");
+        $("#ws-user-email").val(items[1]);
+        items = supplyid.substr(9);
+        $("#ws-installer-supplyid").val(items);
+        items = markupcode.split(",");
+        $(".btn[id^='ws-btn-markup-code-']").each( function() {
+            if ($(this).children().attr("value") == info[1]) {
+                $(this).click();
+            }
+        })
+        items = markupdetail.split(",");
+        $("#ws-markup-detail").val(items[1]);
+        items = codebase.split(",");
+        $(".btn[id^='ws-btn-codebase-']").each( function() {
+            if ($(this).children().attr("value") == info[1]) {
+                $(this).click();
+            }
+        })
+        items = cbdetail.split(",");
+        $("#ws-cb-detail").val(items[1]);
+
+        //应用worker
+        var nickname = $("#"+worker).html();
+        $("#ws-worker-select").val(nickname);
+
+        //切换到Build页
+
+        $(".nav-pills").children().removeClass("active");
+        $(".tab-content").children().removeClass("active");
+        $("#tabMain-title").addClass("active");
+        $("#tabMain").addClass("active");
+        initUI();
+        
+        //alert(jsonMsg['content']);
     }
 }
 
@@ -622,7 +899,7 @@ function onProjectSelect() {
     $("#ws-sln-select-base").empty();
     $("#ws-sln-select-base").append("<span class=\"label label-success\">公共类库</span>&nbsp;");
     $("#ws-sln-select-middle").empty();
-    $("#ws-sln-select-middle").append("<span class=\"label label-success\">中间层组件</span>&nbsp;");
+    $("#ws-sln-select-middle").append("<span class=\"label label-success\">公共组件</span>&nbsp;");
     $("#ws-sln-select-module").empty();
     $("#ws-sln-select-module").append("<span class=\"label label-success\">功能模块</span>&nbsp;");
     $("#ws-build-options-before").empty();
@@ -653,7 +930,7 @@ function updateWorkerStatus(bNotify) {
     $("#ws-worker-detail").removeClass();
 
     var cls = $("#ws-worker-select option:selected").attr('class');
-    var ip = $("#ws-worker-select option:selected").attr('value');
+    var ip = $("#ws-worker-select option:selected").attr('ip');
     
     if (cls == undefined || ip == undefined) {
         $("#ws-worker-status").text("None");
@@ -688,6 +965,39 @@ function updateWorkerStatus(bNotify) {
     }
 }
 
+function updateModelWorkerStatus() {
+    $("#ws-model-worker-status").removeClass();
+    $("#ws-model-worker-detail").removeClass();
+
+    var cls = $("#ws-model-worker-select option:selected").attr('class');
+    var ip = $("#ws-model-worker-select option:selected").attr('ip');
+    
+    if (cls == undefined || ip == undefined) {
+        $("#ws-model-worker-status").text("None");
+        $("#ws-model-worker-status").addClass("label label-warning");
+        $("#ws-model-worker-detail").addClass("label label-warning");
+        $("#ws-model-worker-detail").text("目前没有在线的编译机");
+    }
+    else {
+        $("#ws-model-worker-status").text(ip);
+        if (cls == "running") {
+            $("#ws-model-worker-status").addClass("label label-success");
+            $("#ws-model-worker-detail").addClass("label label-success");
+            $("#ws-model-worker-detail").text("系统当前正在打包，请稍等...");
+        }
+        else if (cls == "idle") {
+            $("#ws-model-worker-status").addClass("label");
+            $("#ws-model-worker-detail").addClass("label label");
+            $("#ws-model-worker-detail").text("该编译机当前空闲");
+        }
+        else if (cls == "error") {
+            $("#ws-model-worker-status").addClass("label label-important");
+            $("#ws-model-worker-detail").addClass("label label-important");
+            $("#ws-model-worker-detail").text("该编译机出现错误");
+        }
+    }
+}
+
 //切换worker响应
 function onWorkerSelect() {
     //清空日志输出区域
@@ -697,6 +1007,35 @@ function onWorkerSelect() {
     updateWorkerStatus(true);
 }
 
+//切换model worker响应
+function onModelWorkerSelect() {
+    updateModelWorkerStatus();
+}
+
+//切换model category
+function onModelCategorySelect() {
+    if ($("#ws-model-category-select option:selected").hasClass("default")) {
+        $("#ws-model-name-select").empty();
+        $("#ws-model-show-description").val("");
+        $("#ws-model-show-remark").val("");
+        return;
+    }
+    var modelCategory = $("#ws-model-category-select option:selected").text();
+    var msg = formatMessage("ws-category-select",modelCategory);
+    worker.postMessage(msg);
+}
+
+//切换model name
+function onModelNameSelect () {
+    var modelCategory = $("#ws-model-category-select option:selected").text();
+    var modelName = $("#ws-model-name-select option:selected").text();
+    var info = String.format("{0}|{1}",modelCategory,modelName);
+    var msg = formatMessage("ws-model-select",info);
+    worker.postMessage(msg);
+    var projName = $("#ws-model-name-select option:selected").attr("product");
+    $("#ws-project-select").val(projName);
+    $("#ws-project-select").change();
+}
 
 function formatMessage(msrc,content) {
     var msg = String.format("{\"msrc\":\"{0}\",\"content\":\"{1}\"}",msrc,content);

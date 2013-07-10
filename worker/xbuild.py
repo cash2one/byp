@@ -371,6 +371,7 @@ def buildproject(nickname,para = ()):
     except Exception,e:
         logging.error(e)
         report('wk-status-change','error',para)
+        report('wk-build-log',str(e),para)
         return
     logging.info('build complete !!')
     report('wk-build-finish','',para)
@@ -384,6 +385,8 @@ def main(argc, argv):
     
     #init logging system, it's told logging is threadsafe, so do NOT need to sync
     logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
     
     nickname = argv[1]
     buildproject(nickname)

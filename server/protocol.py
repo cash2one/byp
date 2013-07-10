@@ -41,6 +41,12 @@
 #				 = "ws-installer-version"					安装包默认版本
 #				 = "ws-installer-suplyid"					安装包默认supplyid
 #				 = "ws-installer-archive"					安装包归档base目录
+#				 = "ws-model-category"						server向client发送model categories
+#				 = "ws-category-select"						client切换model category时
+#				 = "ws-model-select"						client切换model name时
+#				 = "ws-model-delete"						删除指定model
+#				 = "ws-model-activate						激活指定model
+#				 = "ws-update-category"						更新model category
 ######################################################################################
 #				 server和worker通信用
 #				 = "wk-heart-beat"							判断worker是否在线

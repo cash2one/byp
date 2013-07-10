@@ -13,11 +13,11 @@
 #sln名称，介绍，负责人，分类，默认是否编译(1,0)，被哪些工程依赖
 bdkv_slns = [
 	['commonlib','公共lib库','刘恒','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['skin','公共皮肤库','王超','middle',1,[]],
-	['logicmisc','产品中间层组件','杨彦召','middle',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['logicutils','产品中间层组件','杨彦召','middle',1,[]],
+	['skin','公共皮肤库','张艺弘','base',1,[]],
+	['logicmisc','产品中间层组件','杨彦召','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['logicutils','产品中间层组件','杨彦召','base',1,[]],
 	['client','产品中间层组件','杨彦召','middle',1,[]],
-	['commondll','公共dll库','刘恒','base',1,[]],
+	['commondll','公共dll库','刘恒','middle',1,[]],
 	['avcommon','杀毒公共模块','务孟庆','module',1,[]],
 	['filemon','文件监控模块','武广柱','module',1,[]],
 	['avhips','主动防御模块','曹杨','module',1,[]],
@@ -33,15 +33,15 @@ bdkv_slns = [
 
 bdm_slns = [
 	['commonlib','公共lib库','刘恒','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['skin','公共皮肤库','王超','middle',1,[]],
-	['logicmisc','产品中间层组件','杨彦召','middle',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['logicutils','产品中间层组件','杨彦召','middle',1,[]],
+	['skin','公共皮肤库','张艺弘','base',1,[]],
+	['logicmisc','产品中间层组件','杨彦召','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['logicutils','产品中间层组件','杨彦召','base',1,[]],
 	['client','产品中间层组件','杨彦召','middle',1,[]],
-	['commondll','公共dll库','刘恒','base',1,[]],
+	['commondll','公共dll库','刘恒','middle',1,[]],
 	['syscleaner','系统清理模块','张巍','module',1,[]],
 	['soacceleratorlib','软件优化加速Lib','位广军','module',1,[]],
 	['soacceleratorplugin','软件优化加速插件','位广军','module',1,[]],
-	['swmanager','软件管理模块','张凯','module',1,[]],
+	['swmanager','软件管理模块','张靖','module',1,[]],
 	['main','卫士主程序','杨彦召','module',1,[]],
     ['trojanscan','木马扫描','易善鸿','module',1,[]],
     #['antivirusGJ','卫士查杀合入模块','赵欣','module',1,[]],
@@ -92,7 +92,7 @@ bdkv_options = {
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
 
-    'installermd5':['check','build','Md5校验','生成安装包的Md5校验信息'],
+    'installermd5':['check','after','安装包Md5','生成安装包的Md5校验信息'],
 
 	'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
@@ -142,7 +142,7 @@ bdm_options = {
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
 
-    'installermd5':['check','build','Md5校验','生成安装包的Md5校验信息'],
+    'installermd5':['check','after','安装包Md5','生成安装包的Md5校验信息'],
 
 	'send':['check','after','安装包归档','安装包发送至归档目录','default'],
 	'signinstaller':['check','after','安装包签名','对安装包进行签名','default'],
