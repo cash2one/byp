@@ -7,6 +7,7 @@
 
 import xml.dom.minidom
 import conf
+import datetime
 
 def saveFile(fname, ctx):
     f=open(fname,"w")
@@ -132,6 +133,8 @@ def getArchiveRoot(product):
     archive = archive.replace("/","\\")
     archive = archive.replace("$share",conf.ftp_default_archive)
     archive = archive.replace("$version",getInstallerVersion(product))
+    today = '%d-%d-%d' % (datetime.date.today().year,datetime.date.today().month,datetime.date.today().day)
+    archive = archive.replace("$date",today)
     if archive[-1] == '\\':
         archive = archive[:-1]
     if len(archive) <= 2:
