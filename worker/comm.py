@@ -133,8 +133,8 @@ def getArchiveRoot(product):
     archive = archive.replace("/","\\")
     archive = archive.replace("$share",conf.ftp_default_archive)
     archive = archive.replace("$version",getInstallerVersion(product))
-    today = '%d-%d-%d' % (datetime.date.today().year,datetime.date.today().month,datetime.date.today().day)
-    archive = archive.replace("$date",today)
+    subdir = '%d-%d-%d' % (datetime.date.today().year,datetime.date.today().month,datetime.date.today().day)
+    archive = archive.replace("$date",subdir)
     if archive[-1] == '\\':
         archive = archive[:-1]
     if len(archive) <= 2:
@@ -160,6 +160,8 @@ def getArchiveFullPath(product):
     archive = archive.replace('/','\\')
     archive = archive.replace("$share",conf.ftp_default_archive)
     archive = archive.replace("$version",getInstallerVersion(product))
+    subdir = '%d-%d-%d' % (datetime.date.today().year,datetime.date.today().month,datetime.date.today().day)
+    archive = archive.replace("$date",subdir)
     if archive[-1] == '\\':
         archive = archive[:-1]
     return archive
