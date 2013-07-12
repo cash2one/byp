@@ -926,7 +926,7 @@ def updatePackage(product):
         buildType = 'daily'
     elif ctx.find('1') != -1:
         builtType = 'version'
-    rewrite_version.main(3, ['rewrite_version.py', product, buildType])
+    rewrite_version.main(4, ['rewrite_version.py', product, buildType, 'update'])
     
 def genMailMsg(product):
     mailFile = ''

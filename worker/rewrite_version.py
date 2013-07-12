@@ -107,8 +107,8 @@ def update_product_version(nsiFile,product_version):
     update_file_lines(nsiFile,replacements,True)
 
 def main(argc,argv):
-    if argc != 3:
-        print 'usage:python rewrite_version.py <product_shortname (bdm|bdkv)> <build_type (daily|force)>'
+    if argc != 3 and argc != 4:
+        print 'usage:python rewrite_version.py <product_shortname (bdm|bdkv)> <build_type (daily|force)> [update]'
         return
     
     buildIdFile = ''
@@ -116,6 +116,9 @@ def main(argc,argv):
     nsiBuildlineFile = ''
     buildline = 0
     productMacro = ''
+    bUpdate = False
+    if argc == 4 and argv[3] == 'update':
+        bUpdate = True
     if argv[1].lower() == 'bdm':
         nsiBuildlineFile = conf.bdm_nsifile_buildline
         if argv[2].lower() == 'daily':
@@ -147,7 +150,7 @@ def main(argc,argv):
     
     if buildIdFile and nsiFile:
         num = AddBuildId(buildIdFile)
-        num = comm.setBuildNumber(argv[1].lower(),num)
+        num = comm.setBuildNumber(argv[1].lower(),num,True,bUpdate)
         severtime = time.strftime("%Y-%m-%d %I:%M:%S")
         update_nsis_build_info(nsiFile, '!define RELEASE_VERSION', '!define BUILD_TIME',num,severtime)
         update_buildver(num)

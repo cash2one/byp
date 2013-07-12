@@ -26,7 +26,7 @@ def getFileBuf(fname):
     f.close()
     return ret
 
-def setBuildNumber(product,num,bDailybuild = True):
+def setBuildNumber(product,num,bDailybuild = True,bUpdate = False):
     v4 = ''
     try:
         dom = xml.dom.minidom.parse('buildswitch/misc.xml')
@@ -40,7 +40,7 @@ def setBuildNumber(product,num,bDailybuild = True):
     except Exception,e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
-    if v4 != '$auto' and v4 != '':
+    if v4 != '$auto' and v4 != '' and not bUpdate:
         if not bDailybuild:
             v4 = str(int(v4)-1)
         if product == 'bdm':
@@ -48,7 +48,7 @@ def setBuildNumber(product,num,bDailybuild = True):
         elif product == 'bdkv':
             saveFile(conf.kvBuildIdFile,v4)
         return v4
-    else:
+    elif not bUpdate:
         if not bDailybuild:
             if product == 'bdm':
                 v4 = str(int(getMsg(conf.buildIdFile))-1)
@@ -56,6 +56,8 @@ def setBuildNumber(product,num,bDailybuild = True):
             elif product == 'bdkv':
                 v4 = str(int(getMsg(conf.kvBuildIdFile))-1)
                 saveFile(conf.kvBuildIdFile,v4)
+        return num
+    elif bUpdate:
         return num
 
 def getInstallerVersion(product):
