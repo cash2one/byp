@@ -775,7 +775,7 @@ function updateUI(msg) {
         $("#ws-installer-supplyid").val(items);
         items = markupcode.split(",");
         $(".btn[id^='ws-btn-markup-code-']").each( function() {
-            if ($(this).children().attr("value") == info[1]) {
+            if ($(this).attr("value") == items[1]) {
                 $(this).click();
             }
         })
@@ -783,7 +783,7 @@ function updateUI(msg) {
         $("#ws-markup-detail").val(items[1]);
         items = codebase.split(",");
         $(".btn[id^='ws-btn-codebase-']").each( function() {
-            if ($(this).children().attr("value") == info[1]) {
+            if ($(this).attr("value") == items[1]) {
                 $(this).click();
             }
         })
