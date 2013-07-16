@@ -10,6 +10,7 @@ import sys,os,conf,xml.dom.minidom,buildstep,new
 import threading
 import logging
 import time
+import socket
 
 #worker thread
 class Worker(threading.Thread):
@@ -387,6 +388,9 @@ def main(argc, argv):
     logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
     reload(sys)
     sys.setdefaultencoding('utf-8')
+    
+    timeout = 30
+    socket.setdefaulttimeout(30)
     
     nickname = argv[1]
     buildproject(nickname)

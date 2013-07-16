@@ -120,6 +120,7 @@ def genSvnLockActions(product, action, value):
             logging.error(e)
     commands.append(conf.sln_root + 'basic')
     commands.append(conf.sln_root + 'stable_proj')
+    commands.append(conf.sln_root + 'common_stage_proj')
     commands = list(set(commands))
     #already get all folders, now lock/unlock these folder
     cmd_details = []
@@ -145,7 +146,7 @@ def genSvnLockActions(product, action, value):
 #得到svn操作
 def getSvnCommands(product, value):
     svnAction = 'update'
-    if value == 2 or value == 4:
+    if value == 2 or value == 4 or value == 5:
         svnAction = 'checkout'
     elif value == 1 or value == 3:
         svnAction = 'update'
@@ -153,9 +154,9 @@ def getSvnCommands(product, value):
     bForce = False
     if value == 1 or value == 2:
         bForce = True
-    elif value == 3 or value == 4:
+    elif value == 3 or value == 4 or value == 5:
         bForce = False
-        
+    
     codeDir = ''
     revision = ''
     try:
@@ -217,9 +218,11 @@ def getSvnCommands(product, value):
     if svnAction == 'update':
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "basic")
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "stable_proj")
-    elif svnAction == 'checkout':
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "common_stage_proj")
+    elif svnAction == 'checkout' and value != 5:
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
+        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.sln_root + "common_stage_proj")
     commands = list(set(commands))
     return commands
 
@@ -404,9 +407,11 @@ def getMarkupCodeCommands(product, value):
         if actType[0] == '+':
             commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
             commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
         elif actType[0] == '-':
             commands.append("svn delete " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
             commands.append("svn delete " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            commands.append("svn delete " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
         commands = list(set(commands))
         return commands
     
