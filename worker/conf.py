@@ -11,7 +11,7 @@
 
 import userconf
 
-svn_url = 'http://192.168.10.242:8000/client/'
+svn_url = 'http://s.a.iyuntian.com/client/'
 svn_conf_file = './buildswitch/SVN.xml'
 markup_conf_file = './buildswitch/MarkupCode.xml'
 
@@ -64,16 +64,16 @@ setupList=["*.exe"]
 log_path="../output/err/"
 kvlog_path="../output/kverr/"
 
-ftp_default_archive = '\\\\192.168.10.242'
+ftp_default_archive = '\\\\10.52.174.35'
 
-ftpPathNameR= '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'DailyBuild' +'\\' 
-ftpKVPathNameR= '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'KVDailyBuild' +'\\' 
-ftpVersionPathNameR = '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'VersionBuild' +'\\'
-ftpVersionKVPathNameR = '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'KVVersionBuild' +'\\'
+ftpPathNameR= '\\\\'+'10.52.174.35'+'\\' + 'public' + '\\' + 'DailyBuild' +'\\' 
+ftpKVPathNameR= '\\\\'+'10.52.174.35'+'\\' + 'public' + '\\' + 'KVDailyBuild' +'\\' 
+ftpVersionPathNameR = '\\\\'+'10.52.174.35'+'\\' + 'public' + '\\' + 'VersionBuild' +'\\'
+ftpVersionKVPathNameR = '\\\\'+'10.52.174.35'+'\\' + 'public' + '\\' + 'KVVersionBuild' +'\\'
 
 #The following two lines DO NOT have spelling errors,merging daily and custom builds
-ftpCustomPathNameR = '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'DailyBuild' +'\\'
-ftpCustomKVPathNameR = '\\\\'+'192.168.10.242'+'\\' + 'public' + '\\' + 'KVDailyBuild' +'\\'
+ftpCustomPathNameR = '\\\\'+'10.52.174.35'+'\\' + 'public' + '\\' + 'DailyBuild' +'\\'
+ftpCustomKVPathNameR = '\\\\'+'10.52.174.35'+'\\' + 'public' + '\\' + 'KVDailyBuild' +'\\'
 
 ftpPathNameD= '\\'+'Debug' +'\\'
 ftpPathNameRR= '\\'+'Release' +'\\'
