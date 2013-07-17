@@ -127,7 +127,7 @@ def genSvnLockActions(product, action, value):
     ecode = sys.getfilesystemencoding()
     for item in commands:
         infoFile = '..\\output\\svn\\' + item[item.rfind('\\') + 1:] + '.info'
-        command = 'svn list --non-interactive --no-auth-cache --username buildbot --password 123456 -R ' + item + ' > ' + infoFile
+        command = 'svn list --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk -R ' + item + ' > ' + infoFile
         os.system(command.encode(sys.getfilesystemencoding()))
         fh = open(infoFile)
         files = fh.readlines()
@@ -137,9 +137,9 @@ def genSvnLockActions(product, action, value):
             if f[-1] == '/' or f[-1] == '\\':
                 continue
             if action == 'lock':
-                cmd_details.append('svn lock --non-interactive --no-auth-cache --username buildbot --password 123456 --force ' + item + '/' + f.decode(ecode).encode('utf-8'))
+                cmd_details.append('svn lock --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --force ' + item + '/' + f.decode(ecode).encode('utf-8'))
             elif action == 'unlock':
-                cmd_details.append('svn unlock --non-interactive --no-auth-cache --username buildbot --password 123456 --force ' + item + '/' + f.decode(ecode).encode('utf-8'))
+                cmd_details.append('svn unlock --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --force ' + item + '/' + f.decode(ecode).encode('utf-8'))
     return cmd_details
 
     
@@ -207,22 +207,22 @@ def getSvnCommands(product, value):
                 if node.getAttribute('product') != '' and node.getAttribute('product') != product:
                     continue
                 if svnAction == 'checkout':
-                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.sln_root + dir
+                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.sln_root + dir
                 elif svnAction == 'update':
-                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + dir
+                    command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + dir
                 commands.append(command)
                 break
         except Exception, e:
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
     if svnAction == 'update':
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "basic")
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "stable_proj")
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.sln_root + "common_stage_proj")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "basic")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "stable_proj")
+        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "common_stage_proj")
     elif svnAction == 'checkout' and value != 5:
-        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
-        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
-        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.sln_root + "common_stage_proj")
+        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
+        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
+        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.sln_root + "common_stage_proj")
     commands = list(set(commands))
     return commands
 
@@ -294,7 +294,7 @@ def ExpendMarkupValue(product, str, code_revision, codeDir):
             local_version_file = '../output/svn/KVSetupScript/BDKV_setup.nsi'
         command = 'rd /Q /S ' + local_version_folder
         os.system(command)
-        command = 'svn checkout --non-interactive --no-auth-cache --username buildbot --password 123456 --revision ' + revision + ' ' + remote_version_folder + ' ' + local_version_folder
+        command = 'svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision ' + revision + ' ' + remote_version_folder + ' ' + local_version_folder
         os.system(command)
     f = open(local_version_file)
     version_lines = f.readlines()
@@ -396,7 +396,7 @@ def getMarkupCodeCommands(product, value):
                 if not svnDir:
                     svnDir = dir + codeDir
                 if actType[0] == '+':
-                    command = "svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
+                    command = "svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
                 elif actType[0] == '-':
                     command = "svn delete " + conf.svn_url + dir + markupType + markupValue + ' -m "' + msg + '"'
                 commands.append(command)
@@ -405,9 +405,9 @@ def getMarkupCodeCommands(product, value):
                 logging.error(e)
         #add basic and stable
         if actType[0] == '+':
-            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
-            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
-            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password 123456 --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
         elif actType[0] == '-':
             commands.append("svn delete " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
             commands.append("svn delete " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
@@ -1089,7 +1089,7 @@ def genPrebuildActions(product, value):
             commands.append('del /Q /S ' + conf.sln_root + 'basic\\Output')
         elif product == 'bdkv':
             commands.append('del /Q /S ' + conf.sln_root + 'basic\\KVOutput')
-    commands.append('svn update --non-interactive --no-auth-cache --username buildbot --password 123456 --revision HEAD ' + conf.sln_root + 'basic')
+    commands.append('svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision HEAD ' + conf.sln_root + 'basic')
     return commands
 
 ##############################################
@@ -1162,7 +1162,7 @@ class PreBuild(BuildStep):
         else:
             commands = genPrebuildActions('bdm', self.value)
             for item in commands:
-                self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
                 self.update_step(1)
         BuildStep.act(self)
@@ -1180,7 +1180,7 @@ class KVPreBuild(BuildStep):
         else:
             commands = genPrebuildActions('bdkv', self.value)
             for item in commands:
-                self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
                 self.update_step(1)
         BuildStep.act(self)
@@ -1199,7 +1199,7 @@ class Svn(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            command = 'svn info --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
+            command = 'svn info --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
             os.system(command)
             commands = getSvnCommands('bdm', self.value)
             if len(commands) == 0:
@@ -1214,10 +1214,10 @@ class Svn(BuildStep):
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
                         os.system(command.encode(sys.getfilesystemencoding()))
-                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                        self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     else:
-                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                        self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(3)
         BuildStep.act(self)
@@ -1233,7 +1233,7 @@ class KVSvn(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         else:
-            command = 'svn info --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
+            command = 'svn info --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.svn_url + ' > ' + conf.svn_remote_info_file
             os.system(command)
             commands = getSvnCommands('bdkv', self.value)
             if len(commands) == 0:
@@ -1248,10 +1248,10 @@ class KVSvn(BuildStep):
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
                         os.system(command.encode(sys.getfilesystemencoding()))
-                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                        self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     else:
-                        self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                        self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                         os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(3)
         BuildStep.act(self)
@@ -1272,7 +1272,7 @@ class LockSvn(BuildStep):
         else:
             commands = genSvnLockActions('bdm', 'lock', self.value)
             for item in commands:
-                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                #self.report('wk-build-log', item.replace('bCRjzYKzk','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
@@ -1289,7 +1289,7 @@ class KVLockSvn(BuildStep):
         else:
             commands = genSvnLockActions('bdkv', 'lock', self.value)
             for item in commands:
-                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                #self.report('wk-build-log', item.replace('bCRjzYKzk','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
@@ -1789,7 +1789,7 @@ class Install(BuildStep):
                 logging.error(e)
             #first update all files in basic and accept mine if ignorefault
             if bIgnoreFault:
-                command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
+                command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
@@ -1852,7 +1852,7 @@ class KVInstall(BuildStep):
                 logging.error(e)
             #first update all files in basic and accept mine if ignore fault
             if bIgnoreFault:
-                command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
+                command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
@@ -2175,12 +2175,12 @@ class Commit(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
+            command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(5)
             msg = 'xbuild commit %s' % datetime.datetime.now()
-            command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            self.report('wk-build-log', command.replace('123456', 'XXXXXX'))
+            command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
+            self.report('wk-build-log', command.replace('bCRjzYKzk', 'XXXXXX'))
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(10)
         BuildStep.act(self)
@@ -2196,13 +2196,13 @@ class KVCommit(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = 'svn update --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic --accept mine-full'
-            self.report('wk-build-log', command.replace('123456', 'XXXXXX'))
+            command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
+            self.report('wk-build-log', command.replace('bCRjzYKzk', 'XXXXXX'))
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(5)
             msg = 'xbuild commit %s' % datetime.datetime.now()
-            command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password 123456 ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
-            self.report('wk-build-log', command.replace('123456', 'XXXXXX'))
+            command = 'svn commit --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic -m "%s" --no-unlock' % msg
+            self.report('wk-build-log', command.replace('bCRjzYKzk', 'XXXXXX'))
             os.system(command.encode(sys.getfilesystemencoding()))
             self.update_step(10)
         BuildStep.act(self)
@@ -2225,7 +2225,7 @@ class MarkupCode(BuildStep):
                 self.report('wk-build-log', 'No markup code commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                    self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                     os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(1)
         BuildStep.act(self)
@@ -2246,7 +2246,7 @@ class KVMarkupCode(BuildStep):
                 self.report('wk-build-log', 'No markup code commands')
             else:
                 for item in commands:
-                    self.report('wk-build-log', item.replace('123456', 'XXXXXX'))
+                    self.report('wk-build-log', item.replace('bCRjzYKzk', 'XXXXXX'))
                     os.system(item.encode(sys.getfilesystemencoding()))
                     self.update_step(1)
         BuildStep.act(self)
@@ -2267,7 +2267,7 @@ class UnlockSvn(BuildStep):
         else:
             commands = genSvnLockActions('bdm', 'unlock', self.value)
             for item in commands:
-                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                #self.report('wk-build-log', item.replace('bCRjzYKzk','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
     
@@ -2284,7 +2284,7 @@ class KVUnlockSvn(BuildStep):
         else:
             commands = genSvnLockActions('bdkv', 'unlock', self.value)
             for item in commands:
-                #self.report('wk-build-log', item.replace('123456','XXXXXX'))
+                #self.report('wk-build-log', item.replace('bCRjzYKzk','XXXXXX'))
                 os.system(item.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)
         

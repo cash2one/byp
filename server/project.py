@@ -49,6 +49,7 @@ bdm_slns = [
     ['avhips','主动防御模块','曹杨','module',1,[]],
     ['bd0001','驱动模块','曹杨','module',1,[]],
     ['patcher','漏洞修复模块','赵北宁','module',1,[]],
+    ['attack','攻防模块','时永昌','module',1,[]],
 ]
 
 projects = {
@@ -114,7 +115,7 @@ bdm_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作','default'],
 	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1'),('完全清理','打包前清理所有生成文件','2','default')]],
 
-	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
+	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('xcheck','仅所选工程从代码服务器重新签出','5')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
 	'rewriteversion':['check','before','dailybuild','此次打包更新dailybuild号','default'],
