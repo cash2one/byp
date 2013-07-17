@@ -120,7 +120,7 @@ def genSvnLockActions(product, action, value):
             logging.error(e)
     commands.append(conf.sln_root + 'basic')
     commands.append(conf.sln_root + 'stable_proj')
-    commands.append(conf.sln_root + 'common_stage_proj')
+    #commands.append(conf.sln_root + 'common_stage_proj')
     commands = list(set(commands))
     #already get all folders, now lock/unlock these folder
     cmd_details = []
@@ -218,11 +218,11 @@ def getSvnCommands(product, value):
     if svnAction == 'update':
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "basic")
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "stable_proj")
-        commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "common_stage_proj")
+        #commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "common_stage_proj")
     elif svnAction == 'checkout' and value != 5:
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
-        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.sln_root + "common_stage_proj")
+        #commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.sln_root + "common_stage_proj")
     commands = list(set(commands))
     return commands
 
@@ -370,6 +370,24 @@ def getMarkupCodeCommands(product, value):
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     
+    #whether to xmarkup
+    xmarkup = False
+    try:
+        dom = xml.dom.minidom.parse('./BuildSwitch/Misc.xml')
+        root = dom.documentElement
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == 'xmarkup':
+                val = node.getAttribute('value')
+                if val == '1':
+                    xmarkup = True
+                    break
+    except Exception, e:
+        logging.error("error occers when parsing xml : misc.xml")
+        logging.error(e)
+        
     #svn commands
     if markupType == '' or markupValue == '' or markupType == 'none':
         return []
@@ -393,6 +411,17 @@ def getMarkupCodeCommands(product, value):
                 root = dom.documentElement
                 dir = root.getAttribute('dir')
                 svnDir = root.getAttribute('svnDir')
+                #xmarkup & all build == '0' --> continue
+                bSel = False
+                for node in root.childNodes:
+                    if node.nodeType != node.ELEMENT_NODE:
+                        continue
+                    if '1' == node.getAttribute('build'):
+                        bSel = True
+                        break
+                if (not bSel) and xmarkup:
+                    continue
+                
                 if not svnDir:
                     svnDir = dir + codeDir
                 if actType[0] == '+':
@@ -404,14 +433,14 @@ def getMarkupCodeCommands(product, value):
                 logging.error("error occers when parsing xml or run command:")
                 logging.error(e)
         #add basic and stable
-        if actType[0] == '+':
+        if actType[0] == '+' and (not xmarkup):
             commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
             commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
-            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
-        elif actType[0] == '-':
+            #commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
+        elif actType[0] == '-' and (not xmarkup):
             commands.append("svn delete " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
             commands.append("svn delete " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
-            commands.append("svn delete " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            #commands.append("svn delete " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
         commands = list(set(commands))
         return commands
     

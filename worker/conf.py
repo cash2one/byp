@@ -211,6 +211,7 @@ bdm_conf_files = {
     'avhips':'AVHips',
     'bd0001':'BD0001',
     'patcher':'patcher',
+    'attack':'AttackDefense',
 }
 
 build_conf_files = {

@@ -9,5 +9,6 @@
     <item name="v3" value="0"/>
     <item name="v4" value="$auto"/>
     <item name="postfix" value="$postfix"/>
-    <item name="archive" value="$share/public/tmp/$version"/>
+    <item name="archive" value="$share/public/dailybuild/$version"/>
+    <item name="xmarkup" value="1"/>
 </conf>

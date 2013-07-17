@@ -12,8 +12,8 @@
 
 #sln名称，介绍，负责人，分类，默认是否编译(1,0)，被哪些工程依赖
 bdkv_slns = [
-	['commonlib','公共lib库','刘恒','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['skin','公共皮肤库','张艺弘','base',1,[]],
+	['commonlib','公共lib库','刘恒','base',0,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['skin','公共皮肤库','易善鸿','base',0,[]],
 	['logicmisc','产品中间层组件','杨彦召','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
 	['logicutils','产品中间层组件','杨彦召','base',1,[]],
 	['client','产品中间层组件','杨彦召','middle',1,[]],
@@ -32,8 +32,8 @@ bdkv_slns = [
 ]
 
 bdm_slns = [
-	['commonlib','公共lib库','刘恒','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
-	['skin','公共皮肤库','张艺弘','base',1,[]],
+	['commonlib','公共lib库','刘恒','base',0,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
+	['skin','公共皮肤库','易善鸿','base',0,[]],
 	['logicmisc','产品中间层组件','杨彦召','base',1,['commondll','skin','logicmisc','client','commondll','avcommon','filemon','avhips','drivermanager','sysrepair','antivirus','bdkv','bd0001']],
 	['logicutils','产品中间层组件','杨彦召','base',1,[]],
 	['client','产品中间层组件','杨彦召','middle',1,[]],
@@ -44,7 +44,7 @@ bdm_slns = [
 	['swmanager','软件管理模块','张靖','module',1,[]],
 	['main','卫士主程序','杨彦召','module',1,[]],
     ['trojanscan','木马扫描','易善鸿','module',1,[]],
-    #['antivirusGJ','卫士查杀合入模块','赵欣','module',1,[]],
+    ['antivirusGJ','卫士查杀合入模块','赵欣','module',1,[]],
     ['drivermanager','驱动管理模块','曹杨','module',1,[]],
     ['avhips','主动防御模块','曹杨','module',1,[]],
     ['bd0001','驱动模块','曹杨','module',1,[]],
@@ -62,7 +62,7 @@ bdkv_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作','default'],
 	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1'),('完全清理','打包前清理所有生成文件','2','default')]],
 
-	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有相关工程从代码服务器重新签出','4')]],
+	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有产品关联工程从代码服务器重新签出','4'),('xcheck','仅所选工程从代码服务器重新签出','5')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
 	'rewriteversion':['check','before','dailybuild','此次打包更新dailybuild号','default'],
@@ -109,13 +109,15 @@ bdkv_options = {
     'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守时'],
 	
     #'postbuild':['check','after','清理','打包后的清理工作','default'],
+    
+    'xmarkup':['check','after','XMarkup','仅标记选中的解决方案'],
 }
 
 bdm_options = {
 	#'prebuild':['check','before','清理','打包前的清理工作','default'],
 	'prebuild':['radio','before',[('不清理','打包前不进行任何清理工作','0'),('清理','打包前仅清理旧文件和日志','1'),('完全清理','打包前清理所有生成文件','2','default')]],
 
-	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('xcheck','仅所选工程从代码服务器重新签出','5')]],
+	'svn':['radio','before',[('不更新SVN','不进行任何svn操作','0'),('update','所有相关工程从代码服务器更新','3','default'),('checkout','所有产品关联工程从代码服务器重新签出','4'),('xcheck','仅所选工程从代码服务器重新签出','5')]],
 	#'svn':['check','before','更新SVN','所有相关工程从代码服务器更新','default'],
 
 	'rewriteversion':['check','before','dailybuild','此次打包更新dailybuild号','default'],
@@ -159,6 +161,8 @@ bdm_options = {
     'sendmail':['check','after','邮件通知','发送打包概况邮件，仅适用于无人值守时'],
 
 	#'postbuild':['check','after','清理','打包后的清理工作','default'],
+	
+	'xmarkup':['check','after','XMarkup','仅标记选中的解决方案','default'],
 }
 
 build_options = {
