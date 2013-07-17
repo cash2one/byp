@@ -220,7 +220,10 @@ def getSvnCommands(product, value):
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "stable_proj")
         #commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "common_stage_proj")
     elif svnAction == 'checkout' and value != 5:
-        commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
+        if product == 'bdm':
+            commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
+        elif product == 'bdkv':
+            commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "avbasic_proj" + codeDir + " " + conf.sln_root + "basic")
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
         #commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.sln_root + "common_stage_proj")
     commands = list(set(commands))
@@ -289,7 +292,7 @@ def ExpendMarkupValue(product, str, code_revision, codeDir):
             local_version_folder = '..\\output\\svn\\SetupScript'
             local_version_file = '../output/svn/SetupScript/BDM_setup.nsi'
         elif product == 'bdkv':
-            remote_version_folder = conf.svn_url + 'basic_proj' + codeDir + '/Tools/KVSetupScript'
+            remote_version_folder = conf.svn_url + 'avbasic_proj' + codeDir + '/Tools/KVSetupScript'
             local_version_folder = '..\\output\\svn\\KVSetupScript'
             local_version_file = '../output/svn/KVSetupScript/BDKV_setup.nsi'
         command = 'rd /Q /S ' + local_version_folder
@@ -434,11 +437,17 @@ def getMarkupCodeCommands(product, value):
                 logging.error(e)
         #add basic and stable
         if actType[0] == '+' and (not xmarkup):
-            commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            if product == 'bdm':
+                commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            elif product == 'bdkv':
+                commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "avbasic_proj" + codeDir + " " + conf.svn_url + "avbasic_proj" + markupType + markupValue + ' -m "' + msg + '"')
             commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
             #commands.append("svn copy --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
         elif actType[0] == '-' and (not xmarkup):
-            commands.append("svn delete " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            if product == 'bdm':
+                commands.append("svn delete " + conf.svn_url + "basic_proj" + markupType + markupValue + ' -m "' + msg + '"')
+            elif product == 'bdkv':
+                commands.append("svn delete " + conf.svn_url + "avbasic_proj" + markupType + markupValue + ' -m "' + msg + '"')
             commands.append("svn delete " + conf.svn_url + "stable_proj" + markupType + markupValue + ' -m "' + msg + '"')
             #commands.append("svn delete " + conf.svn_url + "common_stage_proj" + markupType + markupValue + ' -m "' + msg + '"')
         commands = list(set(commands))
@@ -1238,7 +1247,7 @@ class Svn(BuildStep):
                     if item.find('checkout') != -1:
                         subdir = item[item.find(conf.svn_url) + len(conf.svn_url):]
                         subdir = subdir[0:subdir.find('/')]
-                        if subdir.lower() == 'basic_proj':
+                        if subdir.lower() == 'basic_proj' or subdir.lower() == 'avbasic_proj':
                             subdir = 'basic'
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
@@ -1272,7 +1281,7 @@ class KVSvn(BuildStep):
                     if item.find('checkout') != -1:
                         subdir = item[item.find(conf.svn_url) + len(conf.svn_url):]
                         subdir = subdir[0:subdir.find('/')]
-                        if subdir.lower() == 'basic_proj':
+                        if subdir.lower() == 'basic_proj' or subdir.lower() == 'avbasic_proj':
                             subdir = 'basic'
                         command = 'rd /Q /S ..\\..\\' + subdir
                         self.report('wk-build-log', command)
@@ -1604,9 +1613,9 @@ class KVPack(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
-            command = 'cscript pack.vbs bdkv'
+            command = 'python fileop.py kv_mzip_res ' + conf.sln_root + 'basic\\KVOutput\\SkinResources'
             self.report('wk-build-log', command)
-            os.system(command.encode(sys.getfilesystemencoding()))
+            fileop.main(3,['fileop.py','kv_mzip_res',conf.sln_root + 'basic\\KVOutput\\SkinResources'])
         BuildStep.act(self)
     
 ##############################################
