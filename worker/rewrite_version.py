@@ -14,6 +14,7 @@ import conf
 import comm
 import time
 import codecs
+import logging
 
 def update_h_build_info(FilePath, version_key, data_key, num, severtime):
         file_r = codecs.open(FilePath,"r","utf_16")
