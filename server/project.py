@@ -39,6 +39,7 @@ bdm_slns = [
 	['client','产品中间层组件','杨彦召','middle',1,[]],
 	['commondll','公共dll库','刘恒','middle',1,[]],
 	['syscleanerlib','系统清理模块Lib','张巍','module',1,[]],
+	['luaVM','lua脚本引擎','张巍','module',1,[]],
 	['syscleaner','系统清理模块','张巍','module',1,[]],
 	['soacceleratorlib','软件优化加速Lib','位广军','module',1,[]],
 	['soacceleratorplugin','软件优化加速插件','位广军','module',1,[]],

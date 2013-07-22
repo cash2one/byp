@@ -194,6 +194,7 @@ bdm_conf_files = {
 	'qmlib':'QMlib',
 	'bdnd':'BDND',
 	'syscleanerlib':'SYSCleanerLib',
+	'luaVM':'SYSCleanerLuaVM',
 	'syscleaner':'SYSCleaner',
 	'sysaccelerator':'BDMSYSAccelerator',
 	'soacceleratorlib':'BDMSOAcceleratorLib',
