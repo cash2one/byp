@@ -7,7 +7,7 @@
 
 import xml.dom.minidom
 import conf
-import datetime
+import datetime, logging
 
 def saveFile(fname, ctx):
     f=open(fname,"w")
