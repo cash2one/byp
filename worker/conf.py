@@ -193,6 +193,7 @@ bdm_conf_files = {
 	'client':'BDMClient',
 	'qmlib':'QMlib',
 	'bdnd':'BDND',
+	'syscleanerlib':'SYSCleanerLib',
 	'syscleaner':'SYSCleaner',
 	'sysaccelerator':'BDMSYSAccelerator',
 	'soacceleratorlib':'BDMSOAcceleratorLib',
