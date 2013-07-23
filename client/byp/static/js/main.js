@@ -726,7 +726,7 @@ function updateUI(msg) {
             var info = item.split(",");
             $(".btn[id^='ws-btn-slnselect-']").each( function() {
                 if ($(this).children().html() == info[0]) {
-                    if($(this).hasClass("active") ^ info[1] == "1") {
+                    if(($(this).hasClass("active") && info[1] == '0') || (!$(this).hasClass("active") && info[1] == '1')) {
                         $(this).click();
                     }
                 }
@@ -745,7 +745,7 @@ function updateUI(msg) {
                         }
                     }
                     else {
-                        if($(this).hasClass("active") ^ info[1] == "1") {
+                        if(($(this).hasClass("active") && info[1] == '0') || (!$(this).hasClass("active") && info[1] == '1')) {
                             $(this).click();
                         }
                     }
