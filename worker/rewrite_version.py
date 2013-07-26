@@ -87,21 +87,29 @@ def update_file_lines(FilePath, replacements,bVerbose):
         ofile.writelines(list_lines)
         ofile.close()
         
-def update_version_define(buildline,buildnum):
+def update_version_define(nsiFile,verStr):
     replacements = []
-    verRelease = '#define VER_Release         %s' % buildnum
-    verBuild = '#define VER_Build           %d' % buildline
+    verRelease = '#define VER_Release         %s' % verStr[3]
+    verBuild = '#define VER_Build           %s' % verStr[2]
+    verMinor = '#define VER_Minor           %s' % verStr[1]
+    verMajor = '#define VER_Major           %s' % verStr[0]
     verBuildDateTime = '#define VER_ConstructDateTime   TEXT("%s")' % datetime.datetime.now().isoformat()
+    
     replacements.append(('#define VER_Release',verRelease))
     replacements.append(('#define VER_Build',verBuild))
+    replacements.append(('#define VER_Minor',verMinor))
+    replacements.append(('#define VER_Major',verMajor))
     replacements.append(('#define VER_ConstructDateTime',verBuildDateTime))
     update_file_lines(conf.buildver_definefile,replacements,True)
     
-def update_product_version(nsiFile,product_version):
+def update_product_version(nsiFile,verStr):
+    product_version = '%s.%s.%s.%s' % (verStr[0],verStr[1],verStr[2],verStr[3])
     replacements = []
+    buildVerDefine = '!define BUILD_VERSION "%s.%s"' % (verStr[0],verStr[1])
     pv1 = 'VIProductVersion "%s"' % product_version
     pv2 = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"' % product_version
     pv3 = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"' % product_version
+    replacements.append(('!define BUILD_VERSION',buildVerDefine))
     replacements.append(('VIProductVersion ',pv1))
     replacements.append(('VIAddVersionKey /LANG=2052 "FileVersion" ',pv2))
     replacements.append(('VIAddVersionKey /LANG=2052 "ProductVersion" ',pv3))
@@ -115,7 +123,6 @@ def main(argc,argv):
     buildIdFile = ''
     nsiFile = ''
     nsiBuildlineFile = ''
-    buildline = 0
     productMacro = ''
     bUpdate = False
     if argc == 4 and argv[3] == 'update':
@@ -125,29 +132,23 @@ def main(argc,argv):
         if argv[2].lower() == 'daily':
             buildIdFile = conf.buildIdFile
             nsiFile = conf.bdm_nsifile_daily
-            buildline = 0
         elif argv[2].lower() == 'version':
             buildIdFile = conf.versionBuildIdFile
             nsiFile = conf.bdm_nsifile_version
-            buildline = 1
         elif argv[2].lower() == 'partial':
             buildIdFile = conf.customBuildIdFile
             nsiFile = conf.bdm_nsifile_partial
-            buildline = 0
     elif argv[1].lower() == 'bdkv':
         nsiBuildlineFile = conf.bdkv_nsifile_buildline
         if argv[2].lower() == 'daily':
             buildIdFile = conf.kvBuildIdFile
             nsiFile = conf.bdkv_nsifile_daily
-            buildline = 0
         elif argv[2].lower() == 'version':
             buildIdFile = conf.kvVersionBuildIdFile
             nsiFile = conf.bdkv_nsifile_version
-            buildline = 1
         elif argv[2].lower() == 'partial':
             buildIdFile = conf.kvCustomBuildIdFile
             nsiFile = conf.bdkv_nsifile_partial
-            buildline = 0
     
     if buildIdFile and nsiFile:
         num = AddBuildId(buildIdFile)
@@ -155,11 +156,12 @@ def main(argc,argv):
         severtime = time.strftime("%Y-%m-%d %I:%M:%S")
         update_nsis_build_info(nsiFile, '!define RELEASE_VERSION', '!define BUILD_TIME',num,severtime)
         update_buildver(num)
-        update_version_define(buildline,num)
-        product_version = '1.0.%d.%s' % (buildline,num)
-        update_product_version(nsiFile,product_version)
+        verStr = comm.getInstallerVersion(argv[1].lower()).split('.')
+
+        update_version_define(nsiFile,verStr)
+        update_product_version(nsiFile,verStr)
         
-        buildlinestr = '!define BUILD_LINE  "%d"' % buildline
+        buildlinestr = '!define BUILD_LINE  "%s"' % verStr[2]
         comm.saveFile(nsiBuildlineFile,buildlinestr)
 
 if "__main__" == __name__:

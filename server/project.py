@@ -190,7 +190,7 @@ markup_options = {
 }
 
 #默认版本号
-bdkv_default_version = '1.1.0.$auto'
+bdkv_default_version = '1.2.0.$auto'
 bdm_default_version = '1.0.0.$auto'
 
 default_version = {
