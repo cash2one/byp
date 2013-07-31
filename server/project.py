@@ -46,12 +46,12 @@ bdm_slns = [
 	['swmanager','软件管理模块','张靖','module',1,[]],
 	['main','卫士主程序','杨彦召','module',1,[]],
     ['trojanscan','木马扫描','易善鸿','module',1,[]],
-    ['antivirusGJ','卫士查杀合入模块','赵欣','module',1,[]],
-    ['drivermanager','驱动管理模块','曹杨','module',1,[]],
-    ['avhips','主动防御模块','曹杨','module',1,[]],
-    ['bd0001','驱动模块','曹杨','module',1,[]],
+    ['antivirusGJ','卫士查杀合入模块','赵欣','module',0,[]],
+    ['drivermanager','驱动管理模块','曹杨','module',0,[]],
+    ['avhips','主动防御模块','曹杨','module',0,[]],
+    ['bd0001','驱动模块','曹杨','module',0,[]],
     ['patcher','漏洞修复模块','赵北宁','module',1,[]],
-    ['attack','攻防模块','时永昌','module',1,[]],
+    ['attack','攻防模块','时永昌','module',0,[]],
 ]
 
 projects = {
@@ -131,7 +131,7 @@ bdm_options = {
 	#'build':['radio','build',[('不编译','不进行编译','0'),('build','全部增量编译','2','default')]],
 	'build':['check','build','编译','选中工程全部重新编译','default'],
 
-	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2'),('all','全部进行编译','3','default')]],
+	'buildtype':['radio','build',[('debug','只编译debug','1'),('release','只编译release','2','default'),('all','全部进行编译','3')]],
 	
 	'ignorefault':['check','build','无人值守','不提示编译和打包错误，但仍然完成整个编译流程'],
 	
