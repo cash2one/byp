@@ -123,21 +123,27 @@ svn_remote_info_file = '../output/svn/svn_remote.info'
 
 mgr_official_sign_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
 								'..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',
-                                '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',]
+                                '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',
+                                '..\\..\\basic\\output\\binrelease\\uninst.exe',]
 
 kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.atl\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.crt\\',
-                                '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',]
+                                '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',
+                                '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',]
 
 kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
                       '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',
-                      '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',]
+                      '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',
+                      '..\\..\\basic\\output\\binrelease\\uninst.exe',
+                      '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',]
 
 kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
                           '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',
-                          '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',]
+                          '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',
+                          '..\\..\\basic\\output\\binrelease\\uninst.exe',
+                          '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',]
 
 mgr_verify_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
 						  '..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',
