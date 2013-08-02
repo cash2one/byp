@@ -42,9 +42,9 @@ def main(argc, argv):
                     continue
                 type = node.getAttribute('type')
                 if type == 'baidu_cn':
-                    signId = '2'
-                elif type == 'baidu_bj_netcom':
                     signId = '1'
+                elif type == 'baidu_bj_netcom':
+                    signId = '2'
                 elif type == 'baidu_jp':
                     signId = '3'
                 #node.setAttribute('sign','0')
