@@ -202,10 +202,10 @@ def post_multipart(host, selector, fields, files, blanks):
 
 def SignBaidu(file,para):
     #if file already signed,return
-    #command = conf.byp_bin_path + 'SignVerify.exe ' + file
-    #ret = os.system(command.encode(sys.getfilesystemencoding()))
-    #if ret == 0:
-    #    return
+    command = conf.byp_bin_path + 'SignVerify.exe ' + file
+    ret = os.system(command.encode(sys.getfilesystemencoding()))
+    if ret == 0:
+        return
     product = para[0]
     signType = para[1]
     sign_product = ''
