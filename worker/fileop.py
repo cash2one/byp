@@ -16,7 +16,7 @@
 
 import sys,os,glob,httplib,urllib,mimetypes,comm,conf,xml.dom.minidom,win32api,shutil
 import logging,userconf
-import io,hashlib
+import io,hashlib,time
 
 def FileOperation(dir,op,fileType,excluded_dir=[]):
     #root dir
@@ -251,6 +251,8 @@ def SignBaidu(file,para):
         if ret == 0:
             shutil.move(file+'.sign', file)
             break;
+        else:
+            time.sleep(5)
         
         if i == 9:
             logging.info('Sign baidu official digital signature failed.')
