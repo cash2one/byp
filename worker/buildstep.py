@@ -209,6 +209,7 @@ def getSvnCommands(product, value):
                 if svnAction == 'checkout':
                     command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + svnDir + " " + conf.sln_root + dir
                 elif svnAction == 'update':
+                    commands.append("svn cleanup --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk " + conf.sln_root + dir)
                     command = "svn " + svnAction + " --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + dir
                 commands.append(command)
                 break
@@ -216,16 +217,16 @@ def getSvnCommands(product, value):
             logging.error("error occers when parsing xml or run command:")
             logging.error(e)
     if svnAction == 'update':
+        commands.append("svn cleanup --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk " + conf.sln_root + "basic")
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "basic")
+        commands.append("svn cleanup --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk " + conf.sln_root + "stable_proj")
         commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "stable_proj")
-        #commands.append("svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.sln_root + "common_stage_proj")
     elif svnAction == 'checkout' and value != 5:
         if product == 'bdm':
             commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "basic_proj" + codeDir + " " + conf.sln_root + "basic")
         elif product == 'bdkv':
             commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "avbasic_proj" + codeDir + " " + conf.sln_root + "basic")
         commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "stable_proj" + codeDir + " " + conf.sln_root + "stable_proj")
-        #commands.append("svn checkout --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk --revision " + revision + " " + conf.svn_url + "common_stage_proj" + codeDir + " " + conf.sln_root + "common_stage_proj")
     commands = list(set(commands))
     return commands
 
