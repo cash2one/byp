@@ -2345,7 +2345,7 @@ class SendMail(BuildStep):
             command = '..\\bin\\blat.exe -install proxy-in.baidu.com liuheng@baidu.com 3 25'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
-            command = '..\\bin\\blat.exe "' + conf.bdm_mail_file + '" -to zhangkai06@baidu.com,niekefeng@baidu.com,yishanhong@baidu.com,zhaoxin05@baidu.com,caoyang@baidu.com,zhangjing11@baidu.com,zhangwei21@baidu.com,weiguangjun@baidu.com,yangchuanyi01@baidu.com,liying12@baidu.com,tongyang@baidu.com,zhaobeining@baidu.com,liuheng@baidu.com -subject "[DailyBuild][Baiduan][%date%]"'
+            command = '..\\bin\\blat.exe "' + conf.bdm_mail_file + '" -to zhangkai06@baidu.com,niekefeng@baidu.com,wuguangzhu@baidu.com,yishanhong@baidu.com,zhaoxin05@baidu.com,caoyang@baidu.com,zhangjing11@baidu.com,zhangwei21@baidu.com,weiguangjun@baidu.com,yangchuanyi01@baidu.com,liying12@baidu.com,tongyang@baidu.com,zhaobeining@baidu.com,liuheng@baidu.com -subject "[DailyBuild][Baiduan][%date%]"'
             self.report('wk-build-log', command)
             os.system(command.encode(sys.getfilesystemencoding()))
         BuildStep.act(self)

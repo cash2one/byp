@@ -52,6 +52,7 @@ bdm_slns = [
     ['bd0001','驱动模块','曹杨','module',0,[]],
     ['patcher','漏洞修复模块','赵北宁','module',1,[]],
     ['attack','攻防模块','时永昌','module',0,[]],
+    ['bdkitUtils','bdkit模块','时永昌','module',0,[]],
 ]
 
 projects = {

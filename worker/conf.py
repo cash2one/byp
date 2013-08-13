@@ -222,6 +222,7 @@ bdm_conf_files = {
     'bd0001':'BD0001',
     'patcher':'patcher',
     'attack':'AttackDefense',
+    'bdkitUtils':'BDKitUtils',
 }
 
 build_conf_files = {
