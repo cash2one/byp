@@ -189,7 +189,7 @@ bdkv_conf_files = {
 	'bd0001':'BD0001',
 	'defense':'SDWrench',
     'attack':'AttackDefense',
-    'repair':'baiduRepair'
+    'repair':'baiduRepair',
     'bdkitUtils':'BDKitUtils',
 }
 
