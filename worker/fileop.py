@@ -255,10 +255,10 @@ def SignBaidu(file,para):
         if i == 9:
             logging.info('Sign baidu official digital signature failed.')
             print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-            #raise 'Sign baidu official digital signature failed.'
             f = open('c:\\sign_output.txt','a')
             f.write("file sign baidu failed %s\r\n" % file)
             f.close()
+            raise Exception('Sign baidu official digital signature failed.')
     return
 
 def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
