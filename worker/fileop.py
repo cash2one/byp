@@ -18,6 +18,9 @@ import sys,os,glob,httplib,urllib,mimetypes,comm,conf,xml.dom.minidom,win32api,s
 import logging,userconf
 import io,hashlib,time
 
+class SignBaiduException(Exception):
+    pass
+
 def FileOperation(dir,op,fileType,excluded_dir=[]):
     #root dir
     for type in fileType:
@@ -258,7 +261,7 @@ def SignBaidu(file,para):
             f = open('c:\\sign_output.txt','a')
             f.write("file sign baidu failed %s\r\n" % file)
             f.close()
-            raise Exception('Sign baidu official digital signature failed.')
+            raise SignBaiduException('Sign baidu official digital signature failed.')
     return
 
 def SignBaiduOfficial(path,ftype,product,excluded_dir = []):

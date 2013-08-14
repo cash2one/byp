@@ -59,6 +59,9 @@ def main(argc, argv):
         
         if done:
             fileop.FileOperationWithExtraPara(argv[2],fileop.SignBaidu,(argv[1].lower(),signId),conf.sign_file_exts.split(','),excluded_dir)
+    except fileop.SignBaiduException,e:
+        print e
+        raise e
     except Exception,e:
         print "error occers when parsing xml or run command:"
         print e
