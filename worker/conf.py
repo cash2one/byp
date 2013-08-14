@@ -191,6 +191,7 @@ bdkv_conf_files = {
     'attack':'AttackDefense',
     'repair':'baiduRepair',
     'bdkitUtils':'BDKitUtils',
+    'websafe':'WebSafe',
 }
 
 bdm_conf_files = {

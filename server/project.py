@@ -30,6 +30,7 @@ bdkv_slns = [
     ['attack','攻防模块','时永昌','module',1,[]],
     ['repair','修复模块','时永昌','module',1,[]],
     ['bdkitUtils','bdkit模块','时永昌','module',1,[]],
+    ['websafe','websafe模块','务孟庆','module',0,[]],
 ]
 
 bdm_slns = [
