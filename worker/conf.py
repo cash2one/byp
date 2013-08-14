@@ -190,6 +190,7 @@ bdkv_conf_files = {
 	'defense':'SDWrench',
     'attack':'AttackDefense',
     'repair':'baiduRepair'
+    'bdkitUtils':'BDKitUtils',
 }
 
 bdm_conf_files = {
