@@ -803,6 +803,13 @@ function updateUI(msg) {
         initUI();
         
         //alert(jsonMsg['content']);
+        SyncWorker();
+
+        //编译机不在线提示
+        if (nickname == undefined) {
+            var info = '~所需要的编译机不在线~';
+            alert(info);
+        }
     }
 }
 
@@ -963,6 +970,14 @@ function updateWorkerStatus(bNotify) {
             worker.postMessage(msg);
         }
     }
+}
+
+function SyncWorker() {
+    var currentSel = $("#ws-worker-select option:selected").attr('id');
+    msg = formatMessage("ws-worker-select",currentSel);
+    worker.postMessage(msg);
+    msg = formatMessage("ws-query-buildlog","");
+    worker.postMessage(msg);
 }
 
 function updateModelWorkerStatus() {
