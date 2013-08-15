@@ -1,6 +1,6 @@
-<?xml version="1.0" ?><conf>
+﻿<?xml version="1.0" ?><conf>
 <!-- antivirus_proj -->
-<item projdir="antivirus_proj\Source\BDAVCache" modulename="BDAVCache.dll" filedesc="百度杀毒性能模块"/>
+<item projdir="antivirus_proj\Source\BDMAVCached" modulename="BDMAVCached.dll" filedesc="百度杀毒性能模块"/>
 <item projdir="antivirus_proj\Source\BDMAVEng" modulename="BDMAVEng.dll" filedesc="百度杀毒病毒扫描引擎"/>
 <item projdir="antivirus_proj\Source\BDMRepBase" modulename="BDMRepBase.dll" filedesc="百度杀毒查杀基础库模块"/>
 <item projdir="antivirus_proj\Source\BDMRepMgr" modulename="BDMRepMgr.dll" filedesc="百度杀毒查杀管理模块"/>
