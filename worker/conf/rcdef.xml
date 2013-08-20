@@ -66,6 +66,8 @@
 <item projdir="sysaccelerator_proj\Source\Logic\SYSAccMgrDll" modulename="BDMSYSAccelerator.dll" filedesc="百度卫士基础功能模块"/>
 
 <!-- syscleaner_proj -->
+<item projdir="syscleaner_proj\Source\BDMScriptVM" modulename="BDMScriptVM.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="syscleaner_proj\Source\GCScriptBind" modulename="GCScriptBind.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="syscleaner_proj\Source\BDMSOCleanerPlugin" modulename="BDMSOCleanerPlugin.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="syscleaner_proj\Source\BDMSOCleanerTrayPlugin" modulename="BDMSOCleanerTrayPlugin.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="syscleaner_proj\Source\Logic\SYSCleaner" modulename="SYSCleaner.dll" filedesc="百度卫士基础功能模块"/>
