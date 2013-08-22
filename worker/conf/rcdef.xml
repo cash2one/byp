@@ -16,14 +16,14 @@
 <item projdir="avhips_proj\Source\DriverManager" modulename="DriverManager.dll" filedesc="百度卫士基础功能模块"/>
 <item projdir="avhips_proj\Source\HIPSEngine" modulename="HIPS.dll" filedesc="百度卫士基础功能模块"/>
 
-<!-- client_proj -->
-<item projdir="client_proj\Source\BDAVUpdate" modulename="BDAVUpdate.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="client_proj\Source\BDLogicUtils" modulename="BDLogicUtils.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="client_proj\Source\BDMBugRpt" modulename="BaiduanBugRpt.exe" filedesc="百度卫士异常报告程序"/>
-<item projdir="client_proj\Source\BDMPatchAgent" modulename="BDMUpdateAgent.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="client_proj\Source\BDMUpdate" modulename="BDMUpdate.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="client_proj\Source\InstallHelper" modulename="InstallHelper.dll" filedesc="百度卫士基础功能模块"/>
-<item projdir="client_proj\Source\NetInstallHelpler" modulename="NetInstallHelper.dll" filedesc="百度卫士基础功能模块"/>
+<!-- avclient_proj -->
+<item projdir="avclient_proj\Source\BDAVUpdate" modulename="BDAVUpdate.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="avclient_proj\Source\BDLogicUtils" modulename="BDLogicUtils.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="avclient_proj\Source\BDMBugRpt" modulename="BaiduanBugRpt.exe" filedesc="百度卫士异常报告程序"/>
+<item projdir="avclient_proj\Source\BDMPatchAgent" modulename="BDMUpdateAgent.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="avclient_proj\Source\BDMUpdate" modulename="BDMUpdate.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="avclient_proj\Source\InstallHelper" modulename="InstallHelper.dll" filedesc="百度卫士基础功能模块"/>
+<item projdir="avclient_proj\Source\NetInstallHelpler" modulename="NetInstallHelper.dll" filedesc="百度卫士基础功能模块"/>
 
 <!-- common_proj -->
 <!-- reserved

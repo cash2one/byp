@@ -1,5 +1,5 @@
-<?xml version="1.0" ?><conf use="none">
-    <item name="+branch" value="beta2_patch1_$r_$v"/>
+<?xml version="1.0" ?><conf use="+branch">
+    <item name="+branch" value="bdkv_switch"/>
     <item name="+tag" value="byp_$r_$v_$t"/>
     <item name="-branch" value="beta2_perftest_r14323_v263"/>
     <item name="-tag" value="beta2_r14114_v262_t1368101038.468000"/>

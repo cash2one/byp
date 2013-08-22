@@ -1,6 +1,6 @@
 <?xml version="1.0" ?><conf lock="false" unlock="false" use="trunk">
     <item name="branch" value="1.0Beta2_VB100"/>
     <item name="tag" value=""/>
-    <item name="trunk" value="code base[optional]"/>
+    <item name="trunk" value="HEAD"/>
     <item name="revision" value="14171"/>
 </conf>

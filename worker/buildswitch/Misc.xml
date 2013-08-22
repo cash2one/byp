@@ -1,14 +1,14 @@
 <?xml version="1.0" ?><conf>
     <item name="ignorefault" value="0"/>
-    <item name="email" value="sw_xt@baidu.com"/>
-    <item name="reason" value="BaiduAn DB"/>
+    <item name="email" value="sw_aq@baidu.com"/>
+    <item name="reason" value="BaiduSd Markup"/>
     <item name="supplyid" value="m10001,n10000,f10015"/>
     <item name="prefix" value="$prefix"/>
     <item name="v1" value="1"/>
-    <item name="v2" value="0"/>
+    <item name="v2" value="2"/>
     <item name="v3" value="0"/>
     <item name="v4" value="$auto"/>
     <item name="postfix" value="$postfix"/>
-    <item name="archive" value="$share/public/dailybuild/$version"/>
-    <item name="xmarkup" value="1"/>
+    <item name="archive" value="$share/public/kvdailybuild/$version"/>
+    <item name="xmarkup" value="0"/>
 </conf>
