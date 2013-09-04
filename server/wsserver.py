@@ -1,4 +1,4 @@
-# coding=UTF-8
+﻿# coding=UTF-8
 """
 @author thomas
 @date    2013-03-31
@@ -574,6 +574,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
                 client.notify(content)
             
 def main():
+    os.chdir(sys.path[0])
     #init logging system, it's told logging is threadsafe, so do NOT need to sync
     logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
     reload(sys)
