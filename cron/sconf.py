@@ -10,6 +10,7 @@ build_scripts_66 = [
         'F:\\bdkv_switch\\byp\\worker\\KVSwitch.py',
         'F:\\bdkv_trunk\\byp\\worker\\KVTrunk.py',
         'F:\\bdkv_v448_websafe\\byp\\worker\\BDKV_V448_WebSafe.py',
+        'F:\\supplyid448\\byp\\worker\\KVSupplyid448.py',
         ]
 
 host_script_map = {
