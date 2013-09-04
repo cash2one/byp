@@ -1454,7 +1454,7 @@ class Build(BuildStep):
                         bReCompiler = False
                         for item in commands:
                             if item.find(conf.log_path + file) != -1:
-                                bRecompiler = True
+                                bReCompiler = True
                                 self.report('wk-build-log', item)
                                 os.system(item.encode(sys.getfilesystemencoding()))
                                 errLog = comm.getMsg(conf.log_path + file)

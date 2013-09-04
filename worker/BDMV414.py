@@ -55,8 +55,8 @@ def main(argc, argv):
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '2cd6469e-bf13-4124-91a0-103e949c7b65'
-	nickname = 'Daenerys'
+	workerId = '33e71796-7aea-4ff9-a24b-33cdd7812a1f'
+	nickname = 'BDMV414'
 	
 	while True:
 		ws_service = None
