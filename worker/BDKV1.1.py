@@ -49,6 +49,7 @@ def mainLoop(socket, workerId, nickname):
 
 		
 def main(argc, argv):
+	os.chdir(sys.path[0])
 	#init logging system, it's told logging is threadsafe, so do NOT need to sync
 	logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
 	

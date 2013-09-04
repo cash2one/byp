@@ -1,0 +1,2 @@
+at 13:41 /every:M,T,W,Th,F,S,Su taskkill /F /IM python.exe
+SCHTASKS /RU ADMINISTRATOR /RP asdfghjkl;' /Create /TN "RESTART_SCRIPT_66" /SC DAILY /ST 06:02:00 /TR "python F:\bdkv_trunk\byp\cron\restart_cron.py -r 172.17.180.66"
