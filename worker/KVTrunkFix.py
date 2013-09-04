@@ -55,8 +55,8 @@ def main(argc, argv):
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '39b9f728-8b2c-43fc-b387-a0baaa8734ae'
-	nickname = 'KVSwitch'
+	workerId = '529fb696-a407-46d7-9115-41f71ff5258d'
+	nickname = 'KVTrunkFix'
 	
 	while True:
 		ws_service = None
