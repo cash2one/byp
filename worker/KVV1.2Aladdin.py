@@ -49,14 +49,13 @@ def mainLoop(socket, workerId, nickname):
 
 		
 def main(argc, argv):
-	os.chdir(sys.path[0])
 	#init logging system, it's told logging is threadsafe, so do NOT need to sync
 	logging.basicConfig(format = '%(asctime)s - %(levelname)s: %(message)s', level=logging.DEBUG, stream = sys.stdout)
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '2cd6469e-bf13-4124-91a0-103e949c7b65'
-	nickname = 'Daenerys'
+	workerId = '07e2bdef-c188-47a4-9e63-7193972c2c7c'
+	nickname = 'KVV1.2Aladdin'
 	
 	while True:
 		ws_service = None
