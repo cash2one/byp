@@ -55,8 +55,8 @@ def main(argc, argv):
 	
 	#init constants
 	timeout_buildserver = 0
-	workerId = '39b9f728-8b2c-43fc-b387-a0baaa8734ae'
-	nickname = 'KVSwitch'
+	workerId = '86abb4c5-ebd4-4838-b024-dd524ee292f1'
+	nickname = 'KV1.3Antivirus'
 	
 	while True:
 		ws_service = None
