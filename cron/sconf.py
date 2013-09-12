@@ -1,6 +1,7 @@
 build_scripts_61 = [
         'F:\\BDMTrunk\\byp\\server\\wsserver.py',
         'F:\\BDMTrunk\\byp\\worker\\BDMTrunk.py',
+        'F:\\BDM_V463_DEV\\byp\\worker\\BDMV463Dev.py',
         ]
 
 build_scripts_66 = [
@@ -11,6 +12,7 @@ build_scripts_66 = [
         'F:\\bdkv_trunk\\byp\\worker\\KVTrunk.py',
         'F:\\bdkv_v448_websafe\\byp\\worker\\BDKV_V448_WebSafe.py',
         'F:\\supplyid448\\byp\\worker\\KVSupplyid448.py',
+        'F:\\bdkv_v1.5_antivirus\\byp\\worker\\KV1.5Antivirus.py',
         ]
 
 host_script_map = {
