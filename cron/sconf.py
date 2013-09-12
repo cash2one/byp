@@ -1,6 +1,7 @@
 build_scripts_61 = [
         'F:\\BDMTrunk\\byp\\server\\wsserver.py',
         'F:\\BDMTrunk\\byp\\worker\\BDMTrunk.py',
+        'F:\\BDM_V463_DEV\\byp\\worker\\BDMV463Dev.py',
         ]
 
 build_scripts_66 = [

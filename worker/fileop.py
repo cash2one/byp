@@ -14,7 +14,7 @@
     add rcgen support ----------------------------------- 2013.03.13
 """
 
-import sys,os,glob,httplib,urllib,mimetypes,comm,conf,xml.dom.minidom,win32api,shutil
+import sys,os,glob,httplib,urllib,urllib2,mimetypes,comm,conf,xml.dom.minidom,win32api,shutil
 import logging,userconf
 import io,hashlib,time
 
@@ -203,6 +203,20 @@ def post_multipart(host, selector, fields, files, blanks):
     return h.file.read()
 
 
+def post_multipart2(host, selector, fields, files, blanks):
+    content_type, body = encode_multipart_formdata(fields, files, blanks)
+    h = httplib.HTTP(host)
+    h.putrequest('POST', selector)
+    h.putheader('content-type', content_type)
+    h.putheader('content-length', str(len(body)))
+    h.putheader('Connection','keep-alive')
+    h.putheader('Cache-Control','max-age=0')
+    h.putheader('Host','qa1.basic.baidu.com')
+    h.endheaders()
+    h.send(body)
+    errcode, errmsg, headers = h.getreply()
+    return h.file.read()
+
 def SignBaidu(file,para):
     #if file already signed,return
     command = conf.byp_bin_path + 'SignVerify.exe ' + file
@@ -264,6 +278,64 @@ def SignBaidu(file,para):
             raise SignBaiduException('Sign baidu official digital signature failed.')
     return
 
+def SignBaidu2(file,para):
+    #if file already signed,return
+    command = conf.byp_bin_path + 'SignVerify.exe ' + file
+    ret = os.system(command.encode(sys.getfilesystemencoding()))
+    if ret == 0:
+        return
+    product = para[0]
+    signType = para[1]
+    sign_product = ''
+    if product == 'bdm':
+        sign_product = conf.sign_file_product.encode(sys.getfilesystemencoding())
+    elif product == 'bdkv':
+        sign_product = conf.kvsign_file_product.encode(sys.getfilesystemencoding())
+    file_path = file[0:file.rfind('\\')+1]
+    file_name = file[file.rfind('\\')+1:]
+    logging.info( 'Signning File ' + file + ' through connection to ' + conf.local_cerf_addr)
+    files,fields = [],[]
+    fields.append(('desc',sign_product))
+    fields.append(('cert',signType))
+    
+    #files.append(('f1',file,comm.getFileBuf(file)))
+    #blanks = ['f2','f3','f4','f5','f6','f7','f8','f9']
+    files.append(('file',file,comm.getFileBuf(file)))
+    #blanks = ['file[]','file[]','file[]','file[]']
+    
+    blanks = []
+    
+    digitalSign = ''
+    if signType == '2':
+        digitalSign = 'baidu_cn'
+    elif signType == '1':
+        digitalSign = 'baidu_bj_netcom'
+    elif signType == '3':
+        digitalSign = 'baidu_jp'
+    
+    for i in range(0,10):
+        response = post_multipart2(conf.local_cerf_addr,conf.local_cerf_url,fields,files,blanks)
+        logging.info( response)
+        iStart = response.find('msg:') + 4
+        if iStart != 3:
+            part2 = response[iStart:]
+            urllib.urlretrieve(part2, file + '.sign')
+        
+        command = conf.byp_bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
+        ret = os.system(command.encode(sys.getfilesystemencoding()))
+        if ret == 0:
+            shutil.move(file+'.sign', file)
+            break;
+        
+        if i == 9:
+            logging.info('Sign baidu official digital signature failed.')
+            print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
+            f = open('c:\\sign_output.txt','a')
+            f.write("file sign baidu failed %s\r\n" % file)
+            f.close()
+            raise SignBaiduException('Sign baidu official digital signature failed.')
+    return
+
 def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
     done = False
     signId = '0'
@@ -304,7 +376,7 @@ def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
     #logging.info(ret)
     
     if done:
-        FileOperationWithExtraPara(path,SignBaidu,(product,signId),ftype,excluded_dir)
+        FileOperationWithExtraPara(path,SignBaidu2,(product,signId),ftype,excluded_dir)
 
 def loginSignServer(host):
     body = 'username=liuheng&password=Agnes880204&rememberMe=true&_rememberMe=on&_viaToken=on&lt=LT-272454-0F2jsAvArBEb1MbW1PoRnSoocCpCcO&execution=e1s1&_eventId=submit&submit='
