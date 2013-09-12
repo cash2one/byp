@@ -58,7 +58,7 @@ def main(argc, argv):
         #print ret
         
         if done:
-            fileop.FileOperationWithExtraPara(argv[2],fileop.SignBaidu,(argv[1].lower(),signId),conf.sign_file_exts.split(','),excluded_dir)
+            fileop.FileOperationWithExtraPara(argv[2],fileop.SignBaidu2,(argv[1].lower(),signId),conf.sign_file_exts.split(','),excluded_dir)
     except fileop.SignBaiduException,e:
         print e
         raise e
