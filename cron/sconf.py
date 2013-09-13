@@ -13,6 +13,8 @@ build_scripts_66 = [
         'F:\\bdkv_v448_websafe\\byp\\worker\\BDKV_V448_WebSafe.py',
         'F:\\supplyid448\\byp\\worker\\KVSupplyid448.py',
         'F:\\bdkv_v1.5_antivirus\\byp\\worker\\KV1.5Antivirus.py',
+        'F:\\bdkv_v1.3_hips\\byp\\worker\\KV1.3Hips.py',
+        'E:\\bdkv_v1020_common\\byp\\worker\\KVV1020Common.py',
         ]
 
 host_script_map = {
