@@ -316,6 +316,8 @@ def SignBaidu2(file,para):
     for i in range(0,10):
         response = post_multipart2(conf.local_cerf_addr,conf.local_cerf_url,fields,files,blanks)
         logging.info( response)
+        if response.find('failed') != -1:
+            continue
         iStart = response.find('msg:') + 4
         if iStart != 3:
             part2 = response[iStart:]
