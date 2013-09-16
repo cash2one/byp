@@ -129,6 +129,11 @@ def SignKav(file):
     command = conf.byp_bin_path + 'KavSign.exe /s"' + file + '" /u"' + conf.byp_bin_path + 'keys\\PrivateKey.sgn"'
     os.system(command.encode(sys.getfilesystemencoding()))
 
+def LoadSign(file):
+    logging.info('Signning File With LoadSign: ' + file)
+    command = conf.byp_bin_path + 'BDKVFileSign.exe /s ' + file
+    os.system(command.encode(sys.getfilesystemencoding()))
+
 def GenRC(file,writer):
     lfile = file.lower()
     if lfile.find('\\basic\\') != -1 or lfile.find('\\vdc_proj\\') != -1 or lfile.find('\\webshield_proj\\') != -1:
@@ -806,6 +811,8 @@ gen_rc_list                           - generate rc list
         FileOperation(argv[2],Sign,ftype,conf.kvsign_excluded_dir)
     elif argv[1] == 'kvsign_kav':
         FileOperation(argv[2],SignKav,ftype,conf.kvsign_kav_excluded_dir)
+    elif argv[1] == 'load_sign':
+        FileOperation(argv[2],LoadSign,ftype,conf.kv_load_sign_excluded_dir)
     elif argv[1] == 'sign_baidu':
         SignBaiduOfficial(argv[2],ftype,'bdm',conf.mgr_official_sign_excluded_dir)
     elif argv[1] == 'kvsign_baidu':

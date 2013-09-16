@@ -1724,6 +1724,13 @@ class KVSign(BuildStep):
             fileop.main(4, ['fileop.py', 'kvsign_kav', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.exe'])
             self.update_step(14)
             
+            command = 'python fileop.py load_sign ' + conf.sln_root + 'basic\\KVOutput\\bindebug\\ *.dll'
+            self.report('wk-build-log', command)
+            fileop.main(4, ['fileop.py', 'load_sign', conf.sln_root + 'basic\\KVOutput\\BinDebug\\', '*.dll'])
+            command = 'python fileop.py load_sign ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\ *.dll'
+            self.report('wk-build-log', command)
+            fileop.main(4, ['fileop.py', 'load_sign', conf.sln_root + 'basic\\KVOutput\\BinRelease\\', '*.dll'])
+
             command = 'python sign.py bdkv ' + conf.sln_root + 'basic\\KVOutput\\BinRelease\\'
             self.report('wk-build-log', command)
             sign.main(3, ['sign.py', 'bdkv', conf.sln_root + 'basic\\KVOutput\\BinRelease\\'])

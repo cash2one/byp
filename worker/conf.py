@@ -138,6 +138,12 @@ kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
                                 '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',
                                 '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',]
 
+kv_load_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
+								'..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
+								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.atl\\',
+								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.crt\\',
+                                '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',]
+
 kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
                       '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',
                       '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',
