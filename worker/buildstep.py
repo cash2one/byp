@@ -611,16 +611,16 @@ def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
         return
     defenseNsiFile = nsiFile + '.defense.nsi'
     #silent modify
-    file_r = open(silentNsiFile)
-    lines = file_r.readlines()
-    file_r.close()
-    for index in range(len(lines)):
-        if lines[index].find('#silent#') != -1:
-            if bSilent:
+    if bSilent:
+        file_r = open(silentNsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        for index in range(len(lines)):
+            if lines[index].find('#silent#') != -1:
                 lines[index] = 'Strcpy $varIsSilence "1"    #silent#\r\n'
-    file_w = open(silentNsiFile, "w")
-    file_w .writelines(lines)
-    file_w .close()
+        file_w = open(silentNsiFile, "w")
+        file_w .writelines(lines)
+        file_w .close()
     #productinfo modify
     file_r = open(nsiFile)
     lines = file_r.readlines()
@@ -636,6 +636,10 @@ def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
             lines[index] = 'VIAddVersionKey /LANG=2052 "LegalCopyright" ""\r\n'
         if lines[index].find('VIAddVersionKey /LANG=2052 "FileDescription"') != -1:
             lines[index] = 'VIAddVersionKey /LANG=2052 "FileDescription" ""\r\n'
+        if lines[index].find('OutFile') != -1:
+            index_p = lines[index].find('.exe')
+            newOutput = lines[index][0:index_p] + '_Defense' + lines[index][index_p:]
+            lines[index] = newOutput
     file_w = open(defenseNsiFile, "w")
     file_w .writelines(lines)
     file_w .close()
@@ -644,16 +648,16 @@ def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
     os.system(command.encode(sys.getfilesystemencoding()))
     #clean
     #silent
-    file_r = open(silentNsiFile)
-    lines = file_r.readlines()
-    file_r.close()
-    for index in range(len(lines)):
-        if lines[index].find('#silent#') != -1:
-            if bSilent:
+    if bSilent:
+        file_r = open(silentNsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        for index in range(len(lines)):
+            if lines[index].find('#silent#') != -1:
                 lines[index] = '#Strcpy $varIsSilence "1"    #silent#\r\n'
-    file_w = open(silentNsiFile, "w")
-    file_w .writelines(lines)
-    file_w .close()
+        file_w = open(silentNsiFile, "w")
+        file_w .writelines(lines)
+        file_w .close()
     #productinfo
     command = 'del /Q /S ' + defenseNsiFile
     os.system(command)
