@@ -669,13 +669,19 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
     miniSilentFile = ''
     key = ''
     installerPath = ''
+    default_installer_supplyid = []
     if len(type) > 0:
         key = type[0]
-        
+
     if product == 'bdm':
-        insFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
-        vInstallFile = conf.sln_root + 'basic\\tools\\SetupScript\\include\\BDM_install.nsi'
+        if key == 'm':
+            insFile = conf.sln_root + 'basic\\tools\\BDMNetInstall\\BDMNetInstall.nsi'
+            miniSilentFile = conf.sln_root + 'basic\\tools\\BDMNetInstall\\include\\buildline.nsi'
+        else:
+            insFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
+            vInstallFile = conf.sln_root + 'basic\\tools\\SetupScript\\include\\BDM_install.nsi'
         installerPath = '..\\setup\\'
+        default_installer_supplyid = conf.bdm_default_installer_supplyid
     elif product == 'bdkv':
         if key == 'm':
             insFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall.nsi'
@@ -684,6 +690,7 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
             insFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
             vInstallFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\include\\KV_install.nsi'
         installerPath = '..\\kvsetup\\'
+        default_installer_supplyid = conf.bdkv_default_installer_supplyid
     confFile = './BuildSwitch/Misc.xml'
     slist = []
     #read supplyid list
@@ -707,7 +714,7 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
             continue
         if item[0] != key:
             continue
-        if item in conf.default_installer_supplyid:
+        if item in default_installer_supplyid:
             continue
         token = '_Sid_' + item[1:]
         if bSilent:
@@ -799,9 +806,12 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
 
 def installMiniPackage(obj, product, bSupplyid=False, bSilent=False):
     installerPath = ''
+    defaultSupplyid = ''
     if product == 'bdm':
+        defaultSupplyid = 'm50001'
         installerPath = '..\\setup\\'
     elif product == 'bdkv':
+        defaultSupplyid = 'm10001'
         installerPath = '..\\kvsetup\\'
     #nsis backup
     newNetInstallFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\KVNetInstall_Dummy.nsi'
@@ -845,7 +855,7 @@ def installMiniPackage(obj, product, bSupplyid=False, bSilent=False):
     except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
-    if 'm10001' in slist:
+    if defaultSupplyid in slist:
         if not bSilent:
             command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
             obj.report('wk-build-log', command)
@@ -867,6 +877,7 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
     #read supplyid list
     confFile = './BuildSwitch/Misc.xml'
     slist = []
+    defaultSupplyid = ''
     try:
         dom = xml.dom.minidom.parse(confFile)
         root = dom.documentElement
@@ -882,14 +893,16 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     if product == 'bdm':
+        defaultSupplyid = 'n50000'
         nsiFile = conf.sln_root + 'basic\\tools\\SetupScript\\BDM_setup.nsi'
         bkOutput = 'OutFile "..\setup\BaiduAn_Setup_${BUILD_BASELINE}.exe"\r\n'
         installerPath = '..\\setup\\'
     elif product == 'bdkv':
+        defaultSupplyid = 'n10000'
         nsiFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup.nsi'
         bkOutput = 'OutFile "..\kvsetup\Baidusd_Setup_${BUILD_BASELINE}.exe"\r\n'
         installerPath = '..\\kvsetup\\'
-    if 'n10000' in slist:
+    if defaultSupplyid in slist:
         file_r = open(nsiFile)
         lines = file_r.readlines()
         file_r.close()
@@ -1930,13 +1943,13 @@ class Install(BuildStep):
             if bInstall:
                 installNormalPackage(self, 'bdm', True, bInstallSilence)
             #if bInstallMini:
-                #installMiniPackage(self,'bdm',True,bInstallSilence)
+                installMiniPackage(self,'bdm',True,bInstallSilence)
             if (bInstall or bInstallMini) and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
                     installNormalPackage(self, 'bdm', False, bInstallSilence)
-                #if bInstallMini:
-                    #installMiniPackage(self,'bdm',False,bInstallSilence)
+                if bInstallMini:
+                    installMiniPackage(self,'bdm',False,bInstallSilence)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_setup_path):
