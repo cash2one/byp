@@ -7,7 +7,6 @@ build_scripts_61 = [
         ]
 
 build_scripts_66 = [
-        'F:\\1.0beta3_dev\\byp\\worker\\KVBeta3Dev.py',
         'F:\\bdkv1.3_antivirus\\byp\worker\\KV1.3Antivirus.py',
         'F:\\bdkv_fix\\byp\\worker\\KVTrunkFix.py',
         'F:\\bdkv_switch\\byp\\worker\\KVSwitch.py',
@@ -17,6 +16,7 @@ build_scripts_66 = [
         'F:\\bdkv_v1.5_antivirus\\byp\\worker\\KV1.5Antivirus.py',
         'F:\\bdkv_v1.3_hips\\byp\\worker\\KV1.3Hips.py',
         'E:\\bdkv_v1020_common\\byp\\worker\\KVV1020Common.py',
+        'F:\\bdkv_v1.3_filemon\\byp\\worker\\KVV1.3Filemon.py',
         ]
 
 host_script_map = {
