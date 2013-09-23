@@ -119,6 +119,8 @@ class Worker(threading.Thread):
                                 step.setAttribute('value','1')
                             elif self.options.has_key('install_silence') and self.options['install_silence'] == '1':
                                 step.setAttribute('value','1')
+                            elif self.options.has_key('install_defense') and self.options['install_defense'] == '1':
+                                step.setAttribute('value','1')
                             else:
                                 step.setAttribute('value','0')
                                 
@@ -265,6 +267,10 @@ class Worker(threading.Thread):
                 root.setAttribute('install_silence',self.options['install_silence'])
             else:
                 root.setAttribute('install_silence','0')
+            if self.options.has_key('install_defense'):
+                root.setAttribute('install_defense',self.options['install_defense'])
+            else:
+                root.setAttribute('install_defense','0')
             writer = open(pkgFile,'w')
             dom.writexml(writer)
             writer.close()

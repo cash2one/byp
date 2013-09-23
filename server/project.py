@@ -97,6 +97,7 @@ bdkv_options = {
 	'install_full':['check','build','全量包','同时生成带全量病毒库的安装包'],
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
+	'install_defense':['check','build','攻防包','生成不带文件信息的攻防用安装包，安装包将带有defense字样'],
 
     'installermd5':['check','after','安装包Md5','生成安装包的Md5校验信息'],
 
@@ -149,6 +150,7 @@ bdm_options = {
     'install_mini':['check','build','迷你下载器','同时生成迷你下载器（在线安装包）'],
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
+	'install_defense':['check','build','攻防包','生成不带文件信息的攻防用安装包，安装包将带有defense字样'],
 
     'installermd5':['check','after','安装包Md5','生成安装包的Md5校验信息'],
 

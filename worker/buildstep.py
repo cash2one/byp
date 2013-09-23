@@ -521,7 +521,8 @@ def getInstallOptions():
         bInstallFull = False if root.getAttribute('install_full') == '0' else True
         bInstallUpdate = False if root.getAttribute('install_update') == '0' else True
         bInstallSilence = False if root.getAttribute('install_silence') == '0' else True
-        return (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence)
+        bInstallDefense = False if root.getAttribute('install_defense') == '0' else True
+        return (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense)
     except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
@@ -535,7 +536,7 @@ def getViruslibVersion():
         logging.error("error occers when getting vlib version")
         logging.error(e)
 
-def buildSilentPackage(obj, product, type, file=''):
+def buildSilentPackage(obj, product, type, file_i=''):
     silentNsiFile = ''
     nsiFile = ''
     if product == 'bdm':
@@ -552,10 +553,10 @@ def buildSilentPackage(obj, product, type, file=''):
         elif type == 'normal' or type == 'full':
             silentNsiFile = conf.bdkv_install_silent_file
             nsiFile = conf.bdkv_nsifile_daily
-    if len(file) > 0:
-        nsiFile = file
+    if len(file_i) > 0:
+        nsiFile = file_i
         if type == 'mini':
-            silentNsiFile = file
+            silentNsiFile = file_i
     if not os.path.exists(nsiFile):
         return
     file_r = open(silentNsiFile)
@@ -580,6 +581,83 @@ def buildSilentPackage(obj, product, type, file=''):
     file_w = open(silentNsiFile, "w")
     file_w .writelines(lines)
     file_w .close()
+
+def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
+    (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+    if not bInstallDefense:
+        return
+    silentNsiFile = ''
+    nsiFile = ''
+    defenseNsiFile = ''
+    if product == 'bdm':
+        if type == 'mini':
+            silentNsiFile = conf.bdm_netinstall_silent_file
+            nsiFile = conf.bdm_netinstall_silent_file
+        elif type == 'normal' or type == 'full':
+            silentNsiFile = conf.bdm_install_silent_file
+            nsiFile = conf.bdm_nsifile_daily
+    elif product == 'bdkv':
+        if type == 'mini':
+            silentNsiFile = conf.bdkv_netinstall_silent_file
+            nsiFile = conf.bdkv_netinstall_file
+        elif type == 'normal' or type == 'full':
+            silentNsiFile = conf.bdkv_install_silent_file
+            nsiFile = conf.bdkv_nsifile_daily
+    if len(file_i) > 0:
+        nsiFile = file_i
+        if type == 'mini':
+            silentNsiFile = file_i
+    if not os.path.exists(nsiFile):
+        return
+    defenseNsiFile = nsiFile + '.defense.nsi'
+    #silent modify
+    file_r = open(silentNsiFile)
+    lines = file_r.readlines()
+    file_r.close()
+    for index in range(len(lines)):
+        if lines[index].find('#silent#') != -1:
+            if bSilent:
+                lines[index] = 'Strcpy $varIsSilence "1"    #silent#\r\n'
+    file_w = open(silentNsiFile, "w")
+    file_w .writelines(lines)
+    file_w .close()
+    #productinfo modify
+    file_r = open(nsiFile)
+    lines = file_r.readlines()
+    file_r.close()
+    for index in range(len(lines)):
+        if lines[index].find('VIAddVersionKey /LANG=2052 "ProductName"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductName" ""\r\n'
+        if lines[index].find('VIAddVersionKey /LANG=2052 "CompanyName"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "CompanyName" ""\r\n'
+        if lines[index].find('VIAddVersionKey /LANG=2052 "LegalTrademarks"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "LegalTrademarks" ""\r\n'
+        if lines[index].find('VIAddVersionKey /LANG=2052 "LegalCopyright"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "LegalCopyright" ""\r\n'
+        if lines[index].find('VIAddVersionKey /LANG=2052 "FileDescription"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "FileDescription" ""\r\n'
+    file_w = open(defenseNsiFile, "w")
+    file_w .writelines(lines)
+    file_w .close()
+    #do install
+    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + defenseNsiFile
+    os.system(command.encode(sys.getfilesystemencoding()))
+    #clean
+    #silent
+    file_r = open(silentNsiFile)
+    lines = file_r.readlines()
+    file_r.close()
+    for index in range(len(lines)):
+        if lines[index].find('#silent#') != -1:
+            if bSilent:
+                lines[index] = '#Strcpy $varIsSilence "1"    #silent#\r\n'
+    file_w = open(silentNsiFile, "w")
+    file_w .writelines(lines)
+    file_w .close()
+    #productinfo
+    command = 'del /Q /S ' + defenseNsiFile
+    os.system(command)
+
 
 def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
     insFile = ''
@@ -689,6 +767,7 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
             os.system(command.encode(sys.getfilesystemencoding()))
         else:
             buildSilentPackage(obj, product, type, newInsFile)
+        buildDefensePackage(obj, product, type, newInsFile, bSilent)
         #clean
         command = 'del /Q /S ' + newInsFile
         os.system(command)
@@ -769,6 +848,7 @@ def installMiniPackage(obj, product, bSupplyid=False, bSilent=False):
             os.system(command.encode(sys.getfilesystemencoding()))
         else:
             buildSilentPackage(obj, product, 'mini', newNetInstallFile)
+        buildDefensePackage(obj, product, 'mini', newNetInstallFile, bSilent)
     #clean
     command = 'del /Q /S ' + newNetInstallFile
     os.system(command.encode(sys.getfilesystemencoding()))
@@ -832,6 +912,7 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
             os.system(command.encode(sys.getfilesystemencoding()))
         else:
             buildSilentPackage(obj, product, 'normal', nsiFile)
+        buildDefensePackage(obj, product, 'normal', nsiFile, bSilent)
         
         file_r = open(nsiFile)
         lines = file_r.readlines()
@@ -934,6 +1015,7 @@ def installKvFullPackage(obj, product, bSupplyid=False, bSilent=False):
             os.system(command.encode(sys.getfilesystemencoding()))
         else:
             buildSilentPackage(obj, product, 'full', conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
+        buildDefensePackage(obj, product, 'full', conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi', bSilent)
     
     #supplyid
     if bSupplyid:
@@ -1840,7 +1922,7 @@ class Install(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
             if bInstall:
                 installNormalPackage(self, 'bdm', True, bInstallSilence)
             #if bInstallMini:
@@ -1903,7 +1985,7 @@ class KVInstall(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
             if bInstall:
                 installNormalPackage(self, 'bdkv', True, bInstallSilence)
             if bInstallMini:
