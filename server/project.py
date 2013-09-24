@@ -205,7 +205,7 @@ default_version = {
 
 #默认supplyid
 bdkv_default_supplyid = 'm10001,n10000,f10015'
-bdm_default_supplyid = 'm10001,n10000,f10015'
+bdm_default_supplyid = 'm50001,n50000'
 
 default_supplyid = {
 	'杀毒':bdkv_default_supplyid,

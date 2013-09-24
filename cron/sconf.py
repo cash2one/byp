@@ -4,7 +4,7 @@ build_scripts_61 = [
         'F:\\BDM_V463_DEV\\byp\\worker\\BDMV463Dev.py',
         'F:\\BDKVBuildOnce\\byp\\worker\\KVBuildOnce.py',
         'F:\\BDMBuildOnce\\byp\\worker\\BDMBuildOnce.py',
-        'F:\\BDMSupplyId473\\byp\\worker\\BDMSupplyId473',
+        'F:\\BDMSupplyId473\\byp\\worker\\BDMSupplyId473.py',
         ]
 
 build_scripts_66 = [
