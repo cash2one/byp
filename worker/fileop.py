@@ -322,7 +322,16 @@ def SignBaidu2(file,para):
         response = post_multipart2(conf.local_cerf_addr,conf.local_cerf_url,fields,files,blanks)
         logging.info( response)
         if response.find('failed') != -1:
+            i = i + 1
+            if i == 9:
+                logging.info('Sign baidu official digital signature failed.')
+                print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
+                f = open('c:\\sign_output.txt','a')
+                f.write("file sign baidu failed %s\r\n" % file)
+                f.close()
+                raise SignBaiduException('Sign baidu official digital signature failed.')
             continue
+        
         iStart = response.find('msg:') + 4
         if iStart != 3:
             part2 = response[iStart:]
@@ -333,14 +342,6 @@ def SignBaidu2(file,para):
         if ret == 0:
             shutil.move(file+'.sign', file)
             break;
-        
-        if i == 9:
-            logging.info('Sign baidu official digital signature failed.')
-            print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-            f = open('c:\\sign_output.txt','a')
-            f.write("file sign baidu failed %s\r\n" % file)
-            f.close()
-            raise SignBaiduException('Sign baidu official digital signature failed.')
     return
 
 def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
