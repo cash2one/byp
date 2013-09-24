@@ -241,4 +241,6 @@ build_conf_files = {
 	'卫士': bdm_conf_files,
 }
 
-default_installer_supplyid = ['m10001','n10000','n50000','f10015']
+
+bdm_default_installer_supplyid = ['m50001','n50000']
+bdkv_default_installer_supplyid = ['m10001','n10000','n50000','f10015']
