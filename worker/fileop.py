@@ -341,7 +341,7 @@ def SignBaidu2(file,para):
         ret = os.system(command.encode(sys.getfilesystemencoding()))
         if ret == 0:
             shutil.move(file+'.sign', file)
-            break;
+            break
     return
 
 def SignBaiduOfficial(path,ftype,product,excluded_dir = []):
