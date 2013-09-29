@@ -277,6 +277,9 @@ def ExpendMarkupValue(product, str, code_revision, codeDir):
     else:
         revision = code_revision
     
+    if str.find('$revision') == -1 and str.find('$version') == -1 and str.find('$timestamp') == -1:
+        return (str,revision)
+
     local_version_file = ''
     
     if code_revision == '':
