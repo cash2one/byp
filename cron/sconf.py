@@ -5,6 +5,7 @@ build_scripts_61 = [
         'F:\\BDKVBuildOnce\\byp\\worker\\KVBuildOnce.py',
         'F:\\BDMBuildOnce\\byp\\worker\\BDMBuildOnce.py',
         'F:\\BDMSupplyId473\\byp\\worker\\BDMSupplyId473.py',
+        'F:\\KVAppV1.52\\byp\\worker\\KVAppV1.52.py',
         ]
 
 build_scripts_66 = [
