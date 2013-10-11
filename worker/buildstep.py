@@ -568,6 +568,8 @@ def buildSilentPackage(obj, product, type, file_i=''):
     for index in range(len(lines)):
         if lines[index].find('#silent#') != -1:
             lines[index] = 'Strcpy $varIsSilence "1"    #silent#\r\n'
+        if lines[index].find("#StartMain#") != -1:
+            lines[index] = 'Strcpy $StartMain "1"    #StartMain#\r\n'
     file_w = open(silentNsiFile, "w")
     file_w .writelines(lines)
     file_w .close()
@@ -581,6 +583,8 @@ def buildSilentPackage(obj, product, type, file_i=''):
     for index in range(len(lines)):
         if lines[index].find('#silent#') != -1:
             lines[index] = '#Strcpy $varIsSilence "1"    #silent#\r\n'
+        if lines[index].find("#StartMain#") != -1:
+            lines[index] = '#Strcpy $StartMain "1"    #StartMain#\r\n'
     file_w = open(silentNsiFile, "w")
     file_w .writelines(lines)
     file_w .close()
@@ -621,6 +625,8 @@ def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
         for index in range(len(lines)):
             if lines[index].find('#silent#') != -1:
                 lines[index] = 'Strcpy $varIsSilence "1"    #silent#\r\n'
+            if lines[index].find("#StartMain#") != -1:
+                lines[index] = 'Strcpy $StartMain "1"    #StartMain#\r\n'
         file_w = open(silentNsiFile, "w")
         file_w .writelines(lines)
         file_w .close()
@@ -658,6 +664,8 @@ def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
         for index in range(len(lines)):
             if lines[index].find('#silent#') != -1:
                 lines[index] = '#Strcpy $varIsSilence "1"    #silent#\r\n'
+            if lines[index].find("#StartMain#") != -1:
+                lines[index] = '#Strcpy $StartMain "1"    #StartMain#\r\n'
         file_w = open(silentNsiFile, "w")
         file_w .writelines(lines)
         file_w .close()
