@@ -590,9 +590,9 @@ def buildSilentPackage(obj, product, type, file_i=''):
     file_w .close()
 
 def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
-    (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
-    if not bInstallDefense:
-        return
+    #(bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+    #if not bInstallDefense:
+    #    return
     silentNsiFile = ''
     nsiFile = ''
     defenseNsiFile = ''
@@ -674,7 +674,7 @@ def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
     os.system(command)
 
 
-def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
+def buildSupplyidPackage(obj, product, type, bSilent, bDefense):#type: mini, normal, full
     insFile = ''
     vInstallFile = ''
     miniSilentFile = ''
@@ -794,12 +794,14 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
             ctx_new = ctx.replace(default_mini_supplyid, item[1:])
             comm.saveFile(configIniFile, ctx_new)
         #do install
-        if not bSilent:
-            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newInsFile
-            os.system(command.encode(sys.getfilesystemencoding()))
+        if not bDefense:
+            if not bSilent:
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newInsFile
+                os.system(command.encode(sys.getfilesystemencoding()))
+            else:
+                buildSilentPackage(obj, product, type, newInsFile)
         else:
-            buildSilentPackage(obj, product, type, newInsFile)
-        buildDefensePackage(obj, product, type, newInsFile, bSilent)
+            buildDefensePackage(obj, product, type, newInsFile, bSilent)
         #clean
         command = 'del /Q /S ' + newInsFile
         os.system(command)
@@ -825,7 +827,7 @@ def buildSupplyidPackage(obj, product, type, bSilent):#type: mini, normal, full
             file_w .close()
             comm.saveFile(configIniFile, ctx)
 
-def installMiniPackage(obj, product, bSupplyid=False, bSilent=False):
+def installMiniPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=False):
     installerPath = ''
     defaultSupplyid = ''
     if product == 'bdm':
@@ -877,21 +879,23 @@ def installMiniPackage(obj, product, bSupplyid=False, bSilent=False):
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
     if defaultSupplyid in slist:
-        if not bSilent:
-            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
-            obj.report('wk-build-log', command)
-            os.system(command.encode(sys.getfilesystemencoding()))
+        if not bDefense:
+            if not bSilent:
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
+                obj.report('wk-build-log', command)
+                os.system(command.encode(sys.getfilesystemencoding()))
+            else:
+                buildSilentPackage(obj, product, 'mini', newNetInstallFile)
         else:
-            buildSilentPackage(obj, product, 'mini', newNetInstallFile)
-        buildDefensePackage(obj, product, 'mini', newNetInstallFile, bSilent)
+            buildDefensePackage(obj, product, 'mini', newNetInstallFile, bSilent)
     #clean
     command = 'del /Q /S ' + newNetInstallFile
     os.system(command.encode(sys.getfilesystemencoding()))
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj, product, 'mini', bSilent)
+        buildSupplyidPackage(obj, product, 'mini', bSilent, bDefense)
 
-def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
+def installNormalPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=False):
     nsiFile = ''
     bkOutput = ''
     installerPath = ''
@@ -945,12 +949,14 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
         file_w .writelines(lines)
         file_w .close()
         
-        if not bSilent:
-            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
-            os.system(command.encode(sys.getfilesystemencoding()))
+        if not bDefense:
+            if not bSilent:
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
+                os.system(command.encode(sys.getfilesystemencoding()))
+            else:
+                buildSilentPackage(obj, product, 'normal', nsiFile)
         else:
-            buildSilentPackage(obj, product, 'normal', nsiFile)
-        buildDefensePackage(obj, product, 'normal', nsiFile, bSilent)
+            buildDefensePackage(obj, product, 'normal', nsiFile, bSilent)
         
         file_r = open(nsiFile)
         lines = file_r.readlines()
@@ -963,9 +969,9 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False):
         file_w .close()
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj, product, 'normal', bSilent)
+        buildSupplyidPackage(obj, product, 'normal', bSilent, bDefense)
 
-def installKvFullPackage(obj, product, bSupplyid=False, bSilent=False):
+def installKvFullPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=False):
     #prepare
     confFile = './BuildSwitch/Misc.xml'
     slist = []
@@ -1047,17 +1053,19 @@ def installKvFullPackage(obj, product, bSupplyid=False, bSilent=False):
     file_w .close()
     
     #install
-    if 'f10015' in slist:
-        if not bSilent:
-            command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
-            os.system(command.encode(sys.getfilesystemencoding()))
-        else:
-            buildSilentPackage(obj, product, 'full', conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
+    if not bDefense:
+        if 'f10015' in slist:
+            if not bSilent:
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
+                os.system(command.encode(sys.getfilesystemencoding()))
+            else:
+                buildSilentPackage(obj, product, 'full', conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
+    else:
         buildDefensePackage(obj, product, 'full', conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi', bSilent)
     
     #supplyid
     if bSupplyid:
-        buildSupplyidPackage(obj, product, 'full', bSilent)
+        buildSupplyidPackage(obj, product, 'full', bSilent, bDefense)
         
     #clean
     command = 'del /Q /S ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
@@ -1962,15 +1970,15 @@ class Install(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self, 'bdm', True, bInstallSilence)
-            #if bInstallMini:
-                installMiniPackage(self,'bdm',True,bInstallSilence)
+                installNormalPackage(self, 'bdm', True, bInstallSilence, bInstallDefense)
+            if bInstallMini:
+                installMiniPackage(self,'bdm',True,bInstallSilence, bInstallDefense)
             if (bInstall or bInstallMini) and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
-                    installNormalPackage(self, 'bdm', False, bInstallSilence)
+                    installNormalPackage(self, 'bdm', False, bInstallSilence, bInstallDefense)
                 if bInstallMini:
-                    installMiniPackage(self,'bdm',False,bInstallSilence)
+                    installMiniPackage(self,'bdm',False,bInstallSilence, bInstallDefense)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_setup_path):
@@ -2025,19 +2033,19 @@ class KVInstall(BuildStep):
             #install
             (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
             if bInstall:
-                installNormalPackage(self, 'bdkv', True, bInstallSilence)
+                installNormalPackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
             if bInstallMini:
-                installMiniPackage(self, 'bdkv', True, bInstallSilence)
+                installMiniPackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
             if bInstallFull:
-                installKvFullPackage(self, 'bdkv', True, bInstallSilence)
-            if (bInstall or bInstallMini or bInstallFull) and bInstallUpdate:
+                installKvFullPackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
+            if (bInstall or bInstallMini or bInstallFull or bInstallDefense) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
-                    installNormalPackage(self, 'bdkv', False, bInstallSilence)
+                    installNormalPackage(self, 'bdkv', False, bInstallSilence, bInstallDefense)
                 if bInstallMini:
-                    installMiniPackage(self, 'bdkv', False, bInstallSilence)
+                    installMiniPackage(self, 'bdkv', False, bInstallSilence, bInstallDefense)
                 if bInstallFull:
-                    installKvFullPackage(self, 'bdkv', False, bInstallSilence)
+                    installKvFullPackage(self, 'bdkv', False, bInstallSilence, bInstallDefense)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):
