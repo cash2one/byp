@@ -101,6 +101,11 @@ def main(argc, argv):
     if not os.path.exists(ftpPathDirName+conf.ftpPathNameLog):
         os.mkdir(ftpPathDirName+conf.ftpPathNameLog)
     
+    #autochange name of installer_md5.log
+    md5LogName = 'installer_md5_%s.txt' % time.ctime().replace(':','-').replace(' ','_')
+    command = 'rename ' + conf.verify_md5_file + ' ' + md5LogName
+    os.system(command)
+
     copyFiles(setupPath,conf.setupList,ftpPathDirName)
     copyFiles(conf.verify_path,conf.logList,ftpPathDirName)
     copyFiles(debugPath,conf.binList,ftpPathDirName+conf.ftpPathNameD)
