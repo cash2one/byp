@@ -61,7 +61,7 @@ kvbuild_step_creator = {
 def randomVersion():
     return '1.0.%d.%d' % (random.randint(0,1000), random.randint(0,1000))
     
-def finalBuildpackage(product, type, buildcmd, nsiFile):
+def finalBuildPackage(product, type, buildcmd, nsiFile):
     bMashupInstaller = False
     bMashupVersion = False
     try:
@@ -86,39 +86,39 @@ def finalBuildpackage(product, type, buildcmd, nsiFile):
     icoFile = ''
     if product == 'bdkv':
         if type == 'mini':
-            icoFile = sln_root + 'basic\\tools\\KVNetInstall\\res\\setup.ico'
+            icoFile = conf.sln_root + 'basic\\tools\\KVNetInstall\\res\\setup.ico'
         elif type == 'normal':
-            icoFile = sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
+            icoFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
         elif type == 'full':
-            icoFile = sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
+            icoFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
     elif product == 'bdm':
         if type == 'mini':
-            icoFile = sln_root + 'basic\\tools\\BDMNetInstall\\res\\setup.ico'
+            icoFile = conf.sln_root + 'basic\\tools\\BDMNetInstall\\res\\setup.ico'
         elif type == 'normal':
-            icoFile = sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
+            icoFile = conf.sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
         elif type == 'full':
-            icoFile = sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
+            icoFile = conf.sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
     if icoFile != '' and bMashupInstaller:
         command = 'copy /Y ' + icoFile + ' ' + icoFile + '.bk'
         os.system(command)
         command = conf.byp_bin_path + 'modifyICO.exe ' + icoFile + ' ' + icoFile
         os.system(command)
         
+    randomVer = randomVersion()
     if bMashupVersion:
         file_r = open(nsiFile)
         lines = file_r.readlines()
         file_r.close()
-        installerFullName = comm.getInstallerFullName(product)
         installerVersion = comm.getInstallerVersion(product)
         for index in range(len(lines)):
             if lines[index].find('OutFile') != -1:
-                    lines[index] = lines[index].replace(installerVersion,randomVersion())
+                    lines[index] = lines[index].replace(installerVersion,randomVer)
             if lines[index].find('VIProductVersion') != -1:
-                lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
+                lines[index] = 'VIProductVersion "%s"\r\n' % randomVer
             if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
+                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % randomVer
             if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
-                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
+                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % randomVer
         file_w = open(nsiFile, "w")
         file_w .writelines(lines)
         file_w .close()
@@ -652,7 +652,7 @@ def buildSilentPackage(obj, product, type, file_i=''):
     #do install
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
     #os.system(command.encode(sys.getfilesystemencoding()))
-    finalBuildpackage(product, type, command, nsiFile)
+    finalBuildPackage(product, type, command, nsiFile)
     #clean
     file_r = open(silentNsiFile)
     lines = file_r.readlines()
