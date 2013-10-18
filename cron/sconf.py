@@ -9,6 +9,8 @@ build_scripts_61 = [
         'D:\\bdkv_v1020_commondll\\byp\\worker\\KV1020CommonDll.py',
         'F:\\BDM_Dyn\\byp\\worker\\BDMDyn.py',
         'F:\\bdkv_websafe_1.5\\byp\\worker\\KVWebsafeV1.5.py',
+        'E:\\ShareMem\\byp\\worker\\sharemem.py',
+        'D:\\bdkv_v1055_original\\byp\\worker\\KV1055_Ori.py',
         ]
 
 build_scripts_66 = [
