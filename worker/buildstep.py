@@ -9,6 +9,7 @@
 import sys, os, conf, xml.dom.minidom, datetime, comm
 import rewrite_version, sign, fileop, rcgen, send
 import logging, time
+import random
 
 build_step_creator = {
                       'prebuild':'PreBuild',
@@ -56,6 +57,81 @@ kvbuild_step_creator = {
                       'sendmail':'KVSendMail',
                       'postbuild':'KVPostBuild',
                       }
+
+def randomVersion():
+    return '1.0.%d.%d' % (random.randint(0,1000), random.randint(0,1000))
+    
+def finalBuildpackage(product, type, buildcmd, nsiFile):
+    bMashupInstaller = False
+    bMashupVersion = False
+    try:
+        dom = xml.dom.minidom.parse('./BuildSwitch/Misc.xml')
+        root = dom.documentElement
+        for node in root.childNodes:
+            if node.nodeType != node.ELEMENT_NODE:
+                continue
+            name = node.getAttribute('name')
+            if name == 'mashup_installer':
+                val = node.getAttribute('value')
+                if val == '1':
+                    bMashupInstaller = True
+            elif name == 'mashup_version':
+                val = node.getAttribute('value')
+                if val == '1':
+                    bMashupVersion = True
+    except Exception, e:
+        logging.error("error occers when parsing xml : misc.xml")
+        logging.error(e)
+    
+    icoFile = ''
+    if product == 'bdkv':
+        if type == 'mini':
+            icoFile = sln_root + 'basic\\tools\\KVNetInstall\\res\\setup.ico'
+        elif type == 'normal':
+            icoFile = sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
+        elif type == 'full':
+            icoFile = sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
+    elif product == 'bdm':
+        if type == 'mini':
+            icoFile = sln_root + 'basic\\tools\\BDMNetInstall\\res\\setup.ico'
+        elif type == 'normal':
+            icoFile = sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
+        elif type == 'full':
+            icoFile = sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
+    if icoFile != '' and bMashupInstaller:
+        command = 'copy /Y ' + icoFile + ' ' + icoFile + '.bk'
+        os.system(command)
+        command = conf.byp_bin_path + 'modifyICO.exe ' + icoFile + ' ' + icoFile
+        os.system(command)
+        
+    if bMashupVersion:
+        file_r = open(nsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        installerFullName = comm.getInstallerFullName(product)
+        installerVersion = comm.getInstallerVersion(product)
+        for index in range(len(lines)):
+            if lines[index].find('OutFile') != -1:
+                    lines[index] = lines[index].replace(installerVersion,randomVersion())
+            if lines[index].find('VIProductVersion') != -1:
+                lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
+            if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
+                lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
+            if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
+                lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
+        file_w = open(nsiFile, "w")
+        file_w .writelines(lines)
+        file_w .close()
+    
+    #build package
+    os.system(buildcmd.encode(sys.getfilesystemencoding()))
+    
+    if icoFile != '' and bMashupInstaller:
+        command = 'copy /Y ' + icoFile + '.bk ' + icoFile
+        os.system(command)
+        command = 'del /Q /S ' + icoFile + '.bk'
+        os.system(command)
+        
 
 #始终拿到所有项目名称-和buildswitch中的文件名匹配
 def getSlns(product):
@@ -575,7 +651,8 @@ def buildSilentPackage(obj, product, type, file_i=''):
     file_w .close()
     #do install
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
-    os.system(command.encode(sys.getfilesystemencoding()))
+    #os.system(command.encode(sys.getfilesystemencoding()))
+    finalBuildpackage(product, type, command, nsiFile)
     #clean
     file_r = open(silentNsiFile)
     lines = file_r.readlines()
@@ -654,7 +731,8 @@ def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
     file_w .close()
     #do install
     command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + defenseNsiFile
-    os.system(command.encode(sys.getfilesystemencoding()))
+    #os.system(command.encode(sys.getfilesystemencoding()))
+    finalBuildPackage(product,type,command, defenseNsiFile)
     #clean
     #silent
     if bSilent:
@@ -797,7 +875,8 @@ def buildSupplyidPackage(obj, product, type, bSilent, bDefense):#type: mini, nor
         if not bDefense:
             if not bSilent:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newInsFile
-                os.system(command.encode(sys.getfilesystemencoding()))
+                #os.system(command.encode(sys.getfilesystemencoding()))
+                finalBuildPackage(product,type,command, newInsFile)
             else:
                 buildSilentPackage(obj, product, type, newInsFile)
         else:
@@ -883,7 +962,8 @@ def installMiniPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=Fa
             if not bSilent:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + newNetInstallFile
                 obj.report('wk-build-log', command)
-                os.system(command.encode(sys.getfilesystemencoding()))
+                #os.system(command.encode(sys.getfilesystemencoding()))
+                finalBuildPackage(product,'mini',command, newNetInstallFile)
             else:
                 buildSilentPackage(obj, product, 'mini', newNetInstallFile)
         else:
@@ -952,7 +1032,8 @@ def installNormalPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=
         if not bDefense:
             if not bSilent:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
-                os.system(command.encode(sys.getfilesystemencoding()))
+                #os.system(command.encode(sys.getfilesystemencoding()))
+                finalBuildPackage(product,'normal',command, nsiFile)
             else:
                 buildSilentPackage(obj, product, 'normal', nsiFile)
         else:
@@ -1057,7 +1138,8 @@ def installKvFullPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=
         if 'f10015' in slist:
             if not bSilent:
                 command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi'
-                os.system(command.encode(sys.getfilesystemencoding()))
+                #os.system(command.encode(sys.getfilesystemencoding()))
+                finalBuildPackage(product,'full',command, conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
             else:
                 buildSilentPackage(obj, product, 'full', conf.sln_root + 'basic\\tools\\KVSetupScript\\BDKV_setup_full.nsi')
     else:

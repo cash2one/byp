@@ -11,4 +11,6 @@
     <item name="postfix" value="$postfix"/>
     <item name="archive" value="$share/public/kvdailybuild/$version"/>
     <item name="xmarkup" value="0"/>
+    <item name="mashup_installer" value="0"/>
+    <item name="mashup_version" value="0"/>
 </conf>
