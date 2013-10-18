@@ -6,6 +6,9 @@ build_scripts_61 = [
         'F:\\BDMBuildOnce\\byp\\worker\\BDMBuildOnce.py',
         'F:\\BDMSupplyId473\\byp\\worker\\BDMSupplyId473.py',
         'F:\\KVAppV1.52\\byp\\worker\\KVAppV1.52.py',
+        'D:\\bdkv_v1020_commondll\\byp\\worker\\KV1020CommonDll.py',
+        'F:\\BDM_Dyn\\byp\\worker\\BDMDyn.py',
+        'F:\\bdkv_websafe_1.5\\byp\\worker\\KVWebsafeV1.5.py',
         ]
 
 build_scripts_66 = [
