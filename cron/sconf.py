@@ -22,6 +22,10 @@ build_scripts_66 = [
         'F:\\bdkv_v1.3_hips\\byp\\worker\\KV1.3Hips.py',
         'E:\\bdkv_v1020_common\\byp\\worker\\KVV1020Common.py',
         'F:\\bdkv_v1.3_filemon\\byp\\worker\\KVV1.3Filemon.py',
+        'F:\\bdkv_v1.6_perf\\byp\\worker\\KVPerf1.6.py',
+        'F:\\supplyid1055\\byp\\worker\\KVSupplyid1055.py',
+        #'E:\\BDKV_App_V1.52\\byp\\worker\\KVAppV1.52.py',
+        'F:\\bdkv_v1.5_1090patch\\byp\\worker\\KV1090Patch.py',
         ]
 
 host_script_map = {
