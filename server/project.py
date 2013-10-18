@@ -117,6 +117,9 @@ bdkv_options = {
     #'postbuild':['check','after','清理','打包后的清理工作','default'],
     
     'xmarkup':['check','after','XMarkup','仅标记选中的解决方案'],
+    
+    'mashup_installer':['check','after','随机扰乱','随机进行安装包扰乱'],
+    'mashup_version':['check','after','随机版本','随机化安装包版本（1.0.x.y）'],
 }
 
 bdm_options = {
@@ -170,6 +173,9 @@ bdm_options = {
 	#'postbuild':['check','after','清理','打包后的清理工作','default'],
 	
 	'xmarkup':['check','after','XMarkup','仅标记选中的解决方案','default'],
+	
+	'mashup_installer':['check','after','随机扰乱','随机进行安装包扰乱'],
+    'mashup_version':['check','after','随机版本','随机化安装包版本（1.0.x.y）'],
 }
 
 build_options = {
