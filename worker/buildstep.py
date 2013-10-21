@@ -2230,11 +2230,11 @@ class CalcInstallerMd5(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
         elif self.value == 1:
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
             #doit
             command = 'python fileop.py md5 ..\\output\\setup\\ *.exe'
@@ -2254,11 +2254,11 @@ class KVCalcInstallerMd5(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
         elif self.value == 1:
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
             #doit
             command = 'python fileop.py md5 ..\\output\\kvsetup\\ *.exe'
