@@ -1900,6 +1900,13 @@ class Sign(BuildStep):
             self.report('wk-build-log', command)
             fileop.main(4, ['fileop.py', 'kvsign_kav', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe'])
 
+            command = 'python fileop.py load_sign ' + conf.sln_root + 'basic\\Output\\bindebug\\ *.dll'
+            self.report('wk-build-log', command)
+            fileop.main(4, ['fileop.py', 'load_sign', conf.sln_root + 'basic\\Output\\BinDebug\\', '*.dll'])
+            command = 'python fileop.py load_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.dll'
+            self.report('wk-build-log', command)
+            fileop.main(4, ['fileop.py', 'load_sign', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.dll'])
+
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             self.report('wk-build-log', command)
             sign.main(3, ['sign.py', 'bdm', conf.sln_root + 'basic\\Output\\BinRelease\\'])
