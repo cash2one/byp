@@ -43,6 +43,8 @@ bdm_slns = [
 	['syscleanerlib','系统清理模块Lib','张巍','module',1,[]],
 	['luaVM','lua脚本引擎','张巍','module',1,[]],
 	['syscleaner','系统清理模块','张巍','module',1,[]],
+	['pluginmanager','插件管理','张巍','module',0,[]],
+	['sysfixer','系统修复模块','张巍','module',0,[]],
 	['soacceleratorlib','软件优化加速Lib','位广军','module',1,[]],
 	['soacceleratorplugin','软件优化加速插件','位广军','module',1,[]],
 	['swmanager','软件管理模块','张靖','module',1,[]],
