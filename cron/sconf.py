@@ -32,8 +32,12 @@ build_scripts_66 = [
         'F:\\bdkv_v1.5_1090patch\\byp\\worker\\KV1090Patch.py',
         ]
 
+build_scripts_21 = [
+	'E:\\XBUILD\\byp\\worker\\BDMVSupplyidV489.py',
+	]
 host_script_map = {
         '172.17.180.61':build_scripts_61,
         '172.17.180.66':build_scripts_66,
+        '10.52.156.21':build_scripts_21,
         }
 
