@@ -11,6 +11,8 @@ build_scripts_61 = [
         'F:\\bdkv_websafe_1.5\\byp\\worker\\KVWebsafeV1.5.py',
         'E:\\ShareMem\\byp\\worker\\sharemem.py',
         'D:\\bdkv_v1055_original\\byp\\worker\\KV1055_Ori.py',
+        'E:\\bdm_sys_fix\\byp\\worker\\BDMSysFix.py',
+        'E:\\bdm_v488_fix_proxy\\byp\\worker\\BDMV448FixProxy.py',
         ]
 
 build_scripts_66 = [
