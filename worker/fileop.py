@@ -335,7 +335,14 @@ def SignBaidu2(file,para):
         iStart = response.find('msg:') + 4
         if iStart != 3:
             part2 = response[iStart:]
-            urllib.urlretrieve(part2, file + '.sign')
+            while True:
+                try:
+                    urllib.urlretrieve(part2, file + '.sign')
+                    break
+                except Exception,e:
+                    print 'error while calling urllib.urlretrieve'
+                    print str(e)
+                    print 'try recalling ...'
         
         command = conf.byp_bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
         ret = os.system(command.encode(sys.getfilesystemencoding()))
