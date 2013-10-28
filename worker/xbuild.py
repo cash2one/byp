@@ -55,6 +55,8 @@ class Worker(threading.Thread):
             
         try:
             for key,val in self.slns.items():
+                if not projConf.has_key(key):
+                    continue
                 confFile = './buildswitch/' + projConf[key] + '.xml'
                 dom = xml.dom.minidom.parse(confFile)
                 root = dom.documentElement
