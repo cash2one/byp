@@ -17,6 +17,7 @@
 import sys,os,glob,httplib,urllib,urllib2,mimetypes,comm,conf,xml.dom.minidom,win32api,shutil
 import logging,userconf
 import io,hashlib,time
+import struct,random
 
 class SignBaiduException(Exception):
     pass
@@ -102,6 +103,14 @@ def FolderOperationWithExtraPara(dir,op,para,excluded_dir=[]):
                     break
             if not excluded:
                 op(item,para)
+
+
+def MashupInstaller(file):
+    #auto modify last byte of bind.exe
+    fp = open(file, 'r+b')
+    fp.seek(-1, os.SEEK_END)
+    fp.write(struct.pack('c', chr(random.randint(1,255))))
+    fp.close()
 
 def ZipFolder(dir):
     dirName = dir[dir.rfind('SkinResources')+14:]
@@ -335,7 +344,14 @@ def SignBaidu2(file,para):
         iStart = response.find('msg:') + 4
         if iStart != 3:
             part2 = response[iStart:]
-            urllib.urlretrieve(part2, file + '.sign')
+            while True:
+                try:
+                    urllib.urlretrieve(part2, file + '.sign')
+                    break
+                except Exception,e:
+                    print 'error while calling urllib.urlretrieve'
+                    print str(e)
+                    print 'try recalling ...'
         
         command = conf.byp_bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
         ret = os.system(command.encode(sys.getfilesystemencoding()))
@@ -854,6 +870,8 @@ gen_rc_list                           - generate rc list
         FolderOperation(argv[2],ZipFolder)
     elif argv[1] == 'kv_mzip_res':
         FolderOperation(argv[2],KVZipFolder)
+    elif argv[1] == 'installer_mashup':
+	FileOperation(argv[2],MashupInstaller,ftype)
 
 if "__main__" == __name__:
     sys.exit(main(len(sys.argv),sys.argv))

@@ -2191,6 +2191,14 @@ class SignInstaller(BuildStep):
             command = 'python sign.py bdm ..\\output\\setup\\'
             self.report('wk-build-log', command)
             sign.main(3, ['sign.py', 'bdm', '..\\output\\setup\\'])
+
+	    #mashup installer
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+	    if bInstallDefense:
+		command = 'python fileop.py installer_mashup ..\\output\\setup\\*.exe'
+		self.report('wk-build-log', command)
+		fileop.main(4,['fileop.py', 'installer_mashup', '..\\output\\setup\\', '*.exe'])
+		self.update_step(1)
         BuildStep.act(self)
     
 class KVSignInstaller(BuildStep):
@@ -2223,6 +2231,15 @@ class KVSignInstaller(BuildStep):
             self.report('wk-build-log', command)
             sign.main(3, ['sign.py', 'bdkv', '..\\output\\kvsetup\\'])
             self.update_step(1)
+
+	    #mashup installer
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+	    if bInstallDefense:
+		command = 'python fileop.py installer_mashup ..\\output\\kvsetup\\*.exe'
+		self.report('wk-build-log', command)
+		fileop.main(4,['fileop.py', 'installer_mashup', '..\\output\\kvsetup\\', '*.exe'])
+		self.update_step(1)
+
         BuildStep.act(self)
     
 ##############################################
