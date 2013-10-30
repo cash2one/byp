@@ -201,6 +201,7 @@ bdkv_conf_files = {
     'repair':'baiduRepair',
     'bdkitUtils':'BDKitUtils',
     'websafe':'WebSafe',
+    'ave':'BDAVE',
 }
 
 bdm_conf_files = {
