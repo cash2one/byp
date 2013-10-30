@@ -216,6 +216,8 @@ bdm_conf_files = {
 	'syscleanerlib':'SYSCleanerLib',
 	'luaVM':'SYSCleanerLuaVM',
 	'syscleaner':'SYSCleaner',
+	'pluginmanager':'PluginManager',
+	'sysfixer':'SYSFixer',
 	'sysaccelerator':'BDMSYSAccelerator',
 	'soacceleratorlib':'BDMSOAcceleratorLib',
 	'soacceleratorplugin':'BDMSOAcceleratorPlugin',

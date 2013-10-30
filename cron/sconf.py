@@ -11,6 +11,8 @@ build_scripts_61 = [
         'F:\\bdkv_websafe_1.5\\byp\\worker\\KVWebsafeV1.5.py',
         'E:\\ShareMem\\byp\\worker\\sharemem.py',
         'D:\\bdkv_v1055_original\\byp\\worker\\KV1055_Ori.py',
+        'E:\\bdm_sys_fix\\byp\\worker\\BDMSysFix.py',
+        'E:\\bdm_v488_fix_proxy\\byp\\worker\\BDMV448FixProxy.py',
         ]
 
 build_scripts_66 = [
@@ -30,8 +32,12 @@ build_scripts_66 = [
         'F:\\bdkv_v1.5_1090patch\\byp\\worker\\KV1090Patch.py',
         ]
 
+build_scripts_21 = [
+	'E:\\XBUILD\\byp\\worker\\BDMVSupplyidV489.py',
+	]
 host_script_map = {
         '172.17.180.61':build_scripts_61,
         '172.17.180.66':build_scripts_66,
+        '10.52.156.21':build_scripts_21,
         }
 

@@ -1241,6 +1241,7 @@ def genSymbols(product):
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\bdmantivirus\\*.dll', 'Release'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\FTSOManager\\*.dll', 'Release'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\FTSWManager\\*.dll', 'Release'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\FTSysFixer\\*.dll', 'Release'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmkvscanplugin\\*.dll', 'Release'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmhomepageplugins\\*.dll', 'Release'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinRelease\\plugins\\bdmmainframeplugins\\*.dll', 'Release'))
@@ -1260,6 +1261,7 @@ def genSymbols(product):
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\bdmantivirus\\*.dll', 'Debug'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\FTSOManager\\*.dll', 'Debug'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\FTSWManager\\*.dll', 'Debug'))
+        commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\FTSysFixer\\*.dll', 'Debug'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmkvscanplugin\\*.dll', 'Debug'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmhomepageplugins\\*.dll', 'Debug'))
         commands.append(makeBinplace('bdm', 'basic\\Output\\BinDebug\\plugins\\bdmmainframeplugins\\*.dll', 'Debug'))
@@ -1900,6 +1902,13 @@ class Sign(BuildStep):
             self.report('wk-build-log', command)
             fileop.main(4, ['fileop.py', 'kvsign_kav', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.exe'])
 
+            command = 'python fileop.py load_sign ' + conf.sln_root + 'basic\\Output\\bindebug\\ *.dll'
+            self.report('wk-build-log', command)
+            fileop.main(4, ['fileop.py', 'load_sign', conf.sln_root + 'basic\\Output\\BinDebug\\', '*.dll'])
+            command = 'python fileop.py load_sign ' + conf.sln_root + 'basic\\Output\\BinRelease\\ *.dll'
+            self.report('wk-build-log', command)
+            fileop.main(4, ['fileop.py', 'load_sign', conf.sln_root + 'basic\\Output\\BinRelease\\', '*.dll'])
+
             command = 'python sign.py bdm ' + conf.sln_root + 'basic\\Output\\BinRelease\\'
             self.report('wk-build-log', command)
             sign.main(3, ['sign.py', 'bdm', conf.sln_root + 'basic\\Output\\BinRelease\\'])
@@ -2182,6 +2191,14 @@ class SignInstaller(BuildStep):
             command = 'python sign.py bdm ..\\output\\setup\\'
             self.report('wk-build-log', command)
             sign.main(3, ['sign.py', 'bdm', '..\\output\\setup\\'])
+
+	    #mashup installer
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+	    if bInstallDefense:
+		command = 'python fileop.py installer_mashup ..\\output\\setup\\*.exe'
+		self.report('wk-build-log', command)
+		fileop.main(4,['fileop.py', 'installer_mashup', '..\\output\\setup\\', '*.exe'])
+		self.update_step(1)
         BuildStep.act(self)
     
 class KVSignInstaller(BuildStep):
@@ -2214,6 +2231,15 @@ class KVSignInstaller(BuildStep):
             self.report('wk-build-log', command)
             sign.main(3, ['sign.py', 'bdkv', '..\\output\\kvsetup\\'])
             self.update_step(1)
+
+	    #mashup installer
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+	    if bInstallDefense:
+		command = 'python fileop.py installer_mashup ..\\output\\kvsetup\\*.exe'
+		self.report('wk-build-log', command)
+		fileop.main(4,['fileop.py', 'installer_mashup', '..\\output\\kvsetup\\', '*.exe'])
+		self.update_step(1)
+
         BuildStep.act(self)
     
 ##############################################
@@ -2230,11 +2256,11 @@ class CalcInstallerMd5(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
         elif self.value == 1:
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
             #doit
             command = 'python fileop.py md5 ..\\output\\setup\\ *.exe'
@@ -2254,11 +2280,11 @@ class KVCalcInstallerMd5(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
         elif self.value == 1:
             #clean
-            command = 'del /Q /S ' + conf.verify_md5_file
+            command = 'del /Q /S ..\\output\\verifylog\\*.txt'
             os.system(command.encode(sys.getfilesystemencoding()))
             #doit
             command = 'python fileop.py md5 ..\\output\\kvsetup\\ *.exe'
