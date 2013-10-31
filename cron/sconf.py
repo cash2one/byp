@@ -34,6 +34,13 @@ build_scripts_66 = [
 
 build_scripts_21 = [
 	'E:\\XBUILD\\byp\\worker\\BDMVSupplyidV489.py',
+	'E:\\XBUILD\\sharemem_v1.5\\byp\\worker\\sharemem.py',
+	'E:\\XBUILD\\sharemem_qudao\\byp\\worker\\sharemem_qudao.py',
+	'E:\\XBUILD\\sharemem_aladdin\\byp\\worker\\sharemem_aladdin.py',
+	'E:\\XBUILD\\bdm_combine_v488\\byp\\worker\\BDMCombineV488.py',
+	'E:\\XBUILD\\bdkv_combine_v1092\\byp\\worker\\BDKVCombineV1092.py',
+	'E:\\XBUILD\\bdkv_trajon_v1.7\\byp\\worker\\KVTrajonV1.7.py',
+	'E:\\XBUILD\\bdkv_v1.6_avtest\\byp\\worker\\KV1.6AVTest.py'
 	]
 host_script_map = {
         '172.17.180.61':build_scripts_61,
