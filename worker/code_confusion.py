@@ -12,10 +12,12 @@
 import os
 import sys
 import random
+import sign
 
-confusion_folder = '..\\avclient_proj\\Source\\NetInstallHelpler\\'
-sln_folder = '..\\avclient_proj\\Projects\\'
-output_folder = '..\\basic\\Tools\\NSIS\\Plugins\\'
+confusion_folder = '..\\..\\sharemem_rd\\avclient_proj\\Source\\NetInstallHelpler\\'
+sln_folder = '..\\..\\sharemem_rd\\avclient_proj\\Projects\\'
+plugin_folder = '..\\..\\sharemem_rd\\basic\\Tools\\NSIS\\Plugins\\'
+output_folder = '..\\..\\sharemem_rd\\confusion\\'
 
 random_api = [
         'GetCurrentThreadId',
@@ -26,6 +28,12 @@ random_api = [
         ]
 
 def generate(nf, nDll, iStart):
+    #clean dll and pdb folder
+    command = 'del /Q ' + output_folder + 'dll\\*.dll'
+    os.system(command)
+    command = 'del /Q ' + output_folder + 'pdb\\*.pdb'
+    os.system(command)
+
     #update svn
     command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ..\\basic\\tools'
     os.system(command)
@@ -66,17 +74,22 @@ def generate(nf, nDll, iStart):
         #vcbuild
         command = 'vcbuild.exe ' + sln_folder + 'KVNetInstallerHelper_RD.sln "KVRelease|Win32"'
         os.system(command)
-        command = 'copy /Y ' + output_folder + 'KVNetInstallHelpler.dll .\\dll\\KVNetInstallHelper_%d.dll' % iCount
+        command = 'copy /Y ' + plugin_folder + 'KVNetInstallHelpler.dll ' + output_folder + 'dll\\KVNetInstallHelper_%d.dll' % iCount
         os.system(command)
-        command = 'copy /Y ' + output_folder + 'KVNetInstallHelpler.pdb .\\pdb\\KVNetInstallHelper_%d.pdb' % iCount
+        command = 'copy /Y ' + plugin_folder + 'KVNetInstallHelpler.pdb ' + output_folder + 'pdb\\KVNetInstallHelper_%d.pdb' % iCount
         os.system(command)
 
+    #sign baidu
+    sign.main(3, ['sign.py', 'bdkv', output_folder + 'dll\\'])
+    
     #copy to archive
-    command = 'copy /Y .\\dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper\\'
+    command = 'copy /Y ' + output_folder + 'dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper\\'
     os.system(command)
 
 def main(argc, argv):
-    generate(16,300,1000)
+    if argc != 4:
+        print 'usage : code_confusion.py <nFunc> <nDll> <nStart>'
+    generate(int(argv[1]),int(argv[2]),int(argv[3]))
 
 if "__main__" == __name__:
     sys.exit(main(len(sys.argv),sys.argv))
