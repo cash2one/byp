@@ -10,6 +10,7 @@ import sys, os, conf, xml.dom.minidom, datetime, comm
 import rewrite_version, sign, fileop, rcgen, send
 import logging, time
 import random
+import tempfile
 
 build_step_creator = {
                       'prebuild':'PreBuild',
@@ -106,6 +107,15 @@ def finalBuildPackage(product, type, buildcmd, nsiFile):
         
     randomVer = randomVersion()
     if bMashupVersion:
+        randName = tempfile.mktemp()
+        randName = randName[randName.rfind('\\')+1:]
+        for item in range(0,10000):
+            if os.path.isfile(conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item):
+                command = 'copy /Y ' + conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll ..\\..\\basic\\tools\\nsis\\plugins\\%s.dll' % (item,randName)
+                os.system(command)
+                command = 'del /Q /S ' + conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item
+                os.system(command)
+                break
         file_r = open(nsiFile)
         lines = file_r.readlines()
         file_r.close()
@@ -119,6 +129,8 @@ def finalBuildPackage(product, type, buildcmd, nsiFile):
                 lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % randomVer
             if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
                 lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % randomVer
+            if lines[index].find('KVNetInstallHelper') != -1:
+                lines[index] = lines[index].replace('KVNetInstallHelper',randName)
         file_w = open(nsiFile, "w")
         file_w .writelines(lines)
         file_w .close()
@@ -131,6 +143,17 @@ def finalBuildPackage(product, type, buildcmd, nsiFile):
         os.system(command)
         command = 'del /Q /S ' + icoFile + '.bk'
         os.system(command)
+
+        file_r = open(nsiFile)
+        lines = file_r.readlines()
+        file_r.close()
+        installerVersion = comm.getInstallerVersion(product)
+        for index in range(len(lines)):
+            if lines[index].find(randName) != -1:
+                lines[index] = lines[index].replace(randName,'KVNetInstallHelper')
+        file_w = open(nsiFile, "w")
+        file_w .writelines(lines)
+        file_w .close()
         
 
 #始终拿到所有项目名称-和buildswitch中的文件名匹配
