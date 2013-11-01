@@ -237,6 +237,7 @@ bdm_conf_files = {
     'patcher':'patcher',
     'attack':'AttackDefense',
     'bdkitUtils':'BDKitUtils',
+    'android':'AndroidAssistant',
 }
 
 build_conf_files = {
