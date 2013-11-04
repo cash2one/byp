@@ -129,37 +129,61 @@ svn_remote_info_file = '../output/svn/svn_remote.info'
 mgr_official_sign_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
 								'..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',
                                 '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',
-                                '..\\..\\basic\\output\\binrelease\\uninst.exe',]
+                                '..\\..\\basic\\output\\binrelease\\uninst.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.atl\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.crt\\',
                                 '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',
-                                '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',]
+                                '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kv_load_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.atl\\',
 								'..\\..\\basic\\kvoutput\\binrelease\\microsoft.vc80.crt\\',
-                                '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',]
+                                '..\\..\\basic\\kvoutput\\binrelease\\bdmantivirus\\kavupdate\\',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
                       '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',
                       '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',
                       '..\\..\\basic\\output\\binrelease\\uninst.exe',
-                      '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',]
+                      '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',
+                      '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
+                      '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
+                      '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                      '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
                           '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller64.exe',
                           '..\\..\\basic\\output\\binrelease\\vcredist_x86.exe',
                           '..\\..\\basic\\output\\binrelease\\uninst.exe',
-                          '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',]
+                          '..\\..\\basic\\kvoutput\\binrelease\\uninst.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 mgr_verify_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
 						  '..\\..\\basic\\output\\binrelease\\microsoft.vc80.crt\\',
 						  userconf.mgr_install_dir + 'microsoft.vc80.atl\\',
-						  userconf.mgr_install_dir + 'microsoft.vc80.crt\\',]
+						  userconf.mgr_install_dir + 'microsoft.vc80.crt\\',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kv_verify_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
 						 '..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\',
@@ -170,7 +194,11 @@ kv_verify_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
                          userconf.kv_install_dir + 'kavdrivers\\',
                          userconf.kv_install_dir + 'microsoft.vc80.atl\\',
                          userconf.kv_install_dir + 'microsoft.vc80.crt\\',
-                         userconf.kv_install_dir + 'bdmantivirus\\kavupdate\\',]
+                         userconf.kv_install_dir + 'bdmantivirus\\kavupdate\\',
+                         '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
+                         '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
+                         '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                         '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 mgr_file_exist_excluded_dir = ['.pdb','.exp','.lib',]
 
@@ -250,3 +278,11 @@ bdm_default_installer_supplyid = ['m50001','n50000']
 bdkv_default_installer_supplyid = ['m10001','n10000','n50000','f10015']
 
 aladdin_kvnetinstallhelper_folder= '\\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper\\'
+bdm_plugin_config_file = "../../basic/Tools/PluginSetupScript/PackList.xml"
+bdm_plugin_output_file = "../../basic/Output/BinRelease/Plugins/GlobalPluginInfo.xml"
+
+bdm_plugin_script_folder = "..\\..\\basic\\Tools\\PluginSetupScript\\"
+bdm_plugin_setup_folder = "..\\..\\basic\\Tools\\PluginSetup\\"
+bdm_plugin_config_folder = "..\\..\\basic\\Output\\BinRelease\\plugincfgs\\"
+
+bdm_plugin_baseline_file = "..\\..\\basic\\Tools\\PluginSetupScript\\include\\buildline.nsi"
