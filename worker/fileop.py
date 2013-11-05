@@ -29,7 +29,7 @@ def FileOperation(dir,op,fileType,excluded_dir=[]):
         for file in glob.glob(destPath): 
             excluded = False
             for exdir in excluded_dir:
-                if file.lower().find(exdir) != -1:
+                if file.lower().find(exdir.lower()) != -1:
                     excluded = True
                     break
             if not excluded:
@@ -44,7 +44,7 @@ def FileOperation(dir,op,fileType,excluded_dir=[]):
                 for file in glob.glob(destPath): 
                     excluded = False
                     for exdir in excluded_dir:
-                        if file.lower().find(exdir) != -1:
+                        if file.lower().find(exdir.lower()) != -1:
                             excluded = True
                             break
                     if not excluded:
@@ -58,7 +58,7 @@ def FileOperationWithExtraPara(dir,op,para,fileType,excluded_dir=[]):
         for file in glob.glob(destPath):
             excluded = False
             for exdir in excluded_dir:
-                if file.lower().find(exdir) != -1:
+                if file.lower().find(exdir.lower()) != -1:
                     excluded = True
                     break
             if not excluded:
@@ -73,7 +73,7 @@ def FileOperationWithExtraPara(dir,op,para,fileType,excluded_dir=[]):
                 for file in glob.glob(destPath): 
                     excluded = False
                     for exdir in excluded_dir:
-                        if file.lower().find(exdir) != -1:
+                        if file.lower().find(exdir.lower()) != -1:
                             excluded = True
                             break
                     if not excluded:
@@ -85,7 +85,7 @@ def FolderOperation(dir,op,excluded_dir=[]):
             item = os.path.join(parent, dirname)
             excluded = False
             for exdir in excluded_dir:
-                if item.lower().find(exdir) != -1:
+                if item.lower().find(exdir.lower()) != -1:
                     excluded = True
                     break
             if not excluded:
@@ -98,7 +98,7 @@ def FolderOperationWithExtraPara(dir,op,para,excluded_dir=[]):
             item = os.path.join(parent, dirname)
             excluded = False
             for exdir in excluded_dir:
-                if item.lower().find(exdir) != -1:
+                if item.lower().find(exdir.lower()) != -1:
                     excluded = True
                     break
             if not excluded:
