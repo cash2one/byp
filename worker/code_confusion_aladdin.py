@@ -47,6 +47,7 @@ def generate(nf, nDll, iStart):
         #write confusion.h
         fp = open(confusion_folder + 'confusion.h', 'w')
         fp.writelines('#pragma once\n')
+        fp.writelines('#define _CODE_CONFUSION 1\n')
         for item in range(0,nf):
             fp.writelines('int CodeConfusion%d();\n' % item)
         fp.close()
