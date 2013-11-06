@@ -14,10 +14,11 @@ import sys
 import random
 import sign
 
-confusion_folder = '..\\..\\sharemem_rd\\avclient_proj\\Source\\NetInstallHelpler\\'
-sln_folder = '..\\..\\sharemem_rd\\avclient_proj\\Projects\\'
-plugin_folder = '..\\..\\sharemem_rd\\basic\\Tools\\NSIS\\Plugins\\'
-output_folder = '..\\..\\sharemem_rd\\confusion\\'
+confusion_folder = '..\\..\\sharemem_rd_bdm\\client_proj\\Source\\NetInstallHelpler\\'
+sln_folder = '..\\..\\sharemem_rd_bdm\\client_proj\\Projects\\'
+plugin_folder = '..\\..\\sharemem_rd_bdm\\basic\\Tools\\NSIS\\Plugins\\'
+output_folder = '..\\..\\sharemem_rd_bdm\\confusion\\'
+svn_root_folder = '..\\..\\sharemem_rd_bdm\\'
 
 random_api = [
         'GetCurrentThreadId',
@@ -35,7 +36,11 @@ def generate(nf, nDll, iStart):
     os.system(command)
 
     #update svn
-    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ..\\basic\\tools'
+    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + svn_root_folder + 'basic'
+    os.system(command)
+    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + svn_root_folder + 'client_proj'
+    os.system(command)
+    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + svn_root_folder + 'stable_proj'
     os.system(command)
 
     for iCount in range(iStart,nDll + iStart):
@@ -72,7 +77,7 @@ def generate(nf, nDll, iStart):
         fp.close()
 
         #vcbuild
-        command = 'vcbuild.exe ' + sln_folder + 'KVNetInstallerHelper_RD.sln "KVRelease|Win32"'
+        command = 'vcbuild.exe ' + sln_folder + 'KVNetInstallerHelper_RD.sln "Release|Win32"'
         os.system(command)
         command = 'copy /Y ' + plugin_folder + 'KVNetInstallHelpler.dll ' + output_folder + 'dll\\KVNetInstallHelper_%d.dll' % iCount
         os.system(command)
@@ -83,7 +88,7 @@ def generate(nf, nDll, iStart):
     sign.main(3, ['sign.py', 'bdkv', output_folder + 'dll\\'])
     
     #copy to archive
-    command = 'copy /Y ' + output_folder + 'dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper\\'
+    command = 'copy /Y ' + output_folder + 'dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper_bdm\\'
     os.system(command)
 
 def main(argc, argv):
