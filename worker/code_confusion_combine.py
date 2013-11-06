@@ -78,18 +78,18 @@ def generate(nf, nDll, iStart):
         fp.close()
 
         #vcbuild
-        command = 'vcbuild.exe ' + sln_folder + 'KVNetInstallerHelper_RD.sln "Release|Win32"'
+        command = 'vcbuild.exe ' + sln_folder + 'CombineInstallerHelper_RD.sln "Release|Win32"'
         os.system(command)
-        command = 'copy /Y ' + plugin_folder + 'KVNetInstallHelpler.dll ' + output_folder + 'dll\\KVNetInstallHelper_%d.dll' % iCount
+        command = 'copy /Y ' + plugin_folder + 'CombineMiniDownloader.dll ' + output_folder + 'dll\\CombineMiniDownloader_%d.dll' % iCount
         os.system(command)
-        command = 'copy /Y ' + plugin_folder + 'KVNetInstallHelpler.pdb ' + output_folder + 'pdb\\KVNetInstallHelper_%d.pdb' % iCount
+        command = 'copy /Y ' + plugin_folder + 'CombineMiniDownloader.pdb ' + output_folder + 'pdb\\CombineMiniDownloader_%d.pdb' % iCount
         os.system(command)
 
     #sign baidu
     sign.main(3, ['sign.py', 'bdkv', output_folder + 'dll\\'])
     
     #copy to archive
-    command = 'copy /Y ' + output_folder + 'dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper_bdmcombine\\'
+    command = 'copy /Y ' + output_folder + 'dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper_combine\\'
     os.system(command)
 
 def main(argc, argv):
