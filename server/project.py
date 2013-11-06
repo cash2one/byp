@@ -31,6 +31,7 @@ bdkv_slns = [
     ['repair','修复模块','时永昌','module',1,[]],
     ['bdkitUtils','bdkit模块','时永昌','module',1,[]],
     ['websafe','websafe模块','务孟庆','module',0,[]],
+    ['ave','ave模块','李红义','module',0,[]],
 ]
 
 bdm_slns = [
@@ -57,6 +58,7 @@ bdm_slns = [
     ['patcher','漏洞修复模块','赵北宁','module',1,[]],
     ['attack','攻防模块','时永昌','module',0,[]],
     ['bdkitUtils','bdkit模块','时永昌','module',0,[]],
+    ['android','android assistant','李一罡','module',0,[]],
 ]
 
 projects = {
