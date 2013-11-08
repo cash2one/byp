@@ -92,6 +92,8 @@ def finalBuildPackage(product, type, buildcmd, nsiFile):
             icoFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
         elif type == 'full':
             icoFile = conf.sln_root + 'basic\\tools\\KVSetupScript\\res\\setup.ico'
+        elif type == 'combine':
+            icoFile = conf.sln_root + 'basic\\tools\\CombineMiniDownloader\\res\\setup.ico'
     elif product == 'bdm':
         if type == 'mini':
             icoFile = conf.sln_root + 'basic\\tools\\BDMNetInstall\\res\\setup.ico'
@@ -99,6 +101,8 @@ def finalBuildPackage(product, type, buildcmd, nsiFile):
             icoFile = conf.sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
         elif type == 'full':
             icoFile = conf.sln_root + 'basic\\tools\\SetupScript\\res\\setup.ico'
+        elif type == 'combine':
+            icoFile = conf.sln_root + 'basic\\tools\\CombineMiniDownloader\\res\\setup.ico'
     if icoFile != '' and bMashupInstaller:
         command = 'copy /Y ' + icoFile + ' ' + icoFile + '.bk'
         os.system(command)
@@ -624,7 +628,8 @@ def getInstallOptions():
         bInstallUpdate = False if root.getAttribute('install_update') == '0' else True
         bInstallSilence = False if root.getAttribute('install_silence') == '0' else True
         bInstallDefense = False if root.getAttribute('install_defense') == '0' else True
-        return (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense)
+        bInstallCombine = False if root.getAttribute('install_combine') == '0' else True
+        return (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense, bInstallCombine)
     except Exception, e:
         logging.error("error occers when parsing xml or run command:")
         logging.error(e)
@@ -997,6 +1002,54 @@ def installMiniPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=Fa
     #supplyid
     if bSupplyid:
         buildSupplyidPackage(obj, product, 'mini', bSilent, bDefense)
+
+def installCombinePackage(obj, product, bSupplyid=False, bSilent=False, bDefense=False):
+    #supplyid ignored
+    installerPath = ''
+    if product == 'bdm':
+        installerPath = '..\\setup\\'
+    elif product == 'bdkv':
+        installerPath = '..\\kvsetup\\'
+    combineInstallFile = conf.sln_root + 'basic\\tools\\CombineMiniDownloader\\BDMNetInstall.nsi'
+    command = 'copy /Y ' + combineInstallFile + ' ' + combineInstallFile + '.bk'
+    os.system(command)
+    file_r = open(combineInstallFile)
+    lines = file_r.readlines()
+    file_r.close()
+    installerFullName = comm.getInstallerFullName(product)
+    installerVersion = comm.getInstallerVersion(product)
+    for index in range(len(lines)):
+        if lines[index].find('OutFile') != -1:
+            if bSilent:
+                lines[index] = 'OutFile "' + installerPath + installerFullName + '_Combine_Silent.exe"\r\n'
+            else:
+                lines[index] = 'OutFile "' + installerPath + installerFullName + '_Combine.exe"\r\n'
+        if lines[index].find('VIProductVersion') != -1:
+            lines[index] = 'VIProductVersion "%s"\r\n' % installerVersion
+        if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % installerVersion
+        if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
+            lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % installerVersion
+        if lines[index].find('#silent#') != -1:
+            if bSilent:
+                lines[index] = 'Strcpy $varIsSilence "1"    #silent#\r\n'
+            else:
+                lines[index] = '#Strcpy $varIsSilence "1"    #silent#\r\n'
+        if lines[index].find("#StartMain#") != -1:
+            if bSilent:
+                lines[index] = 'Strcpy $StartMain "1"    #StartMain#\r\n'
+            else:
+                lines[index] = '#Strcpy $StartMain "1"    #StartMain#\r\n'
+    file_w = open(combineInstallFile, "w")
+    file_w .writelines(lines)
+    file_w .close()
+
+    command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + combineInstallFile
+    finalBuildPackage(product, 'combine', command, combineInstallFile)
+
+    command = 'copy /Y ' + combineInstallFile + '.bk ' + combineInstallFile
+    os.system(command)
+
 
 def installNormalPackage(obj, product, bSupplyid=False, bSilent=False, bDefense=False):
     nsiFile = ''
@@ -2084,17 +2137,21 @@ class Install(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense, bInstallCombine) = getInstallOptions()
             if bInstall:
                 installNormalPackage(self, 'bdm', True, bInstallSilence, bInstallDefense)
             if bInstallMini:
                 installMiniPackage(self,'bdm',True,bInstallSilence, bInstallDefense)
+            if bInstallCombine:
+                installCombinePackage(self, 'bdm', True, bInstallSilence, bInstallDefense)
             if (bInstall or bInstallMini) and bInstallUpdate:
                 updatePackage('bdm')
                 if bInstall:
                     installNormalPackage(self, 'bdm', False, bInstallSilence, bInstallDefense)
                 if bInstallMini:
                     installMiniPackage(self,'bdm',False,bInstallSilence, bInstallDefense)
+                if bInstallCombine:
+                    installCombinePackage(self, 'bdm', True, bInstallSilence, bInstallDefense)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_setup_path):
@@ -2147,14 +2204,16 @@ class KVInstall(BuildStep):
                 command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + conf.sln_root + 'basic --accept mine-full'
                 os.system(command.encode(sys.getfilesystemencoding()))
             #install
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense, bInstallCombine) = getInstallOptions()
             if bInstall:
                 installNormalPackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
             if bInstallMini:
                 installMiniPackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
             if bInstallFull:
                 installKvFullPackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
-            if (bInstall or bInstallMini or bInstallFull or bInstallDefense) and bInstallUpdate:
+            if bInstallCombine:
+                installCombinePackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
+            if (bInstall or bInstallMini or bInstallFull or bInstallDefense or bInstallCombine) and bInstallUpdate:
                 updatePackage('bdkv')
                 if bInstall:
                     installNormalPackage(self, 'bdkv', False, bInstallSilence, bInstallDefense)
@@ -2162,6 +2221,8 @@ class KVInstall(BuildStep):
                     installMiniPackage(self, 'bdkv', False, bInstallSilence, bInstallDefense)
                 if bInstallFull:
                     installKvFullPackage(self, 'bdkv', False, bInstallSilence, bInstallDefense)
+                if bInstallCombine:
+                    installCombinePackage(self, 'bdkv', True, bInstallSilence, bInstallDefense)
             #check installer
             bOk = False
             for file in os.listdir(conf.original_kvsetup_path):
