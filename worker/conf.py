@@ -278,6 +278,7 @@ bdm_default_installer_supplyid = ['m50001','n50000']
 bdkv_default_installer_supplyid = ['m10001','n10000','n50000','f10015']
 
 aladdin_kvnetinstallhelper_folder= '\\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper\\'
+adapt_kvnetinstallhelper_folder= '\\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper_adapt\\'
 bdm_plugin_config_file = "../../basic/Tools/PluginSetupScript/PackList.xml"
 bdm_plugin_output_file = "../../basic/Output/BinRelease/Plugins/GlobalPluginInfo.xml"
 

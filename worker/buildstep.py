@@ -114,10 +114,10 @@ def finalBuildPackage(product, type, buildcmd, nsiFile):
         randName = tempfile.mktemp()
         randName = randName[randName.rfind('\\')+1:]
         for item in range(0,10000):
-            if os.path.isfile(conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item):
-                command = 'copy /Y ' + conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll ..\\..\\basic\\tools\\nsis\\plugins\\%s.dll' % (item,randName)
+            if os.path.isfile(conf.adapt_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item):
+                command = 'copy /Y ' + conf.adapt_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll ..\\..\\basic\\tools\\nsis\\plugins\\%s.dll' % (item,randName)
                 os.system(command)
-                command = 'del /Q /S ' + conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item
+                command = 'del /Q /S ' + conf.adapt_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item
                 os.system(command)
                 break
         file_r = open(nsiFile)
@@ -695,7 +695,7 @@ def buildSilentPackage(obj, product, type, file_i=''):
     file_w .close()
 
 def buildDefensePackage(obj, product, type, file_i='', bSilent=False):
-    #(bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+    #(bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense, bInstallCombine) = getInstallOptions()
     #if not bInstallDefense:
     #    return
     silentNsiFile = ''
@@ -2279,7 +2279,7 @@ class SignInstaller(BuildStep):
             sign.main(3, ['sign.py', 'bdm', '..\\output\\setup\\'])
 
 	    #mashup installer
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense, bInstallCombine) = getInstallOptions()
 	    if bInstallDefense:
 		command = 'python fileop.py installer_mashup ..\\output\\setup\\*.exe'
 		self.report('wk-build-log', command)
@@ -2319,7 +2319,7 @@ class KVSignInstaller(BuildStep):
             self.update_step(1)
 
 	    #mashup installer
-            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense) = getInstallOptions()
+            (bInstall, bInstallMini, bInstallFull, bInstallUpdate, bInstallSilence, bInstallDefense, bInstallCombine) = getInstallOptions()
 	    if bInstallDefense:
 		command = 'python fileop.py installer_mashup ..\\output\\kvsetup\\*.exe'
 		self.report('wk-build-log', command)

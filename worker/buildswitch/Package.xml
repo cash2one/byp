@@ -1,2 +1,2 @@
-<?xml version="1.0" ?><conf install="0" install_full="0" install_mini="0" install_silence="0" install_update="0" install_defense="0" install_combine="0">
+<?xml version="1.0" ?><conf install="1" install_combine="0" install_defense="1" install_full="0" install_mini="1" install_silence="1" install_update="0">
 </conf>

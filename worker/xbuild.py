@@ -123,6 +123,8 @@ class Worker(threading.Thread):
                                 step.setAttribute('value','1')
                             elif self.options.has_key('install_defense') and self.options['install_defense'] == '1':
                                 step.setAttribute('value','1')
+                            elif self.options.has_key('install_combine') and self.options['install_combine'] == '1':
+                                step.setAttribute('value','1')
                             else:
                                 step.setAttribute('value','0')
                                 
@@ -273,6 +275,10 @@ class Worker(threading.Thread):
                 root.setAttribute('install_defense',self.options['install_defense'])
             else:
                 root.setAttribute('install_defense','0')
+            if self.options.has_key('install_combine'):
+                root.setAttribute('install_combine',self.options['install_combine'])
+            else:
+                root.setAttribute('install_combine','0')
             writer = open(pkgFile,'w')
             dom.writexml(writer)
             writer.close()
