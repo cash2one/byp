@@ -58,6 +58,7 @@ bdm_slns = [
     ['patcher','漏洞修复模块','赵北宁','module',1,[]],
     ['attack','攻防模块','时永昌','module',0,[]],
     ['bdkitUtils','bdkit模块','时永昌','module',0,[]],
+    ['android_basic','android basic helper','李一罡','module',0,[]],
     ['android','android assistant','李一罡','module',0,[]],
 ]
 
@@ -102,6 +103,7 @@ bdkv_options = {
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
 	'install_defense':['check','build','攻防包','生成不带文件信息的攻防用安装包，安装包将带有defense字样'],
+	'install_combine':['check','build','二合一包','生成二合一安装包，安装包将带有combine字样'],
 
     'installermd5':['check','after','安装包Md5','生成安装包的Md5校验信息'],
 
@@ -158,6 +160,7 @@ bdm_options = {
 	'install_update':['check','build','升级测试包','同时生成升级测试安装包'],
 	'install_silence':['check','build','静默包','生成静默安装包，安装包将带有silent字样'],
 	'install_defense':['check','build','攻防包','生成不带文件信息的攻防用安装包，安装包将带有defense字样'],
+	'install_combine':['check','build','二合一包','生成二合一安装包，安装包将带有combine字样'],
 
     'installermd5':['check','after','安装包Md5','生成安装包的Md5校验信息'],
 
