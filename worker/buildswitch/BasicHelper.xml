@@ -1,0 +1,4 @@
+<?xml version="1.0" ?><conf dir="mobile_safe_proj">
+	<item build="0" type="Debug|Win32"/>
+	<item build="0" type="Release|Win32"/>
+</conf>
