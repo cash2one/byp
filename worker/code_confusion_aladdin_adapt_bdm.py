@@ -14,11 +14,11 @@ import sys
 import random
 import sign
 
-confusion_folder = '..\\..\\bdm_combine_v488\\client_proj\\Source\\CombineMiniDownloader\\'
-sln_folder = '..\\..\\bdm_combine_v488\\client_proj\\Projects\\'
-plugin_folder = '..\\..\\bdm_combine_v488\\basic\\Tools\\NSIS\\Plugins\\'
-output_folder = '..\\..\\bdm_combine_v488\\confusion\\'
-svn_root_folder = '..\\..\\bdm_combine_v488\\'
+confusion_folder = '..\\..\\bdm_adapt_v488\\client_proj\\Source\\NetInstallHelpler\\'
+sln_folder = '..\\..\\bdm_adapt_v488\\client_proj\\Projects\\'
+plugin_folder = '..\\..\\bdm_adapt_v488\\basic\\Tools\\NSIS\\Plugins\\'
+output_folder = '..\\..\\bdm_adapt_v488\\confusion\\'
+svn_root_folder = '..\\..\\bdm_adapt_v488\\'
 
 random_api = [
         'GetCurrentThreadId',
@@ -95,18 +95,18 @@ def generate(nf, nDll, iStart):
         fp.close()
 
         #vcbuild
-        command = 'vcbuild.exe ' + sln_folder + 'CombineInstallerHelper_RD.sln "Release|Win32"'
+        command = 'vcbuild.exe ' + sln_folder + 'KVNetInstallerHelper_RD.sln "Release|Win32"'
         os.system(command)
-        command = 'copy /Y ' + plugin_folder + 'CombineMiniDownloader.dll ' + output_folder + 'dll\\CombineMiniDownloader_%d.dll' % iCount
+        command = 'copy /Y ' + plugin_folder + 'KVNetInstallHelpler.dll ' + output_folder + 'dll\\KVNetInstallHelper_%d.dll' % iCount
         os.system(command)
-        command = 'copy /Y ' + plugin_folder + 'CombineMiniDownloader.pdb ' + output_folder + 'pdb\\CombineMiniDownloader_%d.pdb' % iCount
+        command = 'copy /Y ' + plugin_folder + 'KVNetInstallHelpler.pdb ' + output_folder + 'pdb\\KVNetInstallHelper_%d.pdb' % iCount
         os.system(command)
 
     #sign baidu
     sign.main(3, ['sign.py', 'bdkv', output_folder + 'dll\\'])
     
     #copy to archive
-    command = 'copy /Y ' + output_folder + 'dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper_combine\\'
+    command = 'copy /Y ' + output_folder + 'dll\\*.dll \\\\10.52.174.35\\public\\aladdin\\DailyBuild\\kvnetinstallhelper_adapt_bdm\\'
     os.system(command)
 
 def main(argc, argv):

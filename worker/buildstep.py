@@ -59,6 +59,98 @@ kvbuild_step_creator = {
                       'postbuild':'KVPostBuild',
                       }
 
+def buildPlugins(product):
+    try:
+        id = ''
+        setupfile = ''
+        md5 = ''
+        url = ''
+        iconUrl = 'http://sampleurl'
+        build_version = ''
+        plugin_setup_filename = ''
+        dom = xml.dom.minidom.parse(conf.bdm_plugin_config_file)
+        root = dom.documentElement
+        env = root.getAttribute('testenv')
+        if env == 'true':
+            env = 'test'
+        else:
+            env = 'online'
+        plugins = root.getElementsByTagName('plugin')
+        for plugin in plugins:
+            id = plugin.getAttribute('id')
+            needpack = plugin.getAttribute('needpack')
+            setupfile = plugin.getAttribute('setupfile')
+            iconUrl = plugin.getAttribute('icon')
+            nsi = plugin.getAttribute('nsi')
+            if needpack == '1':
+                #build
+                nsiFile = conf.bdm_plugin_script_folder + nsi
+                command = conf.sln_root + 'basic\\tools\\NSIS\\makensis.exe /X"SetCompressor /FINAL /SOLID lzma" ' + nsiFile
+                os.system(command)
+
+                #analyse package name
+
+                file_r = open(nsiFile)
+                lines = file_r.readlines()
+                file_r.close()
+                for index in range(len(lines)):
+                    if lines[index].find('!define BUILD_VERSION ') != -1:
+                        build_version = lines[index][lines[index].find('"')+1:lines[index].rfind('"')]
+                        break
+                
+                file_r = open(nsiFile)
+                lines = file_r.readlines()
+                file_r.close()
+                for index in range(len(lines)):
+                    if lines[index].find('OutFile ') != -1:
+                        plugin_setup_filename = lines[index][lines[index].find('"')+1:lines[index].rfind('"')]
+                
+                plugin_setup_filename = plugin_setup_filename.replace('${BUILD_VERSION}',build_version)
+                plugin_setup_filename = plugin_setup_filename[plugin_setup_filename.rfind('\\')+1:]
+
+                #sign
+                fileop.main(4, ['fileop.py', 'kvsign', conf.bdm_plugin_setup_folder, '*.exe'])
+                fileop.main(4, ['fileop.py', 'kvsign_kav', conf.bdm_plugin_setup_folder, '*.exe'])
+                fileop.main(4, ['fileop.py', 'sign_baidu', conf.bdm_plugin_setup_folder, plugin_setup_filename])
+    
+                #post to website
+                command = 'net use \\\\10.52.174.33'
+                os.system(command)
+                if not os.path.isdir('\\\\10.52.174.33\\weishi_plugin\\package\\' + id):
+                    os.mkdir('\\\\10.52.174.33\\weishi_plugin\\package\\' + id + '\\')
+                command = 'copy /Y ' + conf.bdm_plugin_setup_folder + plugin_setup_filename + ' \\\\10.52.174.33\\weishi_plugin\\package\\' + id + '\\'
+                os.system(command)
+                if (0 != os.system(command)):
+                    raise Exception("copy plugin pack to 10.52.174.33 failed")
+                command = 'copy /Y ' + conf.bdm_plugin_script_folder + iconUrl + ' \\\\10.52.174.33\\weishi_plugin\\package\\' + id + '\\'
+                if (0 != os.system(command)):
+                    raise Exception("copy plugin pack to 10.52.174.33 failed")
+                
+                command = 'del /Q /S index.html'
+                os.system(command)
+                command = conf.byp_bin_path + 'wget.exe --post-data="query_str={\'target\':\'' + env + '\',\'file_path\':[\'package/' + id +  '/' + plugin_setup_filename + '\']}" http://10.52.174.33:8001'
+                os.system(command)
+                #get output info
+                retSetup = comm.getMsg('index.html')
+                retSetupDict = eval(retSetup)
+                
+                command = 'del /Q /S index.html'
+                os.system(command)
+                command = conf.byp_bin_path + 'wget.exe --post-data="query_str={\'target\':\'' + env + '\',\'file_path\':[\'package/' + id +  '/' + iconUrl[iconUrl.rfind('\\')+1:] + '\']}" http://10.52.174.33:8001'
+                os.system(command)
+                #get output info
+                retIcon = comm.getMsg('index.html')
+                retIconDict = eval(retIcon)
+    
+
+                #ppa
+                setupfile = '..\\..\\basic\\Output\\' + setupfile[setupfile.find('BinRelease'):]
+                command = conf.byp_bin_path + 'ppa.exe ' + id + ' ' + setupfile + ' ' + retSetupDict['md5sum'] + ' ' + retSetupDict['link'] + ' ' + retIconDict['link'] + ' ' + conf.bdm_plugin_output_file + ' ' + str(os.path.getsize(conf.bdm_plugin_setup_folder + plugin_setup_filename)) + ' ' + str(int(time.time()))
+                os.system(command)
+    except Exception, e:
+        logging.error("error occers when building plugins")
+        logging.error(e)
+    
 def randomVersion():
     return '1.0.%d.%d' % (random.randint(0,1000), random.randint(0,1000))
     
@@ -605,6 +697,7 @@ def getBuildCommands(product, value):
                     logName = 'Debug'
                 else:
                     continue
+                #command = "devenv " + conf.sln_root + dir + "\\Projects\\" + item + ".sln " + vcbuildAction + " \"" + type + "\" /Log " + errDir + item + logName + ".log "
                 command = "vcbuild " + vcbuildAction + " /time /M1 /errfile:" + errDir + item + logName + ".log " + conf.sln_root \
                  + dir + "\\Projects\\" + item + ".sln \"" + type + "\""
                 commands.append(command)
@@ -2117,6 +2210,9 @@ class Install(BuildStep):
         if self.value == 0:
             self.report('wk-build-log', 'Passed')
         elif self.value == 1:
+            #simply add plugin build system
+            buildPlugins('bdm')
+            
             bIgnoreFault = False
             miscFile = './buildswitch/Misc.xml'
             try:

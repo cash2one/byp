@@ -133,6 +133,7 @@ mgr_official_sign_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdbrowserprotecter\\baiduprotect_setup_1.1.0.26.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
@@ -144,6 +145,7 @@ kv_official_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdbrowserprotecter\\baiduprotect_setup_1.1.0.26.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kv_load_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
@@ -154,6 +156,7 @@ kv_load_sign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                                '..\\..\\basic\\output\\binrelease\\plugins\\bdbrowserprotecter\\baiduprotect_setup_1.1.0.26.exe',
                                 '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
@@ -164,6 +167,7 @@ kvsign_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinsta
                       '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
                       '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
                       '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                      '..\\..\\basic\\output\\binrelease\\plugins\\bdbrowserprotecter\\baiduprotect_setup_1.1.0.26.exe',
                       '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udinstaller32.exe',
@@ -174,6 +178,7 @@ kvsign_kav_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kavdrivers\\udi
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdbrowserprotecter\\baiduprotect_setup_1.1.0.26.exe',
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 mgr_verify_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.atl\\',
@@ -183,6 +188,7 @@ mgr_verify_excluded_dir = ['..\\..\\basic\\output\\binrelease\\microsoft.vc80.at
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                          '..\\..\\basic\\output\\binrelease\\plugins\\bdbrowserprotecter\\baiduprotect_setup_1.1.0.26.exe',
                           '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 kv_verify_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
@@ -198,6 +204,7 @@ kv_verify_excluded_dir = ['..\\..\\basic\\kvoutput\\binrelease\\kav\\',
                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst.exe',
                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\dpinst64.exe',
                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\roottool.exe',
+                         '..\\..\\basic\\output\\binrelease\\plugins\\bdbrowserprotecter\\baiduprotect_setup_1.1.0.26.exe',
                          '..\\..\\basic\\output\\binrelease\\plugins\\bdmandroidassistant\\vcredist_x86.exe',]
 
 mgr_file_exist_excluded_dir = ['.pdb','.exp','.lib',]
@@ -265,6 +272,7 @@ bdm_conf_files = {
     'patcher':'patcher',
     'attack':'AttackDefense',
     'bdkitUtils':'BDKitUtils',
+    'android_basic':'BasicHelper',
     'android':'AndroidAssistant',
 }
 

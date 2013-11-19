@@ -49,7 +49,24 @@ def generate(nf, nDll, iStart):
         fp.writelines('#pragma once\n')
         fp.writelines('#define _CODE_CONFUSION 1\n')
         for item in range(0,nf):
+            n_cir = random.randint(32,64)
+            n_api = random.randint(0,4)
+            n_sb = random.randint(8,128) / 4 * 4
+            n_hb = random.randint(64,512) / 4 * 4
+            r_char = random.randint(0,255)
+
             fp.writelines('int CodeConfusion%d();\n' % item)
+
+            fp.writelines('#define CallCodeConfusion%d \\\n' % item)
+            fp.writelines('int _confusion_code_var_s = 0; \\\n')
+            fp.writelines('for(int i=0;i<%d;++i){ \\\n' % n_cir)
+            fp.writelines('_confusion_code_var_s += i;} \\\n')
+            fp.writelines('_confusion_code_var_s += int(%s()); \\\n' % random_api[n_api])
+            fp.writelines('char _confusion_code_var_szBuf[%d] = {0}; \\\n' % n_sb)
+            fp.writelines('memset(_confusion_code_var_szBuf,%d,%d); \\\n' % (r_char,n_sb))
+            fp.writelines('short *_confusion_code_var_spBuf = new short[%d]; \\\n' % n_hb)
+            fp.writelines('memset(_confusion_code_var_spBuf,%d,%d * 2); \\\n' % (r_char,n_hb))
+            fp.writelines('delete [] _confusion_code_var_spBuf;\n')
         fp.close()
 
         #write confusion.cpp
@@ -65,16 +82,16 @@ def generate(nf, nDll, iStart):
             r_char = random.randint(0,255)
 
             fp.writelines('int CodeConfusion%d(){\n' % item)
-            fp.writelines('int s = 0;\n')
+            fp.writelines('int _confusion_code_var_s = 0;\n')
             fp.writelines('for(int i=0;i<%d;++i){\n' % n_cir)
-            fp.writelines('s += i;}\n')
-            fp.writelines('%s();\n' % random_api[n_api])
-            fp.writelines('char szBuf[%d] = {0};\n' % n_sb)
-            fp.writelines('memset(szBuf,%d,%d);\n' % (r_char,n_sb))
-            fp.writelines('short *pBuf = new short[%d];\n' % n_hb)
-            fp.writelines('memset(pBuf,%d,%d * 2);\n' % (r_char,n_hb))
-            fp.writelines('delete [] pBuf;\n')
-            fp.writelines('return s;}\n')
+            fp.writelines('_confusion_code_var_s += i;}\n')
+            fp.writelines('_confusion_code_var_s += int(%s());\n' % random_api[n_api])
+            fp.writelines('char _confusion_code_var_szBuf[%d] = {0};\n' % n_sb)
+            fp.writelines('memset(_confusion_code_var_szBuf,%d,%d);\n' % (r_char,n_sb))
+            fp.writelines('short *_confusion_code_var_spBuf = new short[%d];\n' % n_hb)
+            fp.writelines('memset(_confusion_code_var_spBuf,%d,%d * 2);\n' % (r_char,n_hb))
+            fp.writelines('delete [] _confusion_code_var_spBuf;\n')
+            fp.writelines('return _confusion_code_var_s;}\n')
         fp.close()
 
         #vcbuild
