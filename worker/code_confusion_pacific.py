@@ -36,11 +36,11 @@ def generate(nf, nDll, iStart):
     os.system(command)
 
     #update svn
-    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + svn_root_folder + 'basic'
+    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk272 ' + svn_root_folder + 'basic'
     os.system(command)
-    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + svn_root_folder + 'avclient_proj'
+    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk272 ' + svn_root_folder + 'avclient_proj'
     os.system(command)
-    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk ' + svn_root_folder + 'stable_proj'
+    command = 'svn update --non-interactive --no-auth-cache --username buildbot --password bCRjzYKzk272 ' + svn_root_folder + 'stable_proj'
     os.system(command)
 
     for iCount in range(iStart,nDll + iStart):
