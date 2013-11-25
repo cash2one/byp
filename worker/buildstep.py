@@ -202,30 +202,31 @@ def finalBuildPackage(product, type, buildcmd, nsiFile):
         os.system(command)
         
     randomVer = randomVersion()
-    if bMashupVersion:
-        randName = tempfile.mktemp()
-        randName = randName[randName.rfind('\\')+1:]
-        for item in range(0,10000):
-            if os.path.isfile(conf.adapt_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item):
-                command = 'copy /Y ' + conf.adapt_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll ..\\..\\basic\\tools\\nsis\\plugins\\%s.dll' % (item,randName)
-                os.system(command)
-                command = 'del /Q /S ' + conf.adapt_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item
-                os.system(command)
-                break
+    randName = tempfile.mktemp()
+    randName = randName[randName.rfind('\\')+1:]
+    if (bMashupVersion or bMashupInstaller) and product == 'bdkv':
+        if type == 'mini' and bMashupInstaller:
+            for item in range(0,10000):
+                if os.path.isfile(conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item):
+                    command = 'copy /Y ' + conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll ..\\..\\basic\\tools\\nsis\\plugins\\%s.dll' % (item,randName)
+                    os.system(command)
+                    command = 'del /Q /S ' + conf.aladdin_kvnetinstallhelper_folder + 'kvnetinstallhelper_%d.dll' % item
+                    os.system(command)
+                    break
         file_r = open(nsiFile)
         lines = file_r.readlines()
         file_r.close()
         installerVersion = comm.getInstallerVersion(product)
         for index in range(len(lines)):
-            if lines[index].find('OutFile') != -1:
+            if lines[index].find('OutFile') != -1 and bMashupVersion:
                     lines[index] = lines[index].replace(installerVersion,randomVer)
-            if lines[index].find('VIProductVersion') != -1:
+            if lines[index].find('VIProductVersion') != -1 and bMashupVersion:
                 lines[index] = 'VIProductVersion "%s"\r\n' % randomVer
-            if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1:
+            if lines[index].find('VIAddVersionKey /LANG=2052 "FileVersion"') != -1 and bMashupVersion:
                 lines[index] = 'VIAddVersionKey /LANG=2052 "FileVersion" "%s"\r\n' % randomVer
-            if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1:
+            if lines[index].find('VIAddVersionKey /LANG=2052 "ProductVersion"') != -1 and bMashupVersion:
                 lines[index] = 'VIAddVersionKey /LANG=2052 "ProductVersion" "%s"\r\n' % randomVer
-            if lines[index].find('KVNetInstallHelper') != -1:
+            if lines[index].find('KVNetInstallHelper') != -1 and bMashupInstaller and type == 'mini':
                 lines[index] = lines[index].replace('KVNetInstallHelper',randName)
         file_w = open(nsiFile, "w")
         file_w .writelines(lines)
@@ -697,7 +698,6 @@ def getBuildCommands(product, value):
                     logName = 'Debug'
                 else:
                     continue
-                #command = "devenv " + conf.sln_root + dir + "\\Projects\\" + item + ".sln " + vcbuildAction + " \"" + type + "\" /Log " + errDir + item + logName + ".log "
                 command = "vcbuild " + vcbuildAction + " /time /M1 /errfile:" + errDir + item + logName + ".log " + conf.sln_root \
                  + dir + "\\Projects\\" + item + ".sln \"" + type + "\""
                 commands.append(command)
