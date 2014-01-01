@@ -8,7 +8,7 @@
 
 1. 支持卫士和杀毒两个项目的各种打包需求。未来可以很容易的扩展，比如增加其他项目、更改操作系统平台、版本构建工具和版本控制方式等。
 
-2. client端基于[realtime web](https://en.wikipedia.org/wiki/Real-time_web)，可实时同步编译机状态，用户界面UI基于[bootstrap](http://twitter.github.io/bootstrap/)和[jquery](http://jquery.com/)。支持chrome、safari等严格实现标准的浏览器（内网访问[http://172.17.180.61:13412/](http://172.17.180.61:13412/)），支持firefox开发版、ios safari，推荐用chrome浏览，或以chrome插件形式使用。
+2. client端基于[realtime web](https://en.wikipedia.org/wiki/Real-time_web)，可实时同步编译机状态，用户界面UI基于[bootstrap](http://twitter.github.io/bootstrap/)和[jquery](http://jquery.com/)。支持chrome、safari等严格实现标准的浏览器（内网访问[http://10.52.156.21:13412/](http://10.52.156.21:13412/)），支持firefox开发版、ios safari，推荐用chrome浏览，或以chrome插件形式使用。
 
 3. server端基于[python tornado](http://www.tornadoweb.org/)框架，异步高并发，支持多用户，多台编译机同时部署。
 

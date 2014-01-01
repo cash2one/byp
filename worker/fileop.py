@@ -275,7 +275,14 @@ def SignBaidu(file,para):
             iStop = part2.find("'")
             if iStop != -1:
                 downloadPath = response[iStart:iStart + iStop]
-                urllib.urlretrieve('http://' + conf.cerf_addr + '/' + downloadPath, file + '.sign')
+                while True:
+                    try:
+                        urllib.urlretrieve('http://' + conf.cerf_addr + '/' + downloadPath, file + '.sign')
+                        break
+                    except Exception,e:
+                        print 'error while calling urllib.urlretrieve'
+                        print str(e)
+                        print 'try recalling ...'
         
         command = conf.byp_bin_path + 'SignVerify.exe ' + file + '.sign ' + digitalSign
         ret = os.system(command.encode(sys.getfilesystemencoding()))
@@ -327,18 +334,19 @@ def SignBaidu2(file,para):
     elif signType == '3':
         digitalSign = 'baidu_jp'
     
-    for i in range(0,10):
+    while True:
         response = post_multipart2(conf.local_cerf_addr,conf.local_cerf_url,fields,files,blanks)
         logging.info( response)
+        print response
         if response.find('failed') != -1:
-            i = i + 1
-            if i == 9:
-                logging.info('Sign baidu official digital signature failed.')
-                print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
-                f = open('c:\\sign_output.txt','a')
-                f.write("file sign baidu failed %s\r\n" % file)
-                f.close()
-                raise SignBaiduException('Sign baidu official digital signature failed.')
+            #i = i + 1
+            #if i == 9:
+            #    logging.info('Sign baidu official digital signature failed.')
+            #    print '\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a'
+            #    f = open('c:\\sign_output.txt','a')
+            #    f.write("file sign baidu failed %s\r\n" % file)
+            #    f.close()
+            #    raise SignBaiduException('Sign baidu official digital signature failed.')
             continue
         
         iStart = response.find('msg:') + 4

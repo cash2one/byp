@@ -23,4 +23,4 @@ kv_datadir_verify_file = './verifylist/kvconfig.xml'
 mgr_verify_log_file = '../output/verifylog/ProductVerify.txt'
 kv_verify_log_file = '../output/verifylog/KVProductVerify.txt'
 
-sign_cookie = 'PHPSESSID=ST-82546-EeYKeDFLNPnTYpczddZE-uuap'
+sign_cookie = 'PHPSESSID=ST-176086-P93VfqPM3n516VKE53yX-uuap'

@@ -22,7 +22,7 @@ build_scripts_21 = [
 	'E:\\XBUILD\\bdkv_v1.6_avtest\\byp\\worker\\KV1.6AVTest.py'
 	]
 host_script_map = {
-        '172.17.180.61':build_scripts_61,
+        '10.52.156.21':build_scripts_61,
         '172.17.180.66':build_scripts_66,
         '10.52.156.21':build_scripts_21,
         }

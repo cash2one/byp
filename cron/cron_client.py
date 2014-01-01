@@ -24,7 +24,7 @@ def main(argc, argv):
         try:
             #make connection to wsserver
             logging.info('try connectting to server')
-            ws_service = websocketclt.create_connection("ws://172.17.180.61:13412/buildserver",
+            ws_service = websocketclt.create_connection("ws://10.52.156.21:13412/buildserver",
                                 timeout = timeout_buildserver,
                                 sockopt = ((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
                                 header = opts)

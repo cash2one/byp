@@ -110,7 +110,7 @@ class BuildServerHandler(tornado.websocket.WebSocketHandler):
             current_crx_version = 22
             if msg['content'] != '':
                 if current_crx_version > int(msg['content']):
-                    content = '{"msrc":"ws-crx-update","content":"http://172.17.180.61:13412/byp.crx"}'
+                    content = '{"msrc":"ws-crx-update","content":"http://10.52.156.21:13412/byp.crx"}'
                     self.notify(content)
             #常规操作
             self.type = 'client'
